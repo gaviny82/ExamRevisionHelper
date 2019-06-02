@@ -70,5 +70,17 @@ namespace PastPaperHelper.Properties {
                 this["FirstRun"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int PaperSource {
+            get {
+                return ((int)(this["PaperSource"]));
+            }
+            set {
+                this["PaperSource"] = value;
+            }
+        }
     }
 }

@@ -51,5 +51,18 @@ namespace PastPaperHelper
             return null;
         }
     }
+
+    public class IsMouseOverToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (bool)value ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
     public enum Curriculums { IGCSE, ALevel }
 }

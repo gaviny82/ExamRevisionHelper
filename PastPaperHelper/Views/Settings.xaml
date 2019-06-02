@@ -8,17 +8,16 @@
       mc:Ignorable="d" Background="White"
       d:DesignHeight="450" d:DesignWidth="800">
     <Grid.Resources>
+        <local:PaperSourceToIntegerConverter x:Key="PaperSourceToIntegerConverter"/>
+        <local:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
         <local:MessageVisibilityConverter x:Key="MessageVisibilityConverter"/>
         <local:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
     </Grid.Resources>
-    <Grid.DataContext>
-        <local:SettingsViewModel/>
-    </Grid.DataContext>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="400"/>
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
-    <GroupBox Header="Source" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="16" Padding="8" VerticalAlignment="Top" Grid.ColumnSpan="2">
+    <GroupBox Header="Source" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="8,16,16,0" Padding="8" VerticalAlignment="Top" Grid.Column="1">
         <GroupBox.HeaderTemplate>
             <DataTemplate>
                 <StackPanel Orientation="Horizontal">
@@ -28,12 +27,20 @@
             </DataTemplate>
         </GroupBox.HeaderTemplate>
         <Grid>
-            <TextBox Margin="0,0,85,0" Text="{Binding Path}" TextWrapping="NoWrap" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}" ToolTip="All files will be stored in this directory"/>
+            <TextBox Margin="0,0,85,0" TextWrapping="NoWrap" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}" ToolTip="All files will be stored in this directory">
+                <TextBox.Text>
+                    <Binding Path="Path" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <local:DirectoryExistValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
             <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Browse" Margin="0,4,0,0" Width="80" Command="{Binding BrowseCommand}"/>
-            <ComboBox SelectedIndex="0" materialDesign:HintAssist.Hint="Source" Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" Margin="0,55,0,0">
-                <ComboBoxItem Content="GCE Guide" ToolTip="https://papers.gceguide.com/"/>
-                <ComboBoxItem Content="PapaCambridge" ToolTip="https://pastpapers.papacambridge.com/"/>
-                <ComboBoxItem Content="CIEnotes" ToolTip="https://www.cienotes.com/"/>
+            <ComboBox x:Name="source" SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceToIntegerConverter}, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Source" Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" Margin="0,55,0,0">
+                <ComboBoxItem Content="GCE Guide (https://papers.gceguide.com/)"/>
+                <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)"/>
+                <ComboBoxItem Content="CIEnotes (https://www.cienotes.com/)"/>
             </ComboBox>
         </Grid>
     </GroupBox>
@@ -62,46 +69,73 @@
         </GroupBox.HeaderTemplate>
         <TextBlock Text="NOT IMPLEMENTED, Coming Soon."/>
     </GroupBox>
-    <GroupBox Header="Subjects" Style="{DynamicResource MaterialDesignCardGroupBox}" HorizontalAlignment="Left" Margin="16,190,8,0" Padding="8" VerticalAlignment="Top" Width="376">
-        <GroupBox.HeaderTemplate>
-            <DataTemplate>
-                <Grid>
-                    <materialDesign:PackIcon Kind="Class" Height="32" Width="32" VerticalAlignment="Center" />
-                    <TextBlock Margin="40,6,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16"/>
-                    <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" HorizontalAlignment="Right">
-                        <materialDesign:PackIcon Kind="Add" />
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" HorizontalAlignment="Right" Margin="0,0,30,0">
-                        <materialDesign:PackIcon Kind="ContentSave" />
-                    </Button>
+    <materialDesign:DialogHost x:Name="AddSubjectDialog" HorizontalAlignment="Left" Margin="16,16,0,16" Width="376">
+        <materialDesign:DialogHost.DialogContent>
+            <Grid Margin="16" Height="150">
+                    <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                    <TextBlock Text="Source: " HorizontalAlignment="Left" Grid.Row="0"/>
+                    <TextBlock Text="{Binding PaperSource}" Grid.Row="0" Margin="50,0,0,0"/>
+                    <TextBlock Text="Last update: " Grid.Row="1" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{Binding SubjectsLastUpdate}" Grid.Row="1" Margin="80,0,0,0"/>
+                <!--<TreeView ItemsSource="{Binding MovieCategories}" SelectedItemChanged="TreeView_SelectedItemChanged">
+                    <TreeViewItem Header="IGCSE">
+
+                    </TreeViewItem>
+                    <TreeViewItem Header="ALevel">
+                        
+                    </TreeViewItem>
+                </TreeView>-->
+                <Button Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="2" IsDefault="True" Margin="-100,0,0,0" Command="materialDesign:DialogHost.CloseDialogCommand" CommandParameter="True" Content="ACCEPT" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" Grid.Row="2" IsCancel="True" Margin="100,0,0,0" Command="materialDesign:DialogHost.CloseDialogCommand" CommandParameter="False" Content="CANCEL" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
                 </Grid>
-            </DataTemplate>
-        </GroupBox.HeaderTemplate>
-        <Grid>
-            <ListView x:Name="SubjectList" ItemsSource="{Binding Subjects}">
-                <ListView.ItemTemplate>
-                    <DataTemplate DataType="{x:Type local:Subject}">
-                        <Border BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5">
-                            <Grid Width="350">
-                                <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
-                                <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                <StackPanel Orientation="Horizontal" Margin="32,0,0,0" VerticalAlignment="Top" Height="16">
-                                    <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="32,16,0,0" VerticalAlignment="Top" Height="16">
-                                    <TextBlock Text="Syllabus Code: " Margin="8,0,0,0" FontStyle="Italic"/>
-                                    <TextBlock Text="{Binding SyllabusCode}" FontStyle="Italic"/>
-                                </StackPanel>
-                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" CommandParameter="{Binding SyllabusCode}">
-                                    <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
-                                </Button>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <TextBlock Text="No subject here..." FontStyle="Italic" Visibility="{Binding Subjects.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}"/>
-        </Grid>
-    </GroupBox>
+        </materialDesign:DialogHost.DialogContent>
+        <GroupBox Header="Subjects" Style="{DynamicResource MaterialDesignCardGroupBox}" Padding="8">
+            <GroupBox.HeaderTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <materialDesign:PackIcon Kind="Class" Height="32" Width="32" VerticalAlignment="Center" />
+                        <TextBlock Margin="40,6,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16"/>
+                        <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" HorizontalAlignment="Right" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                            <materialDesign:PackIcon Kind="Add"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" HorizontalAlignment="Right" Margin="0,0,30,0" ToolTip="Delete all subjects selected" Command="{Binding DataContext.RemoveSelectedSubjectsCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=GroupBox}}" CommandParameter="{Binding Content.Children[0].SelectedItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=GroupBox}}">
+                            <materialDesign:PackIcon Kind="Delete"/>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </GroupBox.HeaderTemplate>
+            <Grid>
+                <ListView x:Name="SubjectList" ItemsSource="{Binding Subjects}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="{x:Type local:Subject}">
+                            <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
+                                <Grid Width="350" Margin="0,0,0,5">
+                                    <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
+                                    <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                    <StackPanel Orientation="Horizontal" Margin="32,0,0,0" VerticalAlignment="Top" Height="16">
+                                        <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="32,16,0,0" VerticalAlignment="Top" Height="16">
+                                        <TextBlock Text="Syllabus Code: " Margin="8,0,0,0" FontStyle="Italic"/>
+                                        <TextBlock Text="{Binding SyllabusCode}" FontStyle="Italic"/>
+                                    </StackPanel>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}}" CommandParameter="{Binding SyllabusCode}"
+                                        Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
+                                        <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding Subjects.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+    </materialDesign:DialogHost>
+
 </Grid>

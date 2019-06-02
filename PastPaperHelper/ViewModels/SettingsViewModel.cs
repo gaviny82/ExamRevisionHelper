@@ -1,5 +1,6 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml;
 
 namespace PastPaperHelper
 {
@@ -17,8 +19,12 @@ namespace PastPaperHelper
         public SettingsViewModel()
         {
             Path = Properties.Settings.Default.Path;
+            PaperSource = (PastPaperSources)Properties.Settings.Default.PaperSource;
             AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
             AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
+
+            SubjectsLastUpdate = DateTime.Parse(App.SubjectList.ChildNodes[1].Attributes["Time"].Value);
+
             Subjects.Add(new Subject { Curriculum = Curriculums.IGCSE, Name = "Physics", SyllabusCode = "0625" });
             Subjects.Add(new Subject { Curriculum = Curriculums.ALevel, Name = "Mathematics", SyllabusCode = "9709" });
         }
@@ -36,6 +42,30 @@ namespace PastPaperHelper
                     Properties.Settings.Default.Path = value;
                     Properties.Settings.Default.Save();
                 }
+            }
+        }
+
+        private DateTime _subjectsLastUpdate;
+        public DateTime SubjectsLastUpdate
+        {
+            get { return _subjectsLastUpdate; }
+            set
+            {
+                _subjectsLastUpdate = value;
+                RaisePropertyChangedEvent("SubjectsLastUpdate");
+            }
+        }
+
+        private PastPaperSources _paperSource;
+        public PastPaperSources PaperSource
+        {
+            get { return _paperSource; }
+            set
+            {
+                _paperSource = value;
+                RaisePropertyChangedEvent("PaperSource");
+                Properties.Settings.Default.PaperSource = (int)value;
+                Properties.Settings.Default.Save();//TODO: show url in subject management view
             }
         }
 
@@ -94,6 +124,19 @@ namespace PastPaperHelper
                     Subjects.RemoveAt(i);
                     return;
                 }
+            }
+        }
+
+        public ICommand RemoveSelectedSubjectsCommand
+        {
+            get => new DelegateCommand(RemoveSelectedSubjects);
+        }
+        private void RemoveSelectedSubjects(object param)
+        {
+            IList list = (IList)param;
+            while (list.Count > 0)
+            {
+                Subjects.Remove((Subject)list[0]);
             }
         }
 

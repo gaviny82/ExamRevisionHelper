@@ -8,11 +8,17 @@ using System.Xml;
 
 namespace PastPaperHelper
 {
-    public enum PastPaperSources { GCEGuide }
+    public enum PastPaperSources { GCEGuide, PapaCambridge, CIEnotes }
     public static class SourceManager
     {
-        public static string[] UpdateSubjectsFromSource(PastPaperSources source)
+        public static XmlDocument UpdateSubjectsFromSource(PastPaperSources source)
         {
+            XmlDocument doc = new XmlDocument();
+            doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+            XmlElement data = doc.CreateElement("Data");
+            data.SetAttribute("Time", DateTime.Now.ToString());
+            doc.AppendChild(data);
+
             if (source == PastPaperSources.GCEGuide)
             {
                 HtmlWeb web = new HtmlWeb();
@@ -23,13 +29,7 @@ namespace PastPaperHelper
                     case PastPaperSources.GCEGuide: url = @"https://papers.gceguide.com/"; break;
                 }
 
-                XmlDocument doc = new XmlDocument();
-                doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
-                XmlElement data = doc.CreateElement("Data");
                 data.SetAttribute("Source", url);
-                data.SetAttribute("Time", DateTime.Now.ToString());
-                doc.AppendChild(data);
-
                 XmlElement IGCSE = doc.CreateElement("IGCSE");
                 HtmlDocument doc1 = web.Load(url + "IGCSE/");
                 HtmlNodeCollection igcse = doc1.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='dir']");
@@ -60,7 +60,7 @@ namespace PastPaperHelper
                 data.AppendChild(AL);
                 doc.Save(Environment.CurrentDirectory + "\\subject_list.xml");
             }
-            return null;
+            return doc;
         }
     }
 }

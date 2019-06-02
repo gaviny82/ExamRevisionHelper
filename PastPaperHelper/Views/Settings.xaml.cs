@@ -20,9 +20,11 @@ namespace PastPaperHelper
     /// </summary>
     public partial class Settings : Grid
     {
+        //TODO: Drop folder to select path
         public Settings()
         {
             InitializeComponent();
+            DataContext = new SettingsViewModel();
         }
     }
 }
