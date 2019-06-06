@@ -16,15 +16,13 @@ using System.Windows.Shapes;
 namespace PastPaperHelper
 {
     /// <summary>
-    /// Config.xaml 的交互逻辑
+    /// AboutView.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsView : Grid
+    public partial class AboutView : Grid
     {
-        //TODO: Drop folder to select path
-        public SettingsView()
+        public AboutView()
         {
             InitializeComponent();
-            DataContext = new SettingsViewModel();
         }
     }
 }

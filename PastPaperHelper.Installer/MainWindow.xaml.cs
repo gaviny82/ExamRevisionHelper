@@ -13,18 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.Installer
 {
     /// <summary>
-    /// Config.xaml 的交互逻辑
+    /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsView : Grid
+    public partial class MainWindow : Window
     {
-        //TODO: Drop folder to select path
-        public SettingsView()
+        public MainWindow()
         {
             InitializeComponent();
-            DataContext = new SettingsViewModel();
         }
     }
 }

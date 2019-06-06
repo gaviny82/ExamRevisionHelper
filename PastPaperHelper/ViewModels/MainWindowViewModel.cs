@@ -16,7 +16,8 @@ namespace PastPaperHelper
             {
                 new HamburgerMenuItem("Search", new SearchView()),
                 //new HamburgerMenuItem("Subjects", new SubjectManager()),
-                new HamburgerMenuItem("Settings", new Settings())
+                new HamburgerMenuItem("Settings", new SettingsView()),
+                new HamburgerMenuItem("About", new AboutView()),
             };
         }
     }
