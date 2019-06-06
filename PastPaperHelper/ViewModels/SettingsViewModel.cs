@@ -23,7 +23,8 @@ namespace PastPaperHelper
             AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
             AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
 
-            SubjectsLastUpdate = DateTime.Parse(App.SubjectList.ChildNodes[1].Attributes["Time"].Value);
+            if(App.SubjectList!=null)
+                SubjectsLastUpdate = DateTime.Parse(App.SubjectList.ChildNodes[1].Attributes["Time"].Value);
 
             Subjects.Add(new Subject { Curriculum = Curriculums.IGCSE, Name = "Physics", SyllabusCode = "0625" });
             Subjects.Add(new Subject { Curriculum = Curriculums.ALevel, Name = "Mathematics", SyllabusCode = "9709" });

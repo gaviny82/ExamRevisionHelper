@@ -61,12 +61,13 @@ namespace PastPaperHelper.Properties {
         }
         
         /// <summary>
-        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///   查找类似 &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;configuration&gt;
         ///  &lt;configSections&gt;
-        ///    &lt;sectionGroup name=&quot;userSettings&quot; type=&quot;System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; &gt;
-        ///      &lt;section name=&quot;PastPaperHelper.Properties.Settings&quot; type=&quot;System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; allowExeDefinition=&quot;MachineToLocalUser&quot; requirePermission=&quot;false&quot; /&gt;
-        ///    &lt;/sectionGrou [字符串的其余部分被截断]&quot;; 的本地化字符串。
+        ///    &lt;sectionGroup name=&quot;userSettings&quot; type=&quot;System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot;&gt;
+        ///      &lt;section name=&quot;PastPaperHelper.Properties.Settings&quot; type=&quot;System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; allowExeDefinition=&quot;MachineToLocalUser&quot; requirePermission=&quot;false&quot;/&gt;
+        ///    &lt;/sectionGroup&gt;
+        ///  [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
         internal static string App {
             get {
