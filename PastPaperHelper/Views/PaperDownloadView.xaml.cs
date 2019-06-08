@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace PastPaperHelper
 {
     /// <summary>
-    /// AboutView.xaml 的交互逻辑
+    /// PaperDownloadView.xaml 的交互逻辑
     /// </summary>
-    public partial class AboutView : Grid
+    public partial class PaperDownloadView : Grid
     {
-        public AboutView()
+        public PaperDownloadView()
         {
             InitializeComponent();
         }

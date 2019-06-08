@@ -1,0 +1,63 @@
+﻿<Grid x:Class="PastPaperHelper.PaperDownloadView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PastPaperHelper"
+      mc:Ignorable="d" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      Background="White"
+      d:DesignHeight="450" d:DesignWidth="800">
+    <Grid.DataContext>
+        <local:PaperDownloadViewModel/>
+    </Grid.DataContext>
+    <Grid.Resources>
+        <local:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
+        <local:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
+        <local:MessageVisibilityConverter x:Key="MessageVisibilityConverter"/>
+    </Grid.Resources>
+    <GroupBox Header="Subjects" Style="{DynamicResource MaterialDesignCardGroupBox}" Padding="8" Margin="0,0,424,32">
+        <GroupBox.HeaderTemplate>
+            <DataTemplate>
+                <Grid>
+                    <materialDesign:PackIcon Kind="Class" Height="32" Width="32" VerticalAlignment="Center" />
+                    <TextBlock Margin="40,6,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16"/>
+                    <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" HorizontalAlignment="Right" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                        <materialDesign:PackIcon Kind="Add"/>
+                    </Button>
+                    <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" HorizontalAlignment="Right" Margin="0,0,30,0" ToolTip="Delete all subjects selected" Command="{Binding DataContext.RemoveSelectedSubjectsCommand, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}, Mode=FindAncestor}}" CommandParameter="{Binding Content.Children[0].SelectedItems, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}, Mode=FindAncestor}}">
+                        <materialDesign:PackIcon Kind="Delete"/>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </GroupBox.HeaderTemplate>
+        <Grid>
+            <ListView x:Name="SubjectList1" ItemsSource="{Binding Subjects}">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:Subject}">
+                        <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
+                            <Grid Width="350" Margin="0,0,0,5">
+                                <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
+                                <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <StackPanel Orientation="Horizontal" Margin="32,0,0,0" VerticalAlignment="Top" Height="16">
+                                    <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="32,16,0,0" VerticalAlignment="Top" Height="16">
+                                    <TextBlock Text="Syllabus Code: " Margin="8,0,0,0" FontStyle="Italic"/>
+                                    <TextBlock Text="{Binding SyllabusCode}" FontStyle="Italic"/>
+                                </StackPanel>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}" CommandParameter="{Binding SyllabusCode}"
+                                    Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
+                                    <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding Subjects.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
+        </Grid>
+    </GroupBox>
+
+</Grid>

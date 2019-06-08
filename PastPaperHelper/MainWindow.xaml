@@ -38,7 +38,7 @@
                         <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding ElementName=HamburgerMenu,Path=SelectedItem.Title}" FontSize="18" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
                     </StackPanel>
                 </materialDesign:ColorZone>
-                <ContentControl Content="{Binding ElementName=HamburgerMenu, Path=SelectedItem.Content}" Margin="0,52,0,0"/>
+                <ScrollViewer Content="{Binding ElementName=HamburgerMenu, Path=SelectedItem.Content}" Margin="0,52,0,0" VerticalScrollBarVisibility="Auto"/>
                 <materialDesign:Snackbar x:Name="mainSnackbar" MessageQueue="{materialDesign:MessageQueue}"/>
             </Grid>
         </materialDesign:DrawerHost>

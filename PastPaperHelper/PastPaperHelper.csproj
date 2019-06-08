@@ -79,13 +79,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Views\AboutView.xaml.cs">
-      <DependentUpon>AboutView.xaml</DependentUpon>
+    <Compile Include="ViewModels\PaperDownloadViewModel.cs" />
+    <Compile Include="Views\PaperDownloadView.xaml.cs">
+      <DependentUpon>PaperDownloadView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\Converters.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Models\Subject.cs" />
-    <Compile Include="SourceManager.cs" />
+    <Compile Include="Utilities\SourceManager.cs" />
     <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -98,7 +99,7 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
-    <Page Include="Views\AboutView.xaml">
+    <Page Include="Views\PaperDownloadView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

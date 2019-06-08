@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,16 @@ namespace PastPaperHelper
         {
             InitializeComponent();
             DataContext = new SettingsViewModel();
+        }
+
+        private void OpenReleases_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/GavinYou082/PastPaperHelper/releases");
+        }
+
+        private void OpenGithub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/GavinYou082/PastPaperHelper");
         }
     }
 }
