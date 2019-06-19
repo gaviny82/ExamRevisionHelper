@@ -42,15 +42,21 @@
         <GroupBox Header="Update" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="0,16,0,0">
             <GroupBox.HeaderTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
+                    <Grid>
                         <materialDesign:PackIcon Kind="ArrowUpBoldCircleOutline" Height="32" Width="32" VerticalAlignment="Center" />
-                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16"/>
-                    </StackPanel>
+                        <TextBlock Margin="40,6,0,6" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16" HorizontalAlignment="Left"/>
+                        <Button Style="{StaticResource MaterialDesignToolForegroundButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Click="OpenReleases_Click" materialDesign:ButtonProgressAssist.IsIndeterminate="True">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Update"/>
+                                <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Check Update"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <StackPanel>
                 <CheckBox Content="Check update for past papers" ToolTip="Check update from websites on startup" IsChecked="{Binding AutoUpdateFiles}"/>
-                <CheckBox Content="Check update for Past Paper Helper (NOT AVALIABLE)" ToolTip="Check on startup" Margin="0,5,0,0" IsChecked="{Binding AutoUpdateProgram}"/>
+                <CheckBox Content="Check update for Past Paper Helper" ToolTip="Check on startup" Margin="0,5,0,0" IsChecked="{Binding AutoUpdateProgram}"/>
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Theme" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="0,16,0,0">
@@ -62,7 +68,7 @@
                     </StackPanel>
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
-            <TextBlock Text="NOT IMPLEMENTED, Coming Soon."/>
+            <TextBlock Text="Coming Soon."/>
         </GroupBox>
         <TextBlock Text="References" Style="{StaticResource MaterialDesignDisplay1TextBlock}" FontSize="24" Margin="0,32,0,0"/>
         <Border Background="{DynamicResource MaterialDesignDivider}" SnapsToDevicePixels="True" Height="1"/>
@@ -101,16 +107,17 @@
     </materialDesign:DialogHost>
     <TextBlock Text="Past Paper Helper" Margin="96,26,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource MaterialDesignDisplay1TextBlock}"/>
     <materialDesign:PackIcon Kind="About" HorizontalAlignment="Left" Margin="16,16,0,0" VerticalAlignment="Top" Width="64" Height="64"/>
-    <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="534,34,0,0" Click="OpenGithub_Click">
-        <StackPanel Orientation="Horizontal">
-            <materialDesign:PackIcon Kind="GithubCircle"/>
-            <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="GitHub"/>
-        </StackPanel>
-    </Button>
+    
     <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="408,34,0,0" ToolTip="View changelog" Click="OpenReleases_Click">
         <StackPanel Orientation="Horizontal">
             <materialDesign:PackIcon Kind="Tag"/>
             <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Beta 0.1"/>
+        </StackPanel>
+    </Button>
+    <Button Style="{DynamicResource MaterialDesignFlatButton}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="534,34,0,0" Click="OpenGithub_Click">
+        <StackPanel Orientation="Horizontal">
+            <materialDesign:PackIcon Kind="GithubCircle"/>
+            <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Github"/>
         </StackPanel>
     </Button>
 

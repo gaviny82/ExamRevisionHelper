@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MaterialDesignThemes.Wpf;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace PastPaperHelper
     /// <summary>
     /// PaperDownloadView.xaml 的交互逻辑
     /// </summary>
-    public partial class PaperDownloadView : Grid
+    public partial class PaperDownloadView : DialogHost
     {
         public PaperDownloadView()
         {
