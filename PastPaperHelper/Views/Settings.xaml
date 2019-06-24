@@ -8,7 +8,7 @@
       mc:Ignorable="d" Background="White"
       d:DesignHeight="450" d:DesignWidth="800">
     <Grid.Resources>
-        <local:PaperSourceToIntegerConverter x:Key="PaperSourceToIntegerConverter"/>
+        <local:PaperSourceConverter x:Key="PaperSourceConverter"/>
         <local:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
         <local:MessageVisibilityConverter x:Key="MessageVisibilityConverter"/>
         <local:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
@@ -32,7 +32,7 @@
                     </Binding>
                 </TextBox>
                 <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Browse" Margin="0,4,0,0" Width="80" Command="{Binding BrowseCommand}"/>
-                <ComboBox x:Name="source" SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceToIntegerConverter}, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Source" Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" Margin="0,55,0,0">
+                <ComboBox x:Name="source" SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceConverter},UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Source" Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" Margin="0,55,0,0">
                     <ComboBoxItem Content="GCE Guide (https://papers.gceguide.com/)"/>
                     <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)"/>
                     <ComboBoxItem Content="CIEnotes (https://www.cienotes.com/)"/>

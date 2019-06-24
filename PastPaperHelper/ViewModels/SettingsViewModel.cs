@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using PastPaperHelper.Sources;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,12 +15,18 @@ using System.Xml;
 
 namespace PastPaperHelper
 {
-    class SettingsViewModel : ObservableObject
+    class SettingsViewModel : NotificationObject
     {
         public SettingsViewModel()
         {
             Path = Properties.Settings.Default.Path;
-            PaperSource = (PastPaperSources)Properties.Settings.Default.PaperSource;
+            switch (Properties.Settings.Default.PaperSource)
+            {
+                default: PaperSource = PaperSources.GCE_Guide; break;
+                case "GCE Guide": PaperSource = PaperSources.GCE_Guide; break;
+                case "PapaCambridge": PaperSource = PaperSources.PapaCambridge; break;
+                case "CIE Notes": PaperSource = PaperSources.CIE_Notes; break;
+            }
             AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
             AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
 
@@ -55,15 +62,15 @@ namespace PastPaperHelper
             }
         }
 
-        private PastPaperSources _paperSource;
-        public PastPaperSources PaperSource
+        private PaperSource _paperSource;
+        public PaperSource PaperSource
         {
             get { return _paperSource; }
             set
             {
                 _paperSource = value;
                 RaisePropertyChangedEvent("PaperSource");
-                Properties.Settings.Default.PaperSource = (int)value;
+                Properties.Settings.Default.PaperSource = value.Name;
                 Properties.Settings.Default.Save();//TODO: show url in subject management view
             }
         }

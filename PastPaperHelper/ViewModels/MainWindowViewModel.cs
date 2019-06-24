@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PastPaperHelper
 {
-    class MainWindowViewModel : ObservableObject
+    class MainWindowViewModel : NotificationObject
     {
         public HamburgerMenuItem[] ListItems { get; }
 

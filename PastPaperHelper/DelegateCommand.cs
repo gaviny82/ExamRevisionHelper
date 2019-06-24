@@ -7,10 +7,8 @@ using System.Windows.Input;
 
 namespace PastPaperHelper
 {
-    class DelegateCommand : ICommand
+    public class DelegateCommand : ICommand
     {
-        public event EventHandler CanExecuteChanged;
-
         Action<object> _execute;
         Func<object, bool> _canExecute;
 
@@ -19,6 +17,8 @@ namespace PastPaperHelper
             _execute = execute;
             _canExecute = canExecute;
         }
+
+        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {

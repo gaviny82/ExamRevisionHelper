@@ -17,10 +17,16 @@ using System.Windows.Input;
 
 namespace PastPaperHelper
 {
-    public class SearchViewModel : ObservableObject
+    public class SearchViewModel : NotificationObject
     {
         CancellationTokenSource cts;
         ObservableCollection<Question> questions = new ObservableCollection<Question>();
+
+        public SearchViewModel()
+        {
+            MatchWholeWord = false;
+            IgnoreCases = true;
+        }
 
         private SearchStatus _searchStatus;
         public SearchStatus SearchStatus

@@ -37,18 +37,18 @@
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <Grid>
-                <ListBox x:Name="SubjectList1" ItemsSource="{Binding Subjects}">
+                <ListBox x:Name="SubjectList1" ItemsSource="{Binding Subjects}" SelectedItem="{Binding SelectedSubject}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:Subject}">
                             <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
                                 <Grid Width="325" Margin="0,0,0,5">
                                     <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
                                     <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                    <StackPanel Orientation="Horizontal" Margin="32,0,0,0" VerticalAlignment="Top" Height="16">
+                                    <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
+                                    <StackPanel Orientation="Horizontal" Margin="32,0,0,0" VerticalAlignment="Top" Height="18">
                                         <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
                                         <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
                                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" CommandParameter="{Binding SyllabusCode}"
                                     Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
                                         <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
@@ -61,5 +61,6 @@
                 <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding Subjects.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
             </Grid>
         </GroupBox>
+        <TreeView Margin="380,16,16,16"/>
     </Grid>
 </materialDesign:DialogHost>

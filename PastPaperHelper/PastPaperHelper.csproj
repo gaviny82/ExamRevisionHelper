@@ -79,20 +79,24 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Paper.cs" />
+    <Compile Include="Sources\PaperSourceCIENotes.cs" />
+    <Compile Include="Sources\PaperSourcePapaCambridge.cs" />
+    <Compile Include="Sources\PaperSourceGCEGuide.cs" />
+    <Compile Include="Sources\SubjectSource.cs" />
+    <Compile Include="Utilities\PaperSource.cs" />
     <Compile Include="ViewModels\PaperDownloadViewModel.cs" />
     <Compile Include="Views\PaperDownloadView.xaml.cs">
       <DependentUpon>PaperDownloadView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\Converters.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Models\Subject.cs" />
-    <Compile Include="Utilities\SourceManager.cs" />
     <Compile Include="Views\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValidationRules\DirectoryExistValidationRule.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="Models\HamburgerMenuItem.cs" />
+    <Compile Include="ViewModels\HamburgerMenuItem.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Views\SearchView.xaml.cs">
@@ -127,7 +131,7 @@
   <ItemGroup>
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="ValidationRules\NotEmptyValidationRule.cs" />
-    <Compile Include="ObservableObject.cs" />
+    <Compile Include="NotificationObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

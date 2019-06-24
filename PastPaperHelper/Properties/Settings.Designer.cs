@@ -73,10 +73,10 @@ namespace PastPaperHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int PaperSource {
+        [global::System.Configuration.DefaultSettingValueAttribute("GCE Guide")]
+        public string PaperSource {
             get {
-                return ((int)(this["PaperSource"]));
+                return ((string)(this["PaperSource"]));
             }
             set {
                 this["PaperSource"] = value;

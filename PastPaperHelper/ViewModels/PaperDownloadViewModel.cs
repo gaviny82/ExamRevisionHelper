@@ -9,20 +9,26 @@ using System.Windows.Input;
 
 namespace PastPaperHelper
 {
-    public class PaperDownloadViewModel : ObservableObject
+    public class PaperDownloadViewModel : NotificationObject
     {
         public ObservableCollection<Subject> Subjects { get; } = new ObservableCollection<Subject>();
         public PaperDownloadViewModel()
         {
+            RemoveSelectedSubjectsCommand = new DelegateCommand(RemoveSelectedSubjects);
+            RemoveSubjectCommand = new DelegateCommand(RemoveSubject);
 
             Subjects.Add(new Subject { Curriculum = Curriculums.IGCSE, Name = "Physics", SyllabusCode = "0625" });
             Subjects.Add(new Subject { Curriculum = Curriculums.ALevel, Name = "Mathematics", SyllabusCode = "9709" });
         }
 
-        public ICommand RemoveSubjectCommand
+        private Subject _selectedSubject;
+        public Subject SelectedSubject
         {
-            get => new DelegateCommand(RemoveSubject);
+            get { return _selectedSubject; }
+            set { _selectedSubject = value; RaisePropertyChangedEvent("SelectedSubject"); }
         }
+
+        public DelegateCommand RemoveSubjectCommand { get; set; }
         private void RemoveSubject(object param)
         {
             string code = param as string;
@@ -36,10 +42,7 @@ namespace PastPaperHelper
             }
         }
 
-        public ICommand RemoveSelectedSubjectsCommand
-        {
-            get => new DelegateCommand(RemoveSelectedSubjects);
-        }
+        public DelegateCommand RemoveSelectedSubjectsCommand { get; set; }
         private void RemoveSelectedSubjects(object param)
         {
             IList list = (IList)param;

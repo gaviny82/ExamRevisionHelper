@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PastPaperHelper
 {
-    class HamburgerMenuItem : ObservableObject
+    class HamburgerMenuItem : NotificationObject
     {
         private string _title;
         private object _content;

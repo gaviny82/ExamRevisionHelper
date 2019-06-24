@@ -1,6 +1,7 @@
 ﻿using System;
 using PastPaperHelper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PastPaperHelper.Sources;
 
 namespace PastPaperHelper.Test
 {
@@ -10,7 +11,7 @@ namespace PastPaperHelper.Test
         [TestMethod]
         public void TestMethod1()
         {
-            SourceManager.UpdateSubjectsFromSource(PastPaperSources.GCEGuide);
+            PaperSource.SaveSubjectList(PaperSources.GCE_Guide.GetSubjects(), Environment.CurrentDirectory + "\\subject_list.xml", "GCE Guide");
         }
     }
 }

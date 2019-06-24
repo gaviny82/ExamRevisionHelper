@@ -8,7 +8,7 @@ using System.Windows.Threading;
 
 namespace PastPaperHelper
 {
-    public abstract class ObservableObject : INotifyPropertyChanged
+    public abstract class NotificationObject : INotifyPropertyChanged
     {
         public Dispatcher Dispatcher { get; set; }
 
