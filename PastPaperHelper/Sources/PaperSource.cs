@@ -42,10 +42,10 @@ namespace PastPaperHelper.Sources
             }
             data.AppendChild(IG);
             data.AppendChild(AL);
-            doc.Save(Environment.CurrentDirectory + "\\subject_list.xml");
+            doc.Save(path);
         }
         
-        public static void SavePaperList(PaperItem[] papers, string path)
+        public static void SavePaperList(PaperItem[] papers, string path, string source)
         {
             
         }

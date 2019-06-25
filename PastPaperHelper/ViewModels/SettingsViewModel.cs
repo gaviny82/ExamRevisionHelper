@@ -30,8 +30,8 @@ namespace PastPaperHelper
             AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
             AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
 
-            if(App.SubjectList!=null)
-                SubjectsLastUpdate = DateTime.Parse(App.SubjectList.ChildNodes[1].Attributes["Time"].Value);
+            //if(App.SubjectList!=null)
+            //    SubjectsLastUpdate = DateTime.Parse(App.SubjectList.ChildNodes[1].Attributes["Time"].Value);
 
         }
 

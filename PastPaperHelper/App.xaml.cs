@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PastPaperHelper.Models;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -15,16 +16,12 @@ namespace PastPaperHelper
     /// </summary>
     public partial class App : Application
     {
-        public static XmlDocument SubjectList;
+        public static SubjectSource[] AllSubjects;
+        public static Dictionary<SubjectSource, PaperItem[]> PaperDictionary = new Dictionary<SubjectSource, PaperItem[]>();
 
         static App()
         {
-            if (File.Exists(Environment.CurrentDirectory + "\\subject_list.xml"))
-            {
-                XmlDocument doc = new XmlDocument();
-                SubjectList = doc;
-                doc.Load(Environment.CurrentDirectory + "\\subject_list.xml");
-            }
+            
         }
     }
 }

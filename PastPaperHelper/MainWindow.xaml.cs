@@ -1,10 +1,11 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Spire.Pdf;
-using Spire.Pdf.General.Find;
+using PastPaperHelper.Models;
+using PastPaperHelper.Sources;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
@@ -26,12 +27,45 @@ namespace PastPaperHelper
     public partial class MainWindow : Window
     {
         public static Snackbar MainSnackbar;
+
         public MainWindow()
         {
             //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTA0NzY1QDMxMzcyZTMxMmUzMEJ2UkIvNUk0T0M2OXNEYnY0cFRWUnNWUWZ0QkFyR3NVaDBlbjZuYi9NUEU9;MTA0NzY2QDMxMzcyZTMxMmUzMEVsMFlPRElYWjgyNUFYYjZBVXN2R2RHRW05QlYzYVd6S0NUL093R29PcEk9;MTA0NzY3QDMxMzcyZTMxMmUzMExYTEpvcCtUNWJ2T3NaQ01aZGJGbloxamFSN2lOaGlRM0UwUmlQcFBLSzg9");
             InitializeComponent();
             MainSnackbar = mainSnackbar;
-            mainSnackbar.MessageQueue.Enqueue("Hello world!");
+            Properties.Settings.Default.SubjectsSubcripted.Clear();
+            Properties.Settings.Default.SubjectsSubcripted.AddRange(new string[] { "0625", "9701" });
+
+            Task.Factory.StartNew(() =>
+            {
+                SubjectSource[] subjects = PaperSources.GCE_Guide.GetSubjects();
+                if (!Directory.Exists(Environment.CurrentDirectory + "\\data")) Directory.CreateDirectory(Environment.CurrentDirectory + "\\data");
+                PaperSource.SaveSubjectList(subjects, Environment.CurrentDirectory + "\\data\\subjects.xml", PaperSources.GCE_Guide.Name);
+                App.AllSubjects = subjects;
+
+                StringCollection subscription = Properties.Settings.Default.SubjectsSubcripted;
+
+                foreach(string item in subscription)
+                {
+                    SubjectSource subject = null;
+                    foreach(SubjectSource source in subjects)
+                    {
+                        if (source.SyllabusCode == item)
+                        {
+                            subject = source;
+                            break;
+                        }
+                    }
+                    if (subject == null) continue;
+
+                    PaperItem[] papers = PaperSources.GCE_Guide.GetPapers(subject);
+                    App.PaperDictionary.Add(subject, papers);
+                }
+            }).ContinueWith(t =>
+            {
+                MainSnackbar.MessageQueue.Enqueue("Data updated from " + PaperSources.GCE_Guide.Name);
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

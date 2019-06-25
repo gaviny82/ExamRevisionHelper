@@ -110,7 +110,7 @@ namespace PastPaperHelper.Sources
                     Curriculum = (Curriculums)curriculum,
                     Name = entry.InnerText.Substring(0, entry.InnerText.Length - 7),
                     SyllabusCode = code.Substring(1, 4),
-                    Url = Url + herf.Value
+                    Url = url + herf.Value
                 };
             }
             return list;
