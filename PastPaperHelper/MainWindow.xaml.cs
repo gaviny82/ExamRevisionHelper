@@ -1,20 +1,11 @@
 ﻿using MaterialDesignThemes.Wpf;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Configuration;
-using System.Diagnostics;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -61,6 +52,7 @@ namespace PastPaperHelper
                     PaperItem[] papers = PaperSources.GCE_Guide.GetPapers(subject);
                     App.PaperDictionary.Add(subject, papers);
                 }
+                PaperSource.SaveSubscription(App.PaperDictionary, Environment.CurrentDirectory + "\\data\\subscription.xml", PaperSources.GCE_Guide.Name);
             }).ContinueWith(t =>
             {
                 MainSnackbar.MessageQueue.Enqueue("Data updated from " + PaperSources.GCE_Guide.Name);

@@ -1,5 +1,4 @@
 ﻿using System;
-using PastPaperHelper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PastPaperHelper.Sources;
 using PastPaperHelper.Models;

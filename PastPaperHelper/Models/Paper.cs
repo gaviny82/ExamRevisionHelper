@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PastPaperHelper.Models
+﻿namespace PastPaperHelper.Models
 {
     public class PaperItem
     {
@@ -14,6 +8,7 @@ namespace PastPaperHelper.Models
         public char ComponentCode { get; set; }
         public char VariantCode { get; set; }
         public FileTypes Type { get; set; }
+        public string Url { get; set; }
     }
 
     public enum ExamSeries { Spring, Summer, Winter }
