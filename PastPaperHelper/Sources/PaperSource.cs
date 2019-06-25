@@ -13,10 +13,10 @@ namespace PastPaperHelper.Sources
         public string Name { get; set; }
         public string Url { get; set; }
 
-        public abstract Subject[] GetSubjects(Curriculums? curriculum = null);
-        public abstract PaperItem[] GetPapers(Subject subject);
+        public abstract SubjectSource[] GetSubjects(Curriculums? curriculum = null);
+        public abstract PaperItem[] GetPapers(SubjectSource subject);
 
-        public static void SaveSubjectList(Subject[] subjects, string path, string source)
+        public static void SaveSubjectList(SubjectSource[] subjects, string path, string source)
         {
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -27,7 +27,7 @@ namespace PastPaperHelper.Sources
 
             XmlElement IG = doc.CreateElement("IGCSE");
             XmlElement AL = doc.CreateElement("ALevel");
-            foreach (Subject subject in subjects)
+            foreach (SubjectSource subject in subjects)
             {
                 XmlElement element = doc.CreateElement("Subject");
                 element.SetAttribute("Name", subject.Name);

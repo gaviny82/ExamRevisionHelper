@@ -79,20 +79,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\IsMouseOverToVisibilityConverter.cs" />
+    <Compile Include="Converters\MessageVisibilityConverter.cs" />
+    <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
     <Compile Include="Models\Paper.cs" />
     <Compile Include="Sources\PaperSourceCIENotes.cs" />
     <Compile Include="Sources\PaperSourcePapaCambridge.cs" />
     <Compile Include="Sources\PaperSourceGCEGuide.cs" />
-    <Compile Include="Sources\SubjectSource.cs" />
-    <Compile Include="Utilities\PaperSource.cs" />
+    <Compile Include="Sources\PaperSource.cs" />
+    <Compile Include="Converters\SubjectToPapersConverter.cs" />
     <Compile Include="ViewModels\PaperDownloadViewModel.cs" />
     <Compile Include="Views\PaperDownloadView.xaml.cs">
       <DependentUpon>PaperDownloadView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Models\Subject.cs" />
-    <Compile Include="Views\Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
+    <Compile Include="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValidationRules\DirectoryExistValidationRule.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -107,7 +110,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Settings.xaml">
+    <Page Include="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

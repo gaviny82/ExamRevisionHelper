@@ -16,19 +16,74 @@ namespace PastPaperHelper.Sources
             Url = "https://papers.gceguide.com/";
         }
 
-        public override PaperItem[] GetPapers(Subject subject)
+        public override PaperItem[] GetPapers(SubjectSource subject)
         {
-            throw new NotImplementedException();
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument doc = web.Load(subject.Url);
+            HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='file']");
+
+            PaperItem[] items = new PaperItem[nodes.Count];
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                string file = nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
+                string[] split = file.Split('_');
+
+                if (split.Length > 4 || split.Length < 3)
+                {
+                    items[i] = new PaperItem { Subject = subject, Type = FileTypes.Unknown };
+                    continue;
+                }
+
+                ExamSeries es;
+                switch (split[1][0])
+                {
+                    default: es = ExamSeries.Spring;break;
+                    case 's':es = ExamSeries.Summer;break;
+                    case 'w':es = ExamSeries.Winter;break;
+                }
+
+                FileTypes t;
+                switch (split[2])
+                {
+                    default: t = FileTypes.Insert;break;
+                    case "er": t = FileTypes.ExaminersReport; break;
+                    case "gt": t = FileTypes.GradeThreshold; break;
+                    case "su": t = FileTypes.ListeningAudio; break;
+                    case "sf": t = FileTypes.ListeningAudio; break;
+                    case "ms": t = FileTypes.MarkScheme; break;
+                    case "qp": t = FileTypes.QuestionPaper; break;
+                    case "rp": t = FileTypes.SpeakingTestCards; break;
+                    case "sy": t = FileTypes.Syllabus; break;//
+                    case "tn": t = FileTypes.TeachersNotes; break;
+                    case "qr": t = FileTypes.Transcript; break;
+                }
+
+                char compCode=' ', varCode=' ';
+                if (split.Length > 3) compCode = split[3][0];
+                if (split.Length > 3) varCode = split[3][1];
+
+                items[i] = new PaperItem
+                {
+                    Subject = subject,
+                    ExamSeries = es,
+                    Year = "20" + split[1].Substring(1),
+                    ComponentCode = compCode,
+                    VariantCode = varCode,
+                    Type = t
+                };
+            }
+
+            return items;
         }
 
-        public override Subject[] GetSubjects(Curriculums? curriculum = null)
+        public override SubjectSource[] GetSubjects(Curriculums? curriculum = null)
         {
             if (curriculum == null)
             {
-                Subject[] IG = GetSubjects(Curriculums.IGCSE);
-                Subject[] AL = GetSubjects(Curriculums.ALevel);
+                SubjectSource[] IG = GetSubjects(Curriculums.IGCSE);
+                SubjectSource[] AL = GetSubjects(Curriculums.ALevel);
 
-                Subject[] result = new Subject[IG.Length + AL.Length];
+                SubjectSource[] result = new SubjectSource[IG.Length + AL.Length];
                 for (int i = 0; i < IG.Length; i++) result[i] = IG[i];
                 for (int i = 0; i < AL.Length; i++) result[i + IG.Length] = AL[i];
 
@@ -44,18 +99,18 @@ namespace PastPaperHelper.Sources
             HtmlDocument doc = web.Load(url);
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='dir']");
 
-            Subject[] list = new Subject[nodes.Count];
+            SubjectSource[] list = new SubjectSource[nodes.Count];
             for (int i = 0; i < nodes.Count; i++)
             {
                 HtmlNode entry = nodes[i].ChildNodes[1].ChildNodes[0];
                 HtmlAttribute herf = entry.Attributes["href"];
-                string name = entry.InnerText.Split(' ')[0];
-                list[i] = new Subject
+                string code = entry.InnerText.Split(' ').Last();
+                list[i] = new SubjectSource
                 {
                     Curriculum = (Curriculums)curriculum,
-                    Name = name,
-                    SyllabusCode = entry.InnerText.Substring(name.Length + 1, 4),
-                    Url = herf.Value
+                    Name = entry.InnerText.Substring(0, entry.InnerText.Length - 7),
+                    SyllabusCode = code.Substring(1, 4),
+                    Url = Url + herf.Value
                 };
             }
             return list;

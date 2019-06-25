@@ -71,7 +71,7 @@ namespace PastPaperHelper
                 _paperSource = value;
                 RaisePropertyChangedEvent("PaperSource");
                 Properties.Settings.Default.PaperSource = value.Name;
-                Properties.Settings.Default.Save();//TODO: show url in subject management view
+                Properties.Settings.Default.Save();
             }
         }
 

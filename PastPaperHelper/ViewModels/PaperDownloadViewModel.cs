@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PastPaperHelper.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,18 +12,18 @@ namespace PastPaperHelper
 {
     public class PaperDownloadViewModel : NotificationObject
     {
-        public ObservableCollection<Subject> Subjects { get; } = new ObservableCollection<Subject>();
+        public ObservableCollection<SubjectSource> Subjects { get; } = new ObservableCollection<SubjectSource>();
         public PaperDownloadViewModel()
         {
             RemoveSelectedSubjectsCommand = new DelegateCommand(RemoveSelectedSubjects);
             RemoveSubjectCommand = new DelegateCommand(RemoveSubject);
 
-            Subjects.Add(new Subject { Curriculum = Curriculums.IGCSE, Name = "Physics", SyllabusCode = "0625" });
-            Subjects.Add(new Subject { Curriculum = Curriculums.ALevel, Name = "Mathematics", SyllabusCode = "9709" });
+            Subjects.Add(new SubjectSource { Curriculum = Curriculums.IGCSE, Name = "Physics", SyllabusCode = "0625" });
+            Subjects.Add(new SubjectSource { Curriculum = Curriculums.ALevel, Name = "Mathematics", SyllabusCode = "9709" });
         }
 
-        private Subject _selectedSubject;
-        public Subject SelectedSubject
+        private SubjectSource _selectedSubject;
+        public SubjectSource SelectedSubject
         {
             get { return _selectedSubject; }
             set { _selectedSubject = value; RaisePropertyChangedEvent("SelectedSubject"); }
@@ -48,7 +49,7 @@ namespace PastPaperHelper
             IList list = (IList)param;
             while (list.Count > 0)
             {
-                Subjects.Remove((Subject)list[0]);
+                Subjects.Remove((SubjectSource)list[0]);
             }
         }
     }
