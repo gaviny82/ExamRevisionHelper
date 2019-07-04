@@ -24,12 +24,11 @@ namespace PastPaperHelper
             //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTA0NzY1QDMxMzcyZTMxMmUzMEJ2UkIvNUk0T0M2OXNEYnY0cFRWUnNWUWZ0QkFyR3NVaDBlbjZuYi9NUEU9;MTA0NzY2QDMxMzcyZTMxMmUzMEVsMFlPRElYWjgyNUFYYjZBVXN2R2RHRW05QlYzYVd6S0NUL093R29PcEk9;MTA0NzY3QDMxMzcyZTMxMmUzMExYTEpvcCtUNWJ2T3NaQ01aZGJGbloxamFSN2lOaGlRM0UwUmlQcFBLSzg9");
             InitializeComponent();
             MainSnackbar = mainSnackbar;
-            Properties.Settings.Default.SubjectsSubcripted.Clear();
-            Properties.Settings.Default.SubjectsSubcripted.AddRange(new string[] { "0625", "9701" });
 
             Task.Factory.StartNew(() =>
             {
                 SubjectSource[] subjects = PaperSources.GCE_Guide.GetSubjects();
+                //App.AllSubjects = subjects;
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\data")) Directory.CreateDirectory(Environment.CurrentDirectory + "\\data");
                 PaperSource.SaveSubjectList(subjects, Environment.CurrentDirectory + "\\data\\subjects.xml", PaperSources.GCE_Guide.Name);
                 App.AllSubjects = subjects;
@@ -50,9 +49,10 @@ namespace PastPaperHelper
                     if (subject == null) continue;
 
                     PaperItem[] papers = PaperSources.GCE_Guide.GetPapers(subject);
-                    App.PaperDictionary.Add(subject, papers);
+                    App.SubscriptionDict.Add(subject, papers);
                 }
-                PaperSource.SaveSubscription(App.PaperDictionary, Environment.CurrentDirectory + "\\data\\subscription.xml", PaperSources.GCE_Guide.Name);
+                DownloadViewModel.UpdateSubjectList();
+                PaperSource.SaveSubscription(App.SubscriptionDict, Environment.CurrentDirectory + "\\data\\subscription.xml", PaperSources.GCE_Guide.Name);
             }).ContinueWith(t =>
             {
                 MainSnackbar.MessageQueue.Enqueue("Data updated from " + PaperSources.GCE_Guide.Name);

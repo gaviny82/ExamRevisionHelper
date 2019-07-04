@@ -1,4 +1,8 @@
-﻿namespace PastPaperHelper
+﻿using PastPaperHelper.Models;
+using System;
+using System.Collections.ObjectModel;
+
+namespace PastPaperHelper
 {
     class MainWindowViewModel : NotificationObject
     {
@@ -9,7 +13,7 @@
             ListItems = new HamburgerMenuItem[]
             {
                 new HamburgerMenuItem("Search", new SearchView()),
-                new HamburgerMenuItem("Download", new PaperDownloadView()),
+                new HamburgerMenuItem("Download", new DownloadView()),
                 new HamburgerMenuItem("Settings", new SettingsView()),
             };
         }

@@ -9,12 +9,21 @@ namespace PastPaperHelper
     /// </summary>
     public partial class App : Application
     {
-        public static SubjectSource[] AllSubjects;
-        public static Dictionary<SubjectSource, PaperItem[]> PaperDictionary = new Dictionary<SubjectSource, PaperItem[]>();
+        private static SubjectSource[] _allSubjects;
+        public static SubjectSource[] AllSubjects
+        {
+            get { return _allSubjects; }
+            set
+            {
+                _allSubjects = value;
+                DownloadViewModel.UpdateSubjectList();
+            }
+        }
+        public static Dictionary<SubjectSource, PaperItem[]> SubscriptionDict = new Dictionary<SubjectSource, PaperItem[]>();
 
         static App()
         {
-            
+
         }
     }
 }
