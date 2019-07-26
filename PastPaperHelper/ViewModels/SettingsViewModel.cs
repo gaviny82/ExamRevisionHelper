@@ -62,6 +62,7 @@ namespace PastPaperHelper
             {
                 _paperSource = value;
                 RaisePropertyChangedEvent("PaperSource");
+                SourceManager.CurrentPaperSource = value;
                 Properties.Settings.Default.PaperSource = value.Name;
                 Properties.Settings.Default.Save();
             }

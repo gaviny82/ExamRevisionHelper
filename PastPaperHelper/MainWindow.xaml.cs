@@ -25,12 +25,15 @@ namespace PastPaperHelper
             InitializeComponent();
             MainSnackbar = mainSnackbar;
 
+            bool updateSubjectList =false, updateSubscription=false;
             Task.Factory.StartNew(() =>
             {
-                SourceManager.CheckUpdate();
+                SourceManager.CheckUpdate(out updateSubjectList, out updateSubscription);
+                SourceManager.UpdateAndLoad(updateSubjectList, updateSubscription);
             }).ContinueWith(t =>
             {
-                MainSnackbar.MessageQueue.Enqueue("Data updated from " + PaperSources.GCE_Guide.Name);
+                if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSources.GCE_Guide.Name);
+                if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSources.GCE_Guide.Name);
                 DownloadViewModel.RefreshSubjectList();
             }, TaskScheduler.FromCurrentSynchronizationContext());
 

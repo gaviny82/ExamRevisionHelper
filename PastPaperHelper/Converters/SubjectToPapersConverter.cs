@@ -10,19 +10,10 @@ namespace PastPaperHelper.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            PaperSource PaperSource;
-            switch (Properties.Settings.Default.PaperSource)
-            {
-                default: PaperSource = PaperSources.GCE_Guide; break;
-                case "GCE Guide": PaperSource = PaperSources.GCE_Guide; break;
-                case "PapaCambridge": PaperSource = PaperSources.PapaCambridge; break;
-                case "CIE Notes": PaperSource = PaperSources.CIE_Notes; break;
-            }
             SubjectSource subject = value as SubjectSource;
             if (subject != null)
             {
-                PaperItem[] papers = PaperSource.GetPapers(subject);
-                return papers;
+                return SourceManager.Subscription[subject];
             }
             else return null;            
         }

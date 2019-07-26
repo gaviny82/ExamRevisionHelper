@@ -12,36 +12,93 @@ namespace PastPaperHelper.Sources
 {
     public static class SourceManager
     {
+        //TODO: initialize xml documents as global variables
         public static SubjectSource[] AllSubjects { get; set; }
         public static Dictionary<SubjectSource, PaperItem[]> Subscription { get; set; } = new Dictionary<SubjectSource, PaperItem[]>();
         public static PaperSource CurrentPaperSource { get; set; }
 
-        public static void CheckUpdate()
+        public static void CheckUpdate(out bool UpdateSubjectList, out bool UpdateSubscription)
         {
+            UpdateSubjectList = false;
+            UpdateSubscription = false;
             string path = Environment.CurrentDirectory + "\\data";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-            if(!File.Exists(path + "\\subjects.xml"))
+            //Check update for subject list
+            if (!File.Exists(path + "\\subjects.xml"))
             {
                 //Download subject list when subjects.xml does not exist
-                UpdateSubjectList();
-                UpdateSubcription();
+                UpdateSubjectList = true;
+                UpdateSubscription = true;
                 return;
             }
-            //Loading subject list
+
             XmlDocument subjectList = new XmlDocument();
             subjectList.Load(path + "\\subjects.xml");
             XmlNode data = subjectList.ChildNodes[1];
             DateTime.TryParse(data.Attributes["Time"].Value, out DateTime lastUpdate);
 
-            if((DateTime.Now - lastUpdate).TotalDays > Properties.Settings.Default.UpdateFrequency)
+            if ((DateTime.Now - lastUpdate).TotalDays > Properties.Settings.Default.UpdateFrequency)
             {
-                //Update if data is expired
-                UpdateSubjectList();
+                //Update if subject data expired
+                UpdateSubjectList = true;
+            }
+
+            //Check update for subscribed subjects
+            if (!File.Exists(path + "\\subscription.xml"))
+            {
+                //Update subscription if subscription.xml does not exist
+                UpdateSubscription = true;
             }
             else
             {
-                //Load subjects from local files if updated recently
+                XmlDocument subscription = new XmlDocument();
+                subscription.Load(path + "\\subscription.xml");
+                XmlNode data2 = subscription.ChildNodes[1];
+                DateTime.TryParse(data2.Attributes["Time"].Value, out DateTime subscriptUpdate);
+
+                XmlNodeList subjects = subscription.SelectNodes("//Subject");
+                foreach (string str in Properties.Settings.Default.SubjectsSubcripted)
+                {
+                    bool isContained = false;
+                    foreach (XmlNode item in subjects)
+                    {
+                        if (item.Attributes["SyllabusCode"].Value == str)
+                        {
+                            isContained = true;
+                            break;
+                        }
+                    }
+                    if (!isContained)
+                    {
+                        //Update subscription if subscribed subject data is not included in local files
+                        UpdateSubscription = true;
+                        break;
+                    }
+                }
+                if ((DateTime.Now - subscriptUpdate).TotalDays > Properties.Settings.Default.UpdateFrequency)
+                {
+                    //Update if data expired
+                    UpdateSubscription = true;
+                }
+            }
+        }
+
+        public static void UpdateAndLoad(bool UpdateSubjectList, bool UpdateSubscription)
+        {
+            if (UpdateSubjectList)
+            {
+                //Download from web servers
+                SubjectSource[] subjects = CurrentPaperSource.GetSubjects();
+                PaperSource.SaveSubjectList(subjects, Environment.CurrentDirectory + "\\data\\subjects.xml", CurrentPaperSource.Name);
+                AllSubjects = subjects;
+            }
+            else
+            {
+                //Load from local files
+                XmlDocument subjectList = new XmlDocument();
+                subjectList.Load(Environment.CurrentDirectory + "\\data\\subjects.xml");
+
                 List<SubjectSource> list = new List<SubjectSource>();
                 foreach (XmlNode node in subjectList.SelectNodes("//Subject"))
                 {
@@ -55,44 +112,28 @@ namespace PastPaperHelper.Sources
                 }
                 AllSubjects = list.ToArray();
             }
-
-            if(!File.Exists(path + "\\subscription.xml"))
+            if (UpdateSubscription)
             {
-                //TODO: subscription data not found
-            }
-            XmlDocument subscription = new XmlDocument();
-            subscription.Load(path + "\\subscription.xml");
-            XmlNode data2 = subscription.ChildNodes[1];
-            DateTime.TryParse(data2.Attributes["Time"].Value, out DateTime subscriptUpdate);
-
-            XmlNodeList subjects = subscription.SelectNodes("//Subject");
-
-            bool flag = false;
-            foreach (string str in Properties.Settings.Default.SubjectsSubcripted)
-            {
-                bool isContained = false;
-                foreach (XmlNode item in subjects)
+                //Download from web servers
+                StringCollection subscription = Properties.Settings.Default.SubjectsSubcripted;
+                Subscription.Clear();
+                foreach (string item in subscription)
                 {
-                    if (item.Attributes["SyllabusCode"].Value == str)
+                    SubjectSource subject = FindSubject(item, AllSubjects);
+                    if (subject != null)
                     {
-                        isContained = true;
-                        break;
+                        PaperItem[] papers = CurrentPaperSource.GetPapers(subject);
+                        Subscription.Add(subject, papers);
                     }
                 }
-                if (!isContained)
-                {
-                    flag = true;
-                    break;
-                }
-            }
-            if ((DateTime.Now - subscriptUpdate).TotalDays > Properties.Settings.Default.UpdateFrequency || flag)
-            {
-                //Update if data is expired
-                UpdateSubcription();
+                PaperSource.SaveSubscription(Subscription, Environment.CurrentDirectory + "\\data\\subscription.xml", CurrentPaperSource.Name);
             }
             else
             {
-                //Load subscription from local files if updated recently
+                //Load from local files
+                XmlDocument subscription = new XmlDocument();
+                subscription.Load(Environment.CurrentDirectory + "\\data\\subscription.xml");
+                XmlNodeList subjects = subscription.SelectNodes("//Subject");
                 foreach (XmlNode node in subjects)
                 {
                     List<PaperItem> list = new List<PaperItem>();
@@ -117,32 +158,9 @@ namespace PastPaperHelper.Sources
             }
         }
 
-        public static void UpdateSubjectList()
+        public static SubjectSource FindSubject(string SyllabusCode, SubjectSource[] list)
         {
-            SubjectSource[] subjects = CurrentPaperSource.GetSubjects();
-            PaperSource.SaveSubjectList(subjects, Environment.CurrentDirectory + "\\data\\subjects.xml", CurrentPaperSource.Name);
-            AllSubjects = subjects;
-        }
-
-        public static void UpdateSubcription()
-        {
-            StringCollection subscription = Properties.Settings.Default.SubjectsSubcripted;
-            Subscription.Clear();
-            foreach (string item in subscription)
-            {
-                SubjectSource subject = FindSubject(item, AllSubjects);
-                if (subject != null)
-                {
-                    PaperItem[] papers = CurrentPaperSource.GetPapers(subject);
-                    Subscription.Add(subject, papers);
-                }
-            }
-            PaperSource.SaveSubscription(Subscription, Environment.CurrentDirectory + "\\data\\subscription.xml", CurrentPaperSource.Name);
-        }
-
-        public static SubjectSource FindSubject(string SyllabusCode, SubjectSource[] source)
-        {
-            foreach (SubjectSource item in source)
+            foreach (SubjectSource item in list)
             {
                 if (item.SyllabusCode == SyllabusCode)
                 {
