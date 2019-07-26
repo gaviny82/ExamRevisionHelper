@@ -88,6 +88,7 @@
     <Compile Include="Sources\PaperSourceGCEGuide.cs" />
     <Compile Include="Sources\PaperSource.cs" />
     <Compile Include="Converters\SubjectToPapersConverter.cs" />
+    <Compile Include="Sources\SourceManager.cs" />
     <Compile Include="ViewModels\DownloadViewModel.cs" />
     <Compile Include="Views\DownloadView.xaml.cs">
       <DependentUpon>DownloadView.xaml</DependentUpon>

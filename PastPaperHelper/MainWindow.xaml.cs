@@ -27,32 +27,7 @@ namespace PastPaperHelper
 
             Task.Factory.StartNew(() =>
             {
-                SubjectSource[] subjects = PaperSources.GCE_Guide.GetSubjects();
-                //App.AllSubjects = subjects;
-                if (!Directory.Exists(Environment.CurrentDirectory + "\\data")) Directory.CreateDirectory(Environment.CurrentDirectory + "\\data");
-                PaperSource.SaveSubjectList(subjects, Environment.CurrentDirectory + "\\data\\subjects.xml", PaperSources.GCE_Guide.Name);
-                App.AllSubjects = subjects;
-
-                StringCollection subscription = Properties.Settings.Default.SubjectsSubcripted;
-
-                foreach(string item in subscription)
-                {
-                    SubjectSource subject = null;
-                    foreach(SubjectSource source in subjects)
-                    {
-                        if (source.SyllabusCode == item)
-                        {
-                            subject = source;
-                            break;
-                        }
-                    }
-                    if (subject == null) continue;
-
-                    PaperItem[] papers = PaperSources.GCE_Guide.GetPapers(subject);
-                    App.SubscriptionDict.Add(subject, papers);
-                }
-                DownloadViewModel.UpdateSubjectList();
-                PaperSource.SaveSubscription(App.SubscriptionDict, Environment.CurrentDirectory + "\\data\\subscription.xml", PaperSources.GCE_Guide.Name);
+                SourceManager.CheckUpdate();
             }).ContinueWith(t =>
             {
                 MainSnackbar.MessageQueue.Enqueue("Data updated from " + PaperSources.GCE_Guide.Name);

@@ -1,4 +1,5 @@
 ﻿using PastPaperHelper.Models;
+using PastPaperHelper.Sources;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -54,7 +55,7 @@ namespace PastPaperHelper
         public DelegateCommand AddSelectedSubjectCommand { get; set; }
         private void AddSelectedSubject(object param)
         {
-            var item = App.SubscriptionDict;
+            var item = SourceManager.Subscription;
             SubjectSource subject = param as SubjectSource;
             if (!Subjects.Contains(subject))
             {
@@ -72,18 +73,18 @@ namespace PastPaperHelper
                   System.Windows.Threading.DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
                 SynchronizationContext.Current.Post(pl =>
                 {
-                    if (App.AllSubjects != null)
+                    if (SourceManager.AllSubjects != null)
                     {
                         IGSubjects.Clear();
                         ALSubjects.Clear();
-                        foreach (SubjectSource item in App.AllSubjects)
+                        foreach (SubjectSource item in SourceManager.AllSubjects)
                         {
                             if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(item);
                             else IGSubjects.Add(item);
                         }
                     }
 
-                    foreach (KeyValuePair<SubjectSource, PaperItem[]> item in App.SubscriptionDict)
+                    foreach (KeyValuePair<SubjectSource, PaperItem[]> item in SourceManager.Subscription)
                     {
                         Subjects.Add(item.Key);
                     }

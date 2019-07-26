@@ -1,4 +1,5 @@
 ﻿using PastPaperHelper.Models;
+using PastPaperHelper.Sources;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -9,21 +10,17 @@ namespace PastPaperHelper
     /// </summary>
     public partial class App : Application
     {
-        private static SubjectSource[] _allSubjects;
-        public static SubjectSource[] AllSubjects
-        {
-            get { return _allSubjects; }
-            set
-            {
-                _allSubjects = value;
-                DownloadViewModel.UpdateSubjectList();
-            }
-        }
-        public static Dictionary<SubjectSource, PaperItem[]> SubscriptionDict = new Dictionary<SubjectSource, PaperItem[]>();
-
         static App()
         {
-
+            PaperSource source = null;
+            switch (PastPaperHelper.Properties.Settings.Default.PaperSource)
+            {
+                default: source = PaperSources.GCE_Guide; break;
+                case "GCE Guide": source = PaperSources.GCE_Guide; break;
+                case "PapaCambridge": source = PaperSources.PapaCambridge; break;
+                case "CIE Notes": source = PaperSources.CIE_Notes; break;
+            }
+            SourceManager.CurrentPaperSource = source;
         }
     }
 }
