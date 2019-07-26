@@ -12,19 +12,9 @@ namespace PastPaperHelper.Sources
 {
     public static class SourceManager
     {
-        private static SubjectSource[] _allSubjects;
-        public static SubjectSource[] AllSubjects
-        {
-            get { return _allSubjects; }
-            set
-            {
-                _allSubjects = value;
-                DownloadViewModel.UpdateSubjectList();
-            }
-        }
-        public static Dictionary<SubjectSource, PaperItem[]> Subscription = new Dictionary<SubjectSource, PaperItem[]>();
-
-        public static PaperSource CurrentPaperSource;
+        public static SubjectSource[] AllSubjects { get; set; }
+        public static Dictionary<SubjectSource, PaperItem[]> Subscription { get; set; } = new Dictionary<SubjectSource, PaperItem[]>();
+        public static PaperSource CurrentPaperSource { get; set; }
 
         public static void CheckUpdate()
         {
@@ -36,6 +26,7 @@ namespace PastPaperHelper.Sources
                 //Download subject list when subjects.xml does not exist
                 UpdateSubjectList();
                 UpdateSubcription();
+                return;
             }
             //Loading subject list
             XmlDocument subjectList = new XmlDocument();
@@ -65,12 +56,36 @@ namespace PastPaperHelper.Sources
                 AllSubjects = list.ToArray();
             }
 
+            if(!File.Exists(path + "\\subscription.xml"))
+            {
+                //TODO: subscription data not found
+            }
             XmlDocument subscription = new XmlDocument();
             subscription.Load(path + "\\subscription.xml");
             XmlNode data2 = subscription.ChildNodes[1];
             DateTime.TryParse(data2.Attributes["Time"].Value, out DateTime subscriptUpdate);
 
-            if ((DateTime.Now - subscriptUpdate).TotalDays > Properties.Settings.Default.UpdateFrequency)
+            XmlNodeList subjects = subscription.SelectNodes("//Subject");
+
+            bool flag = false;
+            foreach (string str in Properties.Settings.Default.SubjectsSubcripted)
+            {
+                bool isContained = false;
+                foreach (XmlNode item in subjects)
+                {
+                    if (item.Attributes["SyllabusCode"].Value == str)
+                    {
+                        isContained = true;
+                        break;
+                    }
+                }
+                if (!isContained)
+                {
+                    flag = true;
+                    break;
+                }
+            }
+            if ((DateTime.Now - subscriptUpdate).TotalDays > Properties.Settings.Default.UpdateFrequency || flag)
             {
                 //Update if data is expired
                 UpdateSubcription();
@@ -78,10 +93,12 @@ namespace PastPaperHelper.Sources
             else
             {
                 //Load subscription from local files if updated recently
-                foreach (XmlNode node in subscription.SelectNodes("//Subject"))
+                foreach (XmlNode node in subjects)
                 {
                     List<PaperItem> list = new List<PaperItem>();
                     SubjectSource subject = FindSubject(node.Attributes["SyllabusCode"].Value, AllSubjects);
+
+                    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
                     foreach (XmlNode item in node.ChildNodes)
                     {
                         list.Add(new PaperItem
@@ -120,7 +137,6 @@ namespace PastPaperHelper.Sources
                     Subscription.Add(subject, papers);
                 }
             }
-            DownloadViewModel.UpdateSubjectList();
             PaperSource.SaveSubscription(Subscription, Environment.CurrentDirectory + "\\data\\subscription.xml", CurrentPaperSource.Name);
         }
 

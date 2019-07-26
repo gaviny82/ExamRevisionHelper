@@ -36,6 +36,8 @@ namespace PastPaperHelper
                 if (Subjects[i].SyllabusCode == code)
                 {
                     Subjects.RemoveAt(i);
+                    Properties.Settings.Default.SubjectsSubcripted.Remove(code);
+                    Properties.Settings.Default.Save();
                     return;
                 }
             }
@@ -47,15 +49,19 @@ namespace PastPaperHelper
             IList list = (IList)param;
             while (list.Count > 0)
             {
-                Subjects.Remove((SubjectSource)list[0]);
+                SubjectSource subject = list[0] as SubjectSource;
+                Subjects.Remove(subject);
+                Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SyllabusCode);
             }
+            Properties.Settings.Default.Save();
         }
 
 
         public DelegateCommand AddSelectedSubjectCommand { get; set; }
         private void AddSelectedSubject(object param)
         {
-            var item = SourceManager.Subscription;
+            Dictionary<SubjectSource, PaperItem[]> item = SourceManager.Subscription;
+            //TODO: Hot reload papers at download view
             SubjectSource subject = param as SubjectSource;
             if (!Subjects.Contains(subject))
             {
@@ -65,32 +71,27 @@ namespace PastPaperHelper
             }
         }
 
-        internal static void UpdateSubjectList()
+        public static void RefreshSubjectList()
         {
-            ThreadPool.QueueUserWorkItem(delegate
+            if (SourceManager.AllSubjects != null)
             {
-                SynchronizationContext.SetSynchronizationContext(new
-                  System.Windows.Threading.DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
-                SynchronizationContext.Current.Post(pl =>
+                IGSubjects.Clear();
+                ALSubjects.Clear();
+                foreach (SubjectSource item in SourceManager.AllSubjects)
                 {
-                    if (SourceManager.AllSubjects != null)
-                    {
-                        IGSubjects.Clear();
-                        ALSubjects.Clear();
-                        foreach (SubjectSource item in SourceManager.AllSubjects)
-                        {
-                            if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(item);
-                            else IGSubjects.Add(item);
-                        }
-                    }
+                    if (item.Curriculum == Curriculums.ALevel)
+                        ALSubjects.Add(item);
+                    else
+                        IGSubjects.Add(item);
+                }
+            }
 
-                    foreach (KeyValuePair<SubjectSource, PaperItem[]> item in SourceManager.Subscription)
-                    {
-                        Subjects.Add(item.Key);
-                    }
-                }, null);
-            });
-            
+            Subjects.Clear();
+            foreach (KeyValuePair<SubjectSource, PaperItem[]> item in SourceManager.Subscription)
+            {
+                Subjects.Add(item.Key);
+            }
+
         }
     }
 }

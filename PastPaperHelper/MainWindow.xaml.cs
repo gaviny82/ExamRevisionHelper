@@ -31,6 +31,7 @@ namespace PastPaperHelper
             }).ContinueWith(t =>
             {
                 MainSnackbar.MessageQueue.Enqueue("Data updated from " + PaperSources.GCE_Guide.Name);
+                DownloadViewModel.RefreshSubjectList();
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
         }
