@@ -1,6 +1,6 @@
-﻿namespace PastPaperHelper
+﻿namespace PastPaperHelper.ViewModels
 {
-    class HamburgerMenuItem : NotificationObject
+    class HamburgerMenuItemViewModel : NotificationObject
     {
         private string _title;
         private object _content;
@@ -16,8 +16,8 @@
             set { _content = value; RaisePropertyChangedEvent("Content"); }
         }
 
-        public HamburgerMenuItem() { }
-        public HamburgerMenuItem(string title, object content)
+        public HamburgerMenuItemViewModel() { }
+        public HamburgerMenuItemViewModel(string title, object content)
         {
             _title = title;
             _content = content;

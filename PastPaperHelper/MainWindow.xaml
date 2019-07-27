@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PastPaperHelper"
+        xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -15,7 +16,7 @@
         mc:Ignorable="d"
         Title="Past Paper Helper" Height="500" Width="900" MinWidth="800" MinHeight="450">
     <Window.DataContext>
-        <local:MainWindowViewModel/>
+        <vm:MainWindowViewModel/>
     </Window.DataContext>
     <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=mainSnackbar, Path=MessageQueue}">
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
@@ -24,7 +25,7 @@
                     <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="10" Width="32" Height="32" IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"/>
                     <ListBox x:Name="HamburgerMenu" Margin="0,16" SelectedIndex="0" ItemsSource="{Binding ListItems}" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp">
                         <ListBox.ItemTemplate>
-                            <DataTemplate DataType="{x:Type local:HamburgerMenuItem}">
+                            <DataTemplate DataType="{x:Type vm:HamburgerMenuItemViewModel}">
                                 <TextBlock Text="{Binding Title}" Margin="32,0" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>

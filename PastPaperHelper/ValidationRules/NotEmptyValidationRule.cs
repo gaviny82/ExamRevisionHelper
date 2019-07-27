@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Windows.Controls;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.ValidationRules
 {
     public class NotEmptyValidationRule : ValidationRule
     {

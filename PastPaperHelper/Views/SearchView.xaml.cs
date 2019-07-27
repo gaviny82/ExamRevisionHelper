@@ -1,11 +1,12 @@
 ﻿using MaterialDesignThemes.Wpf;
+using PastPaperHelper.ViewModels;
 using System.Configuration;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.Views
 {
     /// <summary>
     /// SearchView.xaml 的交互逻辑

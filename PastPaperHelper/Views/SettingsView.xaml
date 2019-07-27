@@ -3,10 +3,11 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:PastPaperHelper"
+      xmlns:local="clr-namespace:PastPaperHelper.Views"
+      xmlns:validation="clr-namespace:PastPaperHelper.ValidationRules"
       xmlns:converters="clr-namespace:PastPaperHelper.Converters"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
-      xmlns:Models="clr-namespace:PastPaperHelper.Models" x:Name="rootDlg" x:Class="PastPaperHelper.SettingsView"
+      xmlns:Models="clr-namespace:PastPaperHelper.Models" x:Name="rootDlg" x:Class="PastPaperHelper.Views.SettingsView"
       mc:Ignorable="d" Background="White" SizeChanged="RootDlg_SizeChanged"
       d:DesignHeight="450" d:DesignWidth="800" Style="{StaticResource MaterialDesignEmbeddedDialogHost}">
     <materialDesign:DialogHost.Resources>
@@ -70,7 +71,7 @@
                         <TextBox Margin="0,0,85,0" TextWrapping="NoWrap" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}" ToolTip="All files will be stored in this directory">
                             <Binding Path="Path" UpdateSourceTrigger="PropertyChanged">
                                 <Binding.ValidationRules>
-                                    <local:DirectoryExistValidationRule ValidatesOnTargetUpdated="True"/>
+                                    <validation:DirectoryExistValidationRule ValidatesOnTargetUpdated="True"/>
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox>

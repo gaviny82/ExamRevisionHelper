@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Controls;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.ValidationRules
 {
     class DirectoryExistValidationRule : ValidationRule
     {

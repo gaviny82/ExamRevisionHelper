@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.ViewModels
 {
     public class SearchViewModel : NotificationObject
     {

@@ -1,5 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using PastPaperHelper.Sources;
+using PastPaperHelper.ViewModels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;

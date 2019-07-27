@@ -1,16 +1,18 @@
-﻿namespace PastPaperHelper
+﻿using PastPaperHelper.Views;
+
+namespace PastPaperHelper.ViewModels
 {
     class MainWindowViewModel : NotificationObject
     {
-        public HamburgerMenuItem[] ListItems { get; }
+        public HamburgerMenuItemViewModel[] ListItems { get; }
 
         public MainWindowViewModel()
         {
-            ListItems = new HamburgerMenuItem[]
+            ListItems = new HamburgerMenuItemViewModel[]
             {
-                new HamburgerMenuItem("Search", new SearchView()),
-                //new HamburgerMenuItem("Download", new DownloadView()),
-                new HamburgerMenuItem("Settings", new SettingsView()),
+                new HamburgerMenuItemViewModel("Search", new SearchView()),
+                new HamburgerMenuItemViewModel("Files", new FilesView()),
+                new HamburgerMenuItemViewModel("Settings", new SettingsView()),
             };
         }
     }
