@@ -89,10 +89,6 @@
     <Compile Include="Sources\PaperSource.cs" />
     <Compile Include="Converters\SubjectToPapersConverter.cs" />
     <Compile Include="Sources\SourceManager.cs" />
-    <Compile Include="ViewModels\DownloadViewModel.cs" />
-    <Compile Include="Views\DownloadView.xaml.cs">
-      <DependentUpon>DownloadView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Models\SubjectSource.cs" />
     <Compile Include="Views\SettingsView.xaml.cs">
@@ -107,10 +103,6 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
-    <Page Include="Views\DownloadView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,6 +1,4 @@
-﻿using PastPaperHelper.Models;
-using PastPaperHelper.Sources;
-using System.Collections.Generic;
+﻿using PastPaperHelper.Sources;
 using System.Windows;
 
 namespace PastPaperHelper

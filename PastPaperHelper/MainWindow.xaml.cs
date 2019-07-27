@@ -1,9 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
-using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
-using System;
-using System.Collections.Specialized;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -34,7 +30,7 @@ namespace PastPaperHelper
             {
                 if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSources.GCE_Guide.Name);
                 if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSources.GCE_Guide.Name);
-                DownloadViewModel.RefreshSubjectList();
+                SettingsViewModel.RefreshSubjectList();
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
         }

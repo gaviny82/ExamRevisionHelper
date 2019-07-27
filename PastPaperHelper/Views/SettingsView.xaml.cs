@@ -1,9 +1,10 @@
-﻿using PastPaperHelper.Sources;
+﻿using MaterialDesignThemes.Wpf;
+using PastPaperHelper.Models;
+using PastPaperHelper.Sources;
 using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace PastPaperHelper
@@ -11,7 +12,7 @@ namespace PastPaperHelper
     /// <summary>
     /// Config.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsView : Grid
+    public partial class SettingsView : DialogHost
     {
         //TODO: Drop folder to select path
         public SettingsView()
@@ -29,6 +30,22 @@ namespace PastPaperHelper
         {
             Process.Start("https://github.com/GavinYou082/PastPaperHelper");
         }
+
+        private void RootDlg_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double newWidth = e.NewSize.Width, newHeight = e.NewSize.Height;
+            dlgGrid.Width = newWidth - 350;
+            dlgGrid.Height = newHeight - 150;
+        }
+
+        private void AddSubject_Click(object sender, RoutedEventArgs e)
+        {
+            SubjectSource item = selectionTreeView.SelectedItem as SubjectSource;
+            if (item == null) return;
+            SettingsViewModel vm = DataContext as SettingsViewModel;
+            vm.AddSelectedSubjectCommand.Execute(item);
+        }
+
     }
 
     public class PaperSourceConverter : IValueConverter
