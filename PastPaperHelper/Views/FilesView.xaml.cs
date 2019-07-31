@@ -26,5 +26,13 @@ namespace PastPaperHelper.Views
             InitializeComponent();
             DataContext = new FilesViewModel();
         }
+
+        public void UpdateSelectedItem()
+        {
+            if (SubjectList.Items.Count != 0)
+            {
+                SubjectList.SelectedIndex = 0;
+            }
+        }
     }
 }
