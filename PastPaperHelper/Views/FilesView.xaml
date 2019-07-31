@@ -20,7 +20,7 @@
     </Grid.ColumnDefinitions>
 
     <Grid Grid.Column="0" Margin="10">
-        <ListBox x:Name="SubjectList" ItemsSource="{x:Static vm:SettingsViewModel.SubjectsSubscripted}" Margin="0,32,0,0">
+        <ListBox x:Name="SubjectList" ItemsSource="{x:Static vm:SettingsViewModel.SubjectsSubscripted}" Margin="0,32,0,0" >
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:SubjectSource}">
                     <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
@@ -32,10 +32,6 @@
                                 <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
                             </StackPanel>
-                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" CommandParameter="{Binding SyllabusCode}"
-                                    Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
-                                <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
-                            </Button>
                         </Grid>
                     </Border>
                 </DataTemplate>
@@ -45,5 +41,22 @@
         <TextBlock Text="Subjects" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <Line VerticalAlignment="Top" Stroke="Gray" StrokeThickness="2" Margin="0,30,0,0" X1="0" X2="1" Stretch="Fill"/>
     </Grid>
-
+    <TextBlock Text="{Binding  ExamSeries}" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" Margin="10"/>
+    <Line VerticalAlignment="Top" Margin="10,40,10,0" Grid.Column="1" Stroke="Gray" StrokeThickness="2" X1="0" X2="1" Stretch="Fill"/>
+    <DataGrid Grid.Column="1" Margin="10,50,10,10" HeadersVisibility="All" ItemsSource="{Binding ExamYears}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Header="Spring" Width="*"/>
+            <DataGridTemplateColumn Header="Summer" Width="*"/>
+            <DataGridTemplateColumn Header="Winter" Width="*"/>
+        </DataGrid.Columns>
+        <DataGrid.RowHeaderTemplate>
+            <DataTemplate>
+                <TextBlock Text="{Binding DataContext.Year, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRowHeader}}}">
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </DataTemplate>
+        </DataGrid.RowHeaderTemplate>
+    </DataGrid>
 </Grid>
