@@ -32,7 +32,9 @@ namespace PastPaperHelper.ViewModels
             RemoveSubjectCommand = new DelegateCommand(RemoveSubject);
             AddSelectedSubjectCommand = new DelegateCommand(AddSelectedSubject);
         }
-        public static ObservableCollection<SubjectSource> Subjects { get; } = new ObservableCollection<SubjectSource>();
+
+        //TODO: Global subject subscription management
+        public static ObservableCollection<SubjectSource> SubjectsSubscripted { get; } = new ObservableCollection<SubjectSource>();
         public static ObservableCollection<SubjectSource> IGSubjects { get; } = new ObservableCollection<SubjectSource>();
         public static ObservableCollection<SubjectSource> ALSubjects { get; } = new ObservableCollection<SubjectSource>();
 
@@ -47,11 +49,11 @@ namespace PastPaperHelper.ViewModels
         private void RemoveSubject(object param)
         {
             string code = param as string;
-            for (int i = 0; i < Subjects.Count; i++)
+            for (int i = 0; i < SubjectsSubscripted.Count; i++)
             {
-                if (Subjects[i].SyllabusCode == code)
+                if (SubjectsSubscripted[i].SyllabusCode == code)
                 {
-                    Subjects.RemoveAt(i);
+                    SubjectsSubscripted.RemoveAt(i);
                     Properties.Settings.Default.SubjectsSubcripted.Remove(code);
                     Properties.Settings.Default.Save();
                     return;
@@ -66,7 +68,7 @@ namespace PastPaperHelper.ViewModels
             while (list.Count > 0)
             {
                 SubjectSource subject = list[0] as SubjectSource;
-                Subjects.Remove(subject);
+                SubjectsSubscripted.Remove(subject);
                 Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SyllabusCode);
             }
             Properties.Settings.Default.Save();
@@ -79,9 +81,9 @@ namespace PastPaperHelper.ViewModels
             Dictionary<SubjectSource, PaperItem[]> item = SourceManager.Subscription;
             //TODO: Hot reload papers at download view
             SubjectSource subject = param as SubjectSource;
-            if (!Subjects.Contains(subject))
+            if (!SubjectsSubscripted.Contains(subject))
             {
-                Subjects.Add(subject);
+                SubjectsSubscripted.Add(subject);
                 Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
                 Properties.Settings.Default.Save();
             }
@@ -102,10 +104,10 @@ namespace PastPaperHelper.ViewModels
                 }
             }
 
-            Subjects.Clear();
+            SubjectsSubscripted.Clear();
             foreach (KeyValuePair<SubjectSource, PaperItem[]> item in SourceManager.Subscription)
             {
-                Subjects.Add(item.Key);
+                SubjectsSubscripted.Add(item.Key);
             }
 
         }

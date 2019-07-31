@@ -16,6 +16,7 @@ namespace PastPaperHelper.Views
     public partial class SettingsView : DialogHost
     {
         //TODO: Drop folder to select path
+        //TODO: Better scroll
         public SettingsView()
         {
             InitializeComponent();

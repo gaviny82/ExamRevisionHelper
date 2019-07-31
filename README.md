@@ -2,9 +2,13 @@
 This tool is built for downloading and managing CIE past papers
 
 # Roadmap
-We are currently in the beta phase.
+We are currently in the beta phase. More functions including are in progress.
 
-More functions including subject management, paper downloading are in progress.
+| Version |       Date      |
+|---------|-----------------|
+|Beta 0.3 |18 August, 2019  |
+|RC       |End of August    |
+|GA       |September-October|
 
 
 # Changelog
@@ -12,6 +16,14 @@ More functions including subject management, paper downloading are in progress.
 ## Beta 0.3
 
 Planned release date: 18 August, 2019
+
+### New
+- Subject selection and subscription
+
+### Changes
+- Subject data is now updated every 7 days
+- Data loaded from local files instead of servers on startup
+- Performance Improvements
 
 ## Beta 0.2
 
