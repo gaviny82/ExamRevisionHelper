@@ -153,7 +153,7 @@
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <Grid>
-                <ListBox x:Name="SubjectList" ItemsSource="{Binding Subjects}" SelectedItem="{Binding SelectedSubject}">
+                <ListBox x:Name="SubjectList" ItemsSource="{Binding SubjectsSubscripted}" SelectedItem="{Binding SelectedSubject}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:SubjectSource}">
                             <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
