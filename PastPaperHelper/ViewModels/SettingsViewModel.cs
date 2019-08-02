@@ -51,7 +51,7 @@ namespace PastPaperHelper.ViewModels
             string code = param as string;
             for (int i = 0; i < SubjectsSubscripted.Count; i++)
             {
-                if (SubjectsSubscripted[i].SyllabusCode == code)
+                if (SubjectsSubscripted[i].SubjectInfo.SyllabusCode == code)
                 {
                     SubjectsSubscripted.RemoveAt(i);
                     Properties.Settings.Default.SubjectsSubcripted.Remove(code);
@@ -69,7 +69,7 @@ namespace PastPaperHelper.ViewModels
             {
                 SubjectSource subject = list[0] as SubjectSource;
                 SubjectsSubscripted.Remove(subject);
-                Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SyllabusCode);
+                Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SubjectInfo.SyllabusCode);
             }
             Properties.Settings.Default.Save();
         }
@@ -78,26 +78,26 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand AddSelectedSubjectCommand { get; set; }
         private void AddSelectedSubject(object param)
         {
-            Dictionary<SubjectSource, PaperItem[]> item = SourceManager.Subscription;
+            Dictionary<SubjectSource, PaperItem[]> item = SubscriptionManager.Subscription;
             //TODO: Hot reload papers at download view
             SubjectSource subject = param as SubjectSource;
             if (!SubjectsSubscripted.Contains(subject))
             {
                 SubjectsSubscripted.Add(subject);
-                Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
+                Properties.Settings.Default.SubjectsSubcripted.Add(subject.SubjectInfo.SyllabusCode);
                 Properties.Settings.Default.Save();
             }
         }
 
         public static void RefreshSubjectList()
         {
-            if (SourceManager.AllSubjects != null)
+            if (SubscriptionManager.AllSubjects != null)
             {
                 IGSubjects.Clear();
                 ALSubjects.Clear();
-                foreach (SubjectSource item in SourceManager.AllSubjects)
+                foreach (SubjectSource item in SubscriptionManager.AllSubjects)
                 {
-                    if (item.Curriculum == Curriculums.ALevel)
+                    if (item.SubjectInfo.Curriculum == Curriculums.ALevel)
                         ALSubjects.Add(item);
                     else
                         IGSubjects.Add(item);
@@ -105,7 +105,7 @@ namespace PastPaperHelper.ViewModels
             }
 
             SubjectsSubscripted.Clear();
-            foreach (KeyValuePair<SubjectSource, PaperItem[]> item in SourceManager.Subscription)
+            foreach (KeyValuePair<SubjectSource, PaperItem[]> item in SubscriptionManager.Subscription)
             {
                 SubjectsSubscripted.Add(item.Key);
             }
@@ -147,7 +147,7 @@ namespace PastPaperHelper.ViewModels
             {
                 _paperSource = value;
                 RaisePropertyChangedEvent("PaperSource");
-                SourceManager.CurrentPaperSource = value;
+                SubscriptionManager.CurrentPaperSource = value;
                 Properties.Settings.Default.PaperSource = value.Name;
                 Properties.Settings.Default.Save();
             }

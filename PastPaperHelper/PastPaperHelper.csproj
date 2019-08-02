@@ -82,13 +82,16 @@
     <Compile Include="Converters\IsMouseOverToVisibilityConverter.cs" />
     <Compile Include="Converters\MessageVisibilityConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
+    <Compile Include="Models\Exam.cs" />
     <Compile Include="Models\Paper.cs" />
+    <Compile Include="Models\PaperRepository.cs" />
+    <Compile Include="Models\Subject.cs" />
     <Compile Include="Sources\PaperSourceCIENotes.cs" />
     <Compile Include="Sources\PaperSourcePapaCambridge.cs" />
     <Compile Include="Sources\PaperSourceGCEGuide.cs" />
     <Compile Include="Sources\PaperSource.cs" />
     <Compile Include="Converters\SubjectToPapersConverter.cs" />
-    <Compile Include="Sources\SourceManager.cs" />
+    <Compile Include="Sources\SubscriptionManager.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Models\SubjectSource.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />

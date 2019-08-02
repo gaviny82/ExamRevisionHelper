@@ -8,7 +8,7 @@ We are currently in the beta phase. More functions including are in progress.
 |---------|-----------------|
 |Beta 0.3 |18 August, 2019  |
 |RC       |End of August    |
-|GA       |September-October|
+|GA       |September|
 
 
 # Changelog

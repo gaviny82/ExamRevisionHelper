@@ -18,7 +18,7 @@ namespace PastPaperHelper
                 case "PapaCambridge": source = PaperSources.PapaCambridge; break;
                 case "CIE Notes": source = PaperSources.CIE_Notes; break;
             }
-            SourceManager.CurrentPaperSource = source;
+            SubscriptionManager.CurrentPaperSource = source;
         }
     }
 }

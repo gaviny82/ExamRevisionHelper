@@ -7,13 +7,21 @@ using System.Xml;
 
 namespace PastPaperHelper.Sources
 {
-    public static class SourceManager
+    public static class SubscriptionManager
     {
-        //TODO: initialize xml documents as global variables
+        private static readonly XmlDocument subjectList = new XmlDocument();
+        private static readonly XmlDocument subscription = new XmlDocument();
+
         public static SubjectSource[] AllSubjects { get; set; }
-        public static Dictionary<SubjectSource, PaperItem[]> Subscription { get; set; } = new Dictionary<SubjectSource, PaperItem[]>();
+        public static Dictionary<SubjectSource, PaperRepository> Subscription { get; set; } = new Dictionary<SubjectSource, PaperRepository>();
         public static PaperSource CurrentPaperSource { get; set; }
 
+        /// <summary>
+        /// This method checks update for subject list and subscribed subjects.
+        /// Local XML documents are also loaded in this session.
+        /// </summary>
+        /// <param name="UpdateSubjectList">Output if subject list needs update.</param>
+        /// <param name="UpdateSubscription">Output if subscribed subjects needs update.</param>
         public static void CheckUpdate(out bool UpdateSubjectList, out bool UpdateSubscription)
         {
             UpdateSubjectList = false;
@@ -30,7 +38,6 @@ namespace PastPaperHelper.Sources
                 return;
             }
 
-            XmlDocument subjectList = new XmlDocument();
             subjectList.Load(path + "\\subjects.xml");
             XmlNode data = subjectList.ChildNodes[1];
             DateTime.TryParse(data.Attributes["Time"].Value, out DateTime lastUpdate);
@@ -49,7 +56,6 @@ namespace PastPaperHelper.Sources
             }
             else
             {
-                XmlDocument subscription = new XmlDocument();
                 subscription.Load(path + "\\subscription.xml");
                 XmlNode data2 = subscription.ChildNodes[1];
                 DateTime.TryParse(data2.Attributes["Time"].Value, out DateTime subscriptUpdate);
@@ -81,62 +87,62 @@ namespace PastPaperHelper.Sources
             }
         }
 
-        public static void UpdateAndLoad(bool UpdateSubjectList, bool UpdateSubscription)
+        public static void UpdateAndInit(bool UpdateSubjectList, bool UpdateSubscription)
         {
             if (UpdateSubjectList)
             {
                 //Download from web servers
                 SubjectSource[] subjects = CurrentPaperSource.GetSubjects();
-                PaperSource.SaveSubjectList(subjects, Environment.CurrentDirectory + "\\data\\subjects.xml", CurrentPaperSource.Name);
+                PaperSource.SaveSubjectList(subjects, subjectList);
+                subjectList.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
                 AllSubjects = subjects;
             }
             else
             {
                 //Load from local files
-                XmlDocument subjectList = new XmlDocument();
-                subjectList.Load(Environment.CurrentDirectory + "\\data\\subjects.xml");
-
                 List<SubjectSource> list = new List<SubjectSource>();
                 foreach (XmlNode node in subjectList.SelectNodes("//Subject"))
                 {
                     list.Add(new SubjectSource
                     {
-                        Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
-                        Name = node.Attributes["Name"].Value,
-                        SyllabusCode = node.Attributes["SyllabusCode"].Value,
-                        Url = node.Attributes["Path"].Value,
-                    });
+                        SubjectInfo = new Subject
+                        {
+                            Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
+                            Name = node.Attributes["Name"].Value,
+                            SyllabusCode = node.Attributes["SyllabusCode"].Value,
+                        },
+                        Url = node.Attributes["Url"].Value,
+                    }) ;
                 }
                 AllSubjects = list.ToArray();
             }
             if (UpdateSubscription)
             {
                 //Download from web servers
-                StringCollection subscription = Properties.Settings.Default.SubjectsSubcripted;
+                StringCollection subscriptionStr = Properties.Settings.Default.SubjectsSubcripted;
                 Subscription.Clear();
-                foreach (string item in subscription)
+                foreach (string item in subscriptionStr)
                 {
                     SubjectSource subject = FindSubject(item, AllSubjects);
                     if (subject != null)
                     {
-                        PaperItem[] papers = CurrentPaperSource.GetPapers(subject);
+                        PaperRepository papers = CurrentPaperSource.GetPapers(subject);
                         Subscription.Add(subject, papers);
                     }
                 }
-                PaperSource.SaveSubscription(Subscription, Environment.CurrentDirectory + "\\data\\subscription.xml", CurrentPaperSource.Name);
+                PaperSource.SaveSubscription(Subscription, subscription);
+                subscription.Save(Environment.CurrentDirectory + "\\data\\subscription.xml");
             }
             else
             {
                 //Load from local files
-                XmlDocument subscription = new XmlDocument();
-                subscription.Load(Environment.CurrentDirectory + "\\data\\subscription.xml");
                 XmlNodeList subjects = subscription.SelectNodes("//Subject");
                 foreach (XmlNode node in subjects)
                 {
                     List<PaperItem> list = new List<PaperItem>();
                     SubjectSource subject = FindSubject(node.Attributes["SyllabusCode"].Value, AllSubjects);
 
-                    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
+                    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SubjectInfo.SyllabusCode)) continue;
                     foreach (XmlNode item in node.ChildNodes)
                     {
                         list.Add(new PaperItem
@@ -159,12 +165,22 @@ namespace PastPaperHelper.Sources
         {
             foreach (SubjectSource item in list)
             {
-                if (item.SyllabusCode == SyllabusCode)
+                if (item.SubjectInfo.SyllabusCode == SyllabusCode)
                 {
                     return item;
                 }
             }
             return null;
+        }
+
+        public static void Subscribe(SubjectSource subject)
+        {
+
+        }
+
+        public static void Unsubscribe(SubjectSource subject)
+        {
+
         }
     }
 }

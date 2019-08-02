@@ -26,8 +26,8 @@ namespace PastPaperHelper
             bool updateSubjectList =false, updateSubscription=false;
             Task.Factory.StartNew(() =>
             {
-                SourceManager.CheckUpdate(out updateSubjectList, out updateSubscription);
-                SourceManager.UpdateAndLoad(updateSubjectList, updateSubscription);
+                SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription);
+                SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription);
             }).ContinueWith(t =>
             {
                 if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSources.GCE_Guide.Name);
