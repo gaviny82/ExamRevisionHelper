@@ -53,22 +53,36 @@ namespace PastPaperHelper.Sources
             foreach(KeyValuePair<SubjectSource, PaperRepository> item in list)
             {
                 SubjectSource subject = item.Key;
-                PaperItem[] papers = item.Value;
+                PaperRepository repo = item.Value;
+
                 XmlElement subj = doc.CreateElement("Subject");
                 subj.SetAttribute("Name", subject.SubjectInfo.Name);
                 subj.SetAttribute("SyllabusCode", subject.SubjectInfo.SyllabusCode);
                 data.AppendChild(subj);
 
-                foreach(PaperItem paper in papers)
+                foreach (PaperItem sy in repo.Syllabus)
                 {
-                    XmlElement pape = doc.CreateElement("Paper");
-                    pape.SetAttribute("Path", paper.Url);
-                    pape.SetAttribute("Year", paper.Year);
-                    pape.SetAttribute("ExamSeries", ((int)paper.ExamSeries).ToString());
-                    pape.SetAttribute("Component", paper.ComponentCode.ToString());
-                    pape.SetAttribute("Variant", paper.VariantCode.ToString());
-                    pape.SetAttribute("Type", ((int)paper.Type).ToString());
-                    subj.AppendChild(pape);
+                    XmlElement syl = doc.CreateElement("Syllabus");
+                    syl.SetAttribute("Year", sy.Exam.Year);
+                    syl.SetAttribute("Url", sy.Url);
+                    subj.AppendChild(syl);
+                }
+
+                foreach (Exam exam in repo.Exams)
+                {
+                    XmlElement series = doc.CreateElement("ExamSeries");
+                    series.SetAttribute("Year", exam.Year);
+                    series.SetAttribute("Series", ((int)exam.ExamSeries).ToString());
+                    foreach (PaperItem paper in exam.Papers)
+                    {
+                        XmlElement pap = doc.CreateElement("Paper");
+                        pap.SetAttribute("Url", paper.Url);
+                        pap.SetAttribute("Component", paper.ComponentCode.ToString());
+                        pap.SetAttribute("Variant", paper.VariantCode.ToString());
+                        pap.SetAttribute("Type", ((int)paper.Type).ToString());
+                        series.AppendChild(pap);
+                    }
+                    subj.AppendChild(series);
                 }
             }
         }
@@ -77,7 +91,7 @@ namespace PastPaperHelper.Sources
     public static class PaperSources
     {
         public static PaperSource GCE_Guide { get; } = new PaperSourceGCEGuide();
-        public static PaperSource PapaCambridge { get; } = new PaperSourcePapaCambridge();
-        public static PaperSource CIE_Notes { get; } = new PaperSourceCIENotes();
+        public static PaperSource PapaCambridge { get; } //= new PaperSourcePapaCambridge();
+        public static PaperSource CIE_Notes { get; } //= new PaperSourceCIENotes();
     }
 }

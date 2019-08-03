@@ -136,28 +136,28 @@ namespace PastPaperHelper.Sources
             else
             {
                 //Load from local files
-                XmlNodeList subjects = subscription.SelectNodes("//Subject");
-                foreach (XmlNode node in subjects)
-                {
-                    List<PaperItem> list = new List<PaperItem>();
-                    SubjectSource subject = FindSubject(node.Attributes["SyllabusCode"].Value, AllSubjects);
+                //XmlNodeList subjects = subscription.SelectNodes("//Subject");
+                //foreach (XmlNode node in subjects)
+                //{
+                //    List<PaperItem> list = new List<PaperItem>();
+                //    SubjectSource subject = FindSubject(node.Attributes["SyllabusCode"].Value, AllSubjects);
 
-                    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SubjectInfo.SyllabusCode)) continue;
-                    foreach (XmlNode item in node.ChildNodes)
-                    {
-                        list.Add(new PaperItem
-                        {
-                            Subject = subject,
-                            Year = item.Attributes["Year"].Value,
-                            ExamSeries = (ExamSeries)int.Parse(item.Attributes["ExamSeries"].Value),
-                            ComponentCode = char.Parse(item.Attributes["Component"].Value),
-                            VariantCode = char.Parse(item.Attributes["Variant"].Value),
-                            Type = (FileTypes)int.Parse(item.Attributes["Type"].Value),
-                            Url = item.Attributes["Path"].Value,
-                        });
-                    }
-                    Subscription.Add(subject, list.ToArray());
-                }
+                //    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SubjectInfo.SyllabusCode)) continue;
+                //    foreach (XmlNode item in node.ChildNodes)
+                //    {
+                //        list.Add(new PaperItem
+                //        {
+                //            Subject = subject,
+                //            Year = item.Attributes["Year"].Value,
+                //            ExamSeries = (ExamSeries)int.Parse(item.Attributes["ExamSeries"].Value),
+                //            ComponentCode = char.Parse(item.Attributes["Component"].Value),
+                //            VariantCode = char.Parse(item.Attributes["Variant"].Value),
+                //            Type = (FileTypes)int.Parse(item.Attributes["Type"].Value),
+                //            Url = item.Attributes["Path"].Value,
+                //        });
+                //    }
+                //    Subscription.Add(subject, list.ToArray());
+                //}
             }
         }
 

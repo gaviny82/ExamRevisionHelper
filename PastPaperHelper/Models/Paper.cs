@@ -18,7 +18,7 @@
         }
     }
 
-    public enum ExamSeries { Spring, Summer, Winter }
+    public enum ExamSeries { Spring, Summer, Winter, Specimen }
     public enum FileTypes
     {
         ExaminersReport,
