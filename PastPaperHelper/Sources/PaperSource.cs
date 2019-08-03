@@ -41,7 +41,7 @@ namespace PastPaperHelper.Sources
             data.AppendChild(AL);
         }
         
-        public static void SaveSubscription(Dictionary<SubjectSource, PaperRepository> list, XmlDocument doc)
+        public static void SaveSubscription(Dictionary<Subject, PaperRepository> list, XmlDocument doc)
         {
             doc.RemoveAll();
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -50,14 +50,14 @@ namespace PastPaperHelper.Sources
             data.SetAttribute("Source", SubscriptionManager.CurrentPaperSource.Name);
             doc.AppendChild(data);
 
-            foreach(KeyValuePair<SubjectSource, PaperRepository> item in list)
+            foreach(KeyValuePair<Subject, PaperRepository> item in list)
             {
-                SubjectSource subject = item.Key;
+                Subject subject = item.Key;
                 PaperRepository repo = item.Value;
 
                 XmlElement subj = doc.CreateElement("Subject");
-                subj.SetAttribute("Name", subject.SubjectInfo.Name);
-                subj.SetAttribute("SyllabusCode", subject.SubjectInfo.SyllabusCode);
+                subj.SetAttribute("Name", subject.Name);
+                subj.SetAttribute("SyllabusCode", subject.SyllabusCode);
                 data.AppendChild(subj);
 
                 foreach (PaperItem sy in repo.Syllabus)

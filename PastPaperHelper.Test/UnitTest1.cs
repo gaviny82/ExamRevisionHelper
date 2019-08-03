@@ -16,7 +16,7 @@ namespace PastPaperHelper.Test
             XmlDocument doc = new XmlDocument();
             SubscriptionManager.CurrentPaperSource = PaperSources.GCE_Guide;
             PaperSource.SaveSubjectList(PaperSources.GCE_Guide.GetSubjects(), doc);
-            doc.Save(Environment.CurrentDirectory + "\\subject_list.xml");
+            doc.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
         }
         [TestMethod]
         public void DownloadSubjectListTest()
@@ -47,17 +47,21 @@ namespace PastPaperHelper.Test
                 SubjectInfo = phy,
                 Url = @"https://papers.gceguide.com/A%20Levels/Physics%20(9702)/",
             });
-            Dictionary<SubjectSource, PaperRepository> repo = new Dictionary<SubjectSource, PaperRepository>();
+            Dictionary<Subject, PaperRepository> repo = new Dictionary<Subject, PaperRepository>();
             XmlDocument doc = new XmlDocument();
-            repo.Add(new SubjectSource
-            {
-                SubjectInfo = phy,
-                Url = @"https://papers.gceguide.com/A%20Levels/Physics%20(9702)/"
-            }, result);
+            repo.Add(phy, result);
             PaperSource.SaveSubscription(repo, doc);
-            doc.Save(Environment.CurrentDirectory + "\\physics.xml");
+            doc.Save(Environment.CurrentDirectory + "\\data\\physics.xml");
             Assert.IsNotNull(result.Exams);
             Assert.IsNotNull(result.Subject);
+        }
+
+        [TestMethod]
+        public void LoadRepoTest()
+        {
+            SubscriptionManager.CurrentPaperSource = PaperSources.GCE_Guide;
+            SubscriptionManager.CheckUpdate(out bool a, out bool b);
+            SubscriptionManager.UpdateAndInit(false, false);
         }
     }
 }

@@ -78,7 +78,7 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand AddSelectedSubjectCommand { get; set; }
         private void AddSelectedSubject(object param)
         {
-            Dictionary<SubjectSource, PaperRepository> item = SubscriptionManager.Subscription;
+            Dictionary<Subject, PaperRepository> item = SubscriptionManager.Subscription;
             //TODO: Hot reload papers at download view
             SubjectSource subject = param as SubjectSource;
             if (!SubjectsSubscripted.Contains(subject))
@@ -105,9 +105,9 @@ namespace PastPaperHelper.ViewModels
             }
 
             SubjectsSubscripted.Clear();
-            foreach (KeyValuePair<SubjectSource, PaperRepository> item in SubscriptionManager.Subscription)
+            foreach (KeyValuePair<Subject, PaperRepository> item in SubscriptionManager.Subscription)
             {
-                SubjectsSubscripted.Add(item.Key);
+                SubjectsSubscripted.Add(SubscriptionManager.FindSubject(item.Key.SyllabusCode, SubscriptionManager.AllSubjects));
             }
 
         }

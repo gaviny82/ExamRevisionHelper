@@ -13,7 +13,7 @@ namespace PastPaperHelper.Sources
         private static readonly XmlDocument subscription = new XmlDocument();
 
         public static SubjectSource[] AllSubjects { get; set; }
-        public static Dictionary<SubjectSource, PaperRepository> Subscription { get; set; } = new Dictionary<SubjectSource, PaperRepository>();
+        public static Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
         public static PaperSource CurrentPaperSource { get; set; }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace PastPaperHelper.Sources
                     if (subject != null)
                     {
                         PaperRepository papers = CurrentPaperSource.GetPapers(subject);
-                        Subscription.Add(subject, papers);
+                        Subscription.Add(subject.SubjectInfo, papers);
                     }
                 }
                 PaperSource.SaveSubscription(Subscription, subscription);
@@ -136,28 +136,53 @@ namespace PastPaperHelper.Sources
             else
             {
                 //Load from local files
-                //XmlNodeList subjects = subscription.SelectNodes("//Subject");
-                //foreach (XmlNode node in subjects)
-                //{
-                //    List<PaperItem> list = new List<PaperItem>();
-                //    SubjectSource subject = FindSubject(node.Attributes["SyllabusCode"].Value, AllSubjects);
+                foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
+                {
+                    Subject subject = FindSubject(subjectNode.Attributes["SyllabusCode"].Value, AllSubjects).SubjectInfo;
+                    PaperRepository repo = new PaperRepository(subject);
+                    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
-                //    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SubjectInfo.SyllabusCode)) continue;
-                //    foreach (XmlNode item in node.ChildNodes)
-                //    {
-                //        list.Add(new PaperItem
-                //        {
-                //            Subject = subject,
-                //            Year = item.Attributes["Year"].Value,
-                //            ExamSeries = (ExamSeries)int.Parse(item.Attributes["ExamSeries"].Value),
-                //            ComponentCode = char.Parse(item.Attributes["Component"].Value),
-                //            VariantCode = char.Parse(item.Attributes["Variant"].Value),
-                //            Type = (FileTypes)int.Parse(item.Attributes["Type"].Value),
-                //            Url = item.Attributes["Path"].Value,
-                //        });
-                //    }
-                //    Subscription.Add(subject, list.ToArray());
-                //}
+                    List<PaperItem> syllabuses = new List<PaperItem>();
+                    foreach (XmlNode syllabusNode in subjectNode.SelectNodes("//Syllabus"))
+                    {
+                        //init syllabuses
+                        syllabuses.Add(new PaperItem
+                        {
+                            Type = FileTypes.Syllabus,
+                            Exam = new Exam { Subject = subject, Year = syllabusNode.Attributes["Year"].Value },
+                            Url = syllabusNode.Attributes["Url"].Value
+                        });
+                    }
+                    repo.Syllabus = syllabuses.ToArray();
+
+                    List<Exam> exams = new List<Exam>();
+                    foreach (XmlNode examNode in subjectNode.SelectNodes("//ExamSeries"))
+                    {
+                        List<PaperItem> papers = new List<PaperItem>();
+                        Exam exam = new Exam
+                        {
+                            ExamSeries = (ExamSeries)int.Parse(examNode.Attributes["Series"].Value),
+                            Subject = subject,
+                            Year = examNode.Attributes["Year"].Value
+                        };
+
+                        foreach (XmlNode paperNode in examNode.SelectNodes("//Paper"))
+                        {
+                            papers.Add(new PaperItem
+                            {
+                                Exam = exam,
+                                ComponentCode = char.Parse(paperNode.Attributes["Component"].Value),
+                                VariantCode = char.Parse(paperNode.Attributes["Variant"].Value),
+                                Type = (FileTypes)int.Parse(paperNode.Attributes["Type"].Value),
+                                Url = paperNode.Attributes["Url"].Value
+                            });
+                        }
+                        exam.Papers = papers.ToArray();
+                        exams.Add(exam);
+                    }
+                    repo.Exams = exams.ToArray();
+                    Subscription.Add(subject, repo);
+                }
             }
         }
 
