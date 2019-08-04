@@ -8,7 +8,7 @@ We are currently in the beta phase. More functions including are in progress.
 |---------|-----------------|
 |Beta 0.3 |18 August, 2019  |
 |RC       |End of August    |
-|GA       |September|
+|GA       |September        |
 
 
 # Changelog
@@ -24,6 +24,7 @@ Planned release date: 18 August, 2019
 - Subject data is now updated every 7 days
 - Data loaded from local files instead of servers on startup
 - Performance Improvements
+- New data structure for storing papers
 
 ## Beta 0.2
 

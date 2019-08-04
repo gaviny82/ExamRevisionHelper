@@ -10,10 +10,10 @@ namespace PastPaperHelper.Sources
         public string Name { get; set; }
         public string Url { get; set; }
 
-        public abstract SubjectSource[] GetSubjects(Curriculums? curriculum = null);
-        public abstract PaperRepository GetPapers(SubjectSource subject);
+        public abstract Dictionary<Subject, string> GetSubjectUrlMap(Curriculums? curriculum = null);
+        public abstract PaperRepository GetPapers(Subject subject, string url);
 
-        public static void SaveSubjectList(SubjectSource[] subjects, XmlDocument doc)
+        public static void SaveSubjectList(Dictionary<Subject, string> map, XmlDocument doc)
         {
             doc.RemoveAll();
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -24,13 +24,13 @@ namespace PastPaperHelper.Sources
 
             XmlElement IG = doc.CreateElement("IGCSE");
             XmlElement AL = doc.CreateElement("ALevel");
-            foreach (SubjectSource subject in subjects)
+            foreach (KeyValuePair<Subject,string> item in map)
             {
                 XmlElement element = doc.CreateElement("Subject");
-                element.SetAttribute("Name", subject.SubjectInfo.Name);
-                element.SetAttribute("SyllabusCode", subject.SubjectInfo.SyllabusCode);
-                element.SetAttribute("Url", subject.Url);
-                switch (subject.SubjectInfo.Curriculum)
+                element.SetAttribute("Name", item.Key.Name);
+                element.SetAttribute("SyllabusCode", item.Key.SyllabusCode);
+                element.SetAttribute("Url", item.Value);
+                switch (item.Key.Curriculum)
                 {
                     default: break;
                     case Curriculums.IGCSE: IG.AppendChild(element); break;

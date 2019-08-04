@@ -16,7 +16,7 @@
         <converters:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
         <converters:MessageVisibilityConverter x:Key="MessageVisibilityConverter"/>
         <converters:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
-        <DataTemplate x:Key="DisplaySubject" DataType="{x:Type models:SubjectSource}">
+        <DataTemplate x:Key="DisplaySubject" DataType="{x:Type models:Subject}">
             <TextBlock>
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0} ({1})">
@@ -155,7 +155,7 @@
             <Grid>
                 <ListBox x:Name="SubjectList" ItemsSource="{Binding SubjectsSubscripted}" SelectedItem="{Binding SelectedSubject}">
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type models:SubjectSource}">
+                        <DataTemplate DataType="{x:Type models:Subject}">
                             <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
                                 <Grid Width="325" Margin="0,0,0,5">
                                     <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>

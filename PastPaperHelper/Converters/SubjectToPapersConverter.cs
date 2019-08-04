@@ -10,10 +10,10 @@ namespace PastPaperHelper.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            SubjectSource subject = value as SubjectSource;
-            if (subject != null)
+            if (value is Subject)
             {
-                return SubscriptionManager.Subscription[subject.SubjectInfo];
+                Subject subject = (Subject)value;
+                return SubscriptionManager.Subscription[subject];
             }
             else return null;            
         }

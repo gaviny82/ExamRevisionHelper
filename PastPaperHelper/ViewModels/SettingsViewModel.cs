@@ -34,12 +34,12 @@ namespace PastPaperHelper.ViewModels
         }
 
         //TODO: Global subject subscription management
-        public static ObservableCollection<SubjectSource> SubjectsSubscripted { get; } = new ObservableCollection<SubjectSource>();
-        public static ObservableCollection<SubjectSource> IGSubjects { get; } = new ObservableCollection<SubjectSource>();
-        public static ObservableCollection<SubjectSource> ALSubjects { get; } = new ObservableCollection<SubjectSource>();
+        public static ObservableCollection<Subject> SubjectsSubscripted { get; } = new ObservableCollection<Subject>();
+        public static ObservableCollection<Subject> IGSubjects { get; } = new ObservableCollection<Subject>();
+        public static ObservableCollection<Subject> ALSubjects { get; } = new ObservableCollection<Subject>();
 
-        private SubjectSource _selectedSubject;
-        public SubjectSource SelectedSubject
+        private Subject _selectedSubject;
+        public Subject SelectedSubject
         {
             get { return _selectedSubject; }
             set { _selectedSubject = value; RaisePropertyChangedEvent("SelectedSubject"); }
@@ -51,7 +51,7 @@ namespace PastPaperHelper.ViewModels
             string code = param as string;
             for (int i = 0; i < SubjectsSubscripted.Count; i++)
             {
-                if (SubjectsSubscripted[i].SubjectInfo.SyllabusCode == code)
+                if (SubjectsSubscripted[i].SyllabusCode == code)
                 {
                     SubjectsSubscripted.RemoveAt(i);
                     Properties.Settings.Default.SubjectsSubcripted.Remove(code);
@@ -67,9 +67,9 @@ namespace PastPaperHelper.ViewModels
             IList list = (IList)param;
             while (list.Count > 0)
             {
-                SubjectSource subject = list[0] as SubjectSource;
+                Subject subject = (Subject)list[0];
                 SubjectsSubscripted.Remove(subject);
-                Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SubjectInfo.SyllabusCode);
+                Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SyllabusCode);
             }
             Properties.Settings.Default.Save();
         }
@@ -80,11 +80,11 @@ namespace PastPaperHelper.ViewModels
         {
             Dictionary<Subject, PaperRepository> item = SubscriptionManager.Subscription;
             //TODO: Hot reload papers at download view
-            SubjectSource subject = param as SubjectSource;
+            Subject subject = (Subject)param;
             if (!SubjectsSubscripted.Contains(subject))
             {
                 SubjectsSubscripted.Add(subject);
-                Properties.Settings.Default.SubjectsSubcripted.Add(subject.SubjectInfo.SyllabusCode);
+                Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
                 Properties.Settings.Default.Save();
             }
         }
@@ -95,9 +95,9 @@ namespace PastPaperHelper.ViewModels
             {
                 IGSubjects.Clear();
                 ALSubjects.Clear();
-                foreach (SubjectSource item in SubscriptionManager.AllSubjects)
+                foreach (Subject item in SubscriptionManager.AllSubjects)
                 {
-                    if (item.SubjectInfo.Curriculum == Curriculums.ALevel)
+                    if (item.Curriculum == Curriculums.ALevel)
                         ALSubjects.Add(item);
                     else
                         IGSubjects.Add(item);
@@ -107,7 +107,8 @@ namespace PastPaperHelper.ViewModels
             SubjectsSubscripted.Clear();
             foreach (KeyValuePair<Subject, PaperRepository> item in SubscriptionManager.Subscription)
             {
-                SubjectsSubscripted.Add(SubscriptionManager.FindSubject(item.Key.SyllabusCode, SubscriptionManager.AllSubjects));
+                if (SubscriptionManager.TryFindSubject(item.Key.SyllabusCode, SubscriptionManager.AllSubjects, out Subject result))
+                    SubjectsSubscripted.Add(result);
             }
 
         }

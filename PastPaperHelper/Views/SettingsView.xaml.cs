@@ -42,8 +42,8 @@ namespace PastPaperHelper.Views
 
         private void AddSubject_Click(object sender, RoutedEventArgs e)
         {
-            SubjectSource item = selectionTreeView.SelectedItem as SubjectSource;
-            if (item == null) return;
+            if (!(selectionTreeView.SelectedItem is Subject)) return;
+            Subject item = (Subject)selectionTreeView.SelectedItem;
             SettingsViewModel vm = DataContext as SettingsViewModel;
             vm.AddSelectedSubjectCommand.Execute(item);
         }

@@ -93,7 +93,6 @@
     <Compile Include="Converters\SubjectToPapersConverter.cs" />
     <Compile Include="Sources\SubscriptionManager.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Models\SubjectSource.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="Views\FilesView.xaml.cs">
       <DependentUpon>FilesView.xaml</DependentUpon>

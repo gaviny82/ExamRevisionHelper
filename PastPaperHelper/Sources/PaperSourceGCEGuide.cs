@@ -14,10 +14,10 @@ namespace PastPaperHelper.Sources
             Url = "https://papers.gceguide.com/";
         }
 
-        public override PaperRepository GetPapers(SubjectSource subject)
+        public override PaperRepository GetPapers(Subject subject, string url)
         {
             HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load(subject.Url);
+            HtmlDocument doc = web.Load(SubscriptionManager.SubjectUrlMap[subject]);
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='file']");
 
             Dictionary<(string, ExamSeries), List<PaperItem>> tmpRepo = new Dictionary<(string, ExamSeries), List<PaperItem>>();
@@ -74,7 +74,7 @@ namespace PastPaperHelper.Sources
                     ComponentCode = compCode,
                     VariantCode = varCode,
                     Type = t,
-                    Url = subject.Url + file,
+                    Url = url + file,
                 };
 
                 if (paper.Type == FileTypes.Syllabus)
@@ -100,7 +100,7 @@ namespace PastPaperHelper.Sources
                 List<PaperItem> lst = item.Value;
                 Exam exam = new Exam
                 {
-                    Subject = subject.SubjectInfo,
+                    Subject = subject,
                     Year = y,
                     ExamSeries = e
                 };
@@ -113,25 +113,21 @@ namespace PastPaperHelper.Sources
                 tmpExams.Add(exam);
             }
 
-            return new PaperRepository(subject.SubjectInfo)
+            return new PaperRepository(subject)
             {
                 Exams = tmpExams.ToArray(),
                 Syllabus = tmpSyllabus.ToArray()
             };
         }
 
-        public override SubjectSource[] GetSubjects(Curriculums? curriculum = null)
+        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums? curriculum = null)
         {
             if (curriculum == null)
             {
-                SubjectSource[] IG = GetSubjects(Curriculums.IGCSE);
-                SubjectSource[] AL = GetSubjects(Curriculums.ALevel);
-
-                SubjectSource[] result = new SubjectSource[IG.Length + AL.Length];
-                for (int i = 0; i < IG.Length; i++) result[i] = IG[i];
-                for (int i = 0; i < AL.Length; i++) result[i + IG.Length] = AL[i];
-
-                return result;
+                Dictionary<Subject, string> tmp = new Dictionary<Subject, string>();
+                foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.IGCSE)) tmp.Add(item.Key, item.Value);
+                foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.ALevel)) tmp.Add(item.Key, item.Value);
+                return tmp;
             }
             string url = Url;
             switch (curriculum)
@@ -143,24 +139,20 @@ namespace PastPaperHelper.Sources
             HtmlDocument doc = web.Load(url);
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='dir']");
 
-            SubjectSource[] list = new SubjectSource[nodes.Count];
-            for (int i = 0; i < nodes.Count; i++)
+            Dictionary<Subject, string> result = new Dictionary<Subject, string>();
+            foreach (HtmlNode node in nodes)
             {
-                HtmlNode entry = nodes[i].ChildNodes[1].ChildNodes[0];
+                HtmlNode entry = node.ChildNodes[1].ChildNodes[0];
                 HtmlAttribute herf = entry.Attributes["href"];
                 string code = entry.InnerText.Split(' ').Last();
-                list[i] = new SubjectSource
+                result.Add(new Subject
                 {
-                    SubjectInfo = new Subject
-                    {
-                        Curriculum = (Curriculums)curriculum,
-                        Name = entry.InnerText.Substring(0, entry.InnerText.Length - 7),
-                        SyllabusCode = code.Substring(1, 4),
-                    },
-                    Url = url + herf.Value
-                };
+                    Curriculum = (Curriculums)curriculum,
+                    Name = entry.InnerText.Substring(0, entry.InnerText.Length - 7),
+                    SyllabusCode = code.Substring(1, 4)
+                }, url + herf.Value);
             }
-            return list;
+            return result;
         }
     }
 }

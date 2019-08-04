@@ -12,7 +12,9 @@ namespace PastPaperHelper.Sources
         private static readonly XmlDocument subjectList = new XmlDocument();
         private static readonly XmlDocument subscription = new XmlDocument();
 
-        public static SubjectSource[] AllSubjects { get; set; }
+        public static Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
+
+        public static Subject[] AllSubjects { get; set; }
         public static Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
         public static PaperSource CurrentPaperSource { get; set; }
 
@@ -92,29 +94,32 @@ namespace PastPaperHelper.Sources
             if (UpdateSubjectList)
             {
                 //Download from web servers
-                SubjectSource[] subjects = CurrentPaperSource.GetSubjects();
+                Dictionary<Subject, string> subjects = CurrentPaperSource.GetSubjectUrlMap();
                 PaperSource.SaveSubjectList(subjects, subjectList);
                 subjectList.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
-                AllSubjects = subjects;
+
+                Subject[] arrSubjects = new Subject[subjects.Count];
+                subjects.Keys.CopyTo(arrSubjects, 0);
+                AllSubjects = arrSubjects;
+                SubjectUrlMap = subjects;
             }
             else
             {
                 //Load from local files
-                List<SubjectSource> list = new List<SubjectSource>();
+                Dictionary<Subject, string> list = new Dictionary<Subject, string>();
                 foreach (XmlNode node in subjectList.SelectNodes("//Subject"))
                 {
-                    list.Add(new SubjectSource
+                    list.Add(new Subject
                     {
-                        SubjectInfo = new Subject
-                        {
-                            Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
-                            Name = node.Attributes["Name"].Value,
-                            SyllabusCode = node.Attributes["SyllabusCode"].Value,
-                        },
-                        Url = node.Attributes["Url"].Value,
-                    }) ;
+                        Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
+                        Name = node.Attributes["Name"].Value,
+                        SyllabusCode = node.Attributes["SyllabusCode"].Value,
+                    }, node.Attributes["Url"].Value);
                 }
-                AllSubjects = list.ToArray();
+                Subject[] arrSubjects = new Subject[list.Count];
+                list.Keys.CopyTo(arrSubjects, 0);
+                AllSubjects = arrSubjects;
+                SubjectUrlMap = list;
             }
             if (UpdateSubscription)
             {
@@ -123,11 +128,10 @@ namespace PastPaperHelper.Sources
                 Subscription.Clear();
                 foreach (string item in subscriptionStr)
                 {
-                    SubjectSource subject = FindSubject(item, AllSubjects);
-                    if (subject != null)
+                    if (TryFindSubject(item, AllSubjects, out Subject subject))
                     {
-                        PaperRepository papers = CurrentPaperSource.GetPapers(subject);
-                        Subscription.Add(subject.SubjectInfo, papers);
+                        PaperRepository papers = CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
+                        Subscription.Add(subject, papers);
                     }
                 }
                 PaperSource.SaveSubscription(Subscription, subscription);
@@ -138,7 +142,7 @@ namespace PastPaperHelper.Sources
                 //Load from local files
                 foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
                 {
-                    Subject subject = FindSubject(subjectNode.Attributes["SyllabusCode"].Value, AllSubjects).SubjectInfo;
+                    TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, AllSubjects, out Subject subject);
                     PaperRepository repo = new PaperRepository(subject);
                     if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
@@ -186,24 +190,26 @@ namespace PastPaperHelper.Sources
             }
         }
 
-        public static SubjectSource FindSubject(string SyllabusCode, SubjectSource[] list)
+        public static bool TryFindSubject(string SyllabusCode, Subject[] list, out Subject result)
         {
-            foreach (SubjectSource item in list)
+            foreach (Subject item in list)
             {
-                if (item.SubjectInfo.SyllabusCode == SyllabusCode)
+                if (item.SyllabusCode == SyllabusCode)
                 {
-                    return item;
+                    result = item;
+                    return true;
                 }
             }
-            return null;
+            result = new Subject();
+            return false;
         }
 
-        public static void Subscribe(SubjectSource subject)
+        public static void Subscribe(Subject subject)
         {
 
         }
 
-        public static void Unsubscribe(SubjectSource subject)
+        public static void Unsubscribe(Subject subject)
         {
 
         }

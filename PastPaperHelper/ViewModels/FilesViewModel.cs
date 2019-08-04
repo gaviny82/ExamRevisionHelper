@@ -28,8 +28,8 @@ namespace PastPaperHelper.ViewModels
             set { _examSeries = value; RaisePropertyChangedEvent("ExamSeries"); }
         }
 
-        private SubjectSource _selectedSubject;
-        public SubjectSource SelectedSubject
+        private Subject _selectedSubject;
+        public Subject SelectedSubject
         {
             get { return _selectedSubject; }
             set { _selectedSubject = value; RaisePropertyChangedEvent("SelectedSubject"); }
@@ -51,7 +51,7 @@ namespace PastPaperHelper.ViewModels
     {
         public string Year { get; set; }
         public ExamSeries ExamSeries { get; set; }
-        public SubjectSource Subject { get; set; }
+        public Subject Subject { get; set; }
         public override string ToString()
         {
             string str = "";
