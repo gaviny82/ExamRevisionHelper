@@ -12,9 +12,8 @@ namespace PastPaperHelper.Sources
         private static readonly XmlDocument subjectList = new XmlDocument();
         private static readonly XmlDocument subscription = new XmlDocument();
 
-        public static Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
-
         public static Subject[] AllSubjects { get; set; }
+        public static Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
         public static Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
         public static PaperSource CurrentPaperSource { get; set; }
 
@@ -139,21 +138,20 @@ namespace PastPaperHelper.Sources
             }
             else
             {
-                //Load from local files
+                //Load from local files//TODO: new format to store examiners reports and grade thresholds
                 foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
                 {
                     TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, AllSubjects, out Subject subject);
                     PaperRepository repo = new PaperRepository(subject);
                     if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
-                    List<PaperItem> syllabuses = new List<PaperItem>();
+                    List<Syllabus> syllabuses = new List<Syllabus>();
                     foreach (XmlNode syllabusNode in subjectNode.SelectNodes("//Syllabus"))
                     {
                         //init syllabuses
-                        syllabuses.Add(new PaperItem
+                        syllabuses.Add(new Syllabus
                         {
-                            Type = FileTypes.Syllabus,
-                            Exam = new Exam { Subject = subject, Year = syllabusNode.Attributes["Year"].Value },
+                            Year = syllabusNode.Attributes["Year"].Value,
                             Url = syllabusNode.Attributes["Url"].Value
                         });
                     }
@@ -162,17 +160,17 @@ namespace PastPaperHelper.Sources
                     List<Exam> exams = new List<Exam>();
                     foreach (XmlNode examNode in subjectNode.SelectNodes("//ExamSeries"))
                     {
-                        List<PaperItem> papers = new List<PaperItem>();
+                        List<Paper> papers = new List<Paper>();
                         Exam exam = new Exam
                         {
-                            ExamSeries = (ExamSeries)int.Parse(examNode.Attributes["Series"].Value),
+                            Series = (ExamSeries)int.Parse(examNode.Attributes["Series"].Value),
                             Subject = subject,
                             Year = examNode.Attributes["Year"].Value
                         };
 
                         foreach (XmlNode paperNode in examNode.SelectNodes("//Paper"))
                         {
-                            papers.Add(new PaperItem
+                            papers.Add(new Paper
                             {
                                 Exam = exam,
                                 ComponentCode = char.Parse(paperNode.Attributes["Component"].Value),

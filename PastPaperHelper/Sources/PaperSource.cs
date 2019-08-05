@@ -60,10 +60,10 @@ namespace PastPaperHelper.Sources
                 subj.SetAttribute("SyllabusCode", subject.SyllabusCode);
                 data.AppendChild(subj);
 
-                foreach (PaperItem sy in repo.Syllabus)
+                foreach (Syllabus sy in repo.Syllabus)
                 {
                     XmlElement syl = doc.CreateElement("Syllabus");
-                    syl.SetAttribute("Year", sy.Exam.Year);
+                    syl.SetAttribute("Year", sy.Year);
                     syl.SetAttribute("Url", sy.Url);
                     subj.AppendChild(syl);
                 }
@@ -72,8 +72,14 @@ namespace PastPaperHelper.Sources
                 {
                     XmlElement series = doc.CreateElement("ExamSeries");
                     series.SetAttribute("Year", exam.Year);
-                    series.SetAttribute("Series", ((int)exam.ExamSeries).ToString());
-                    foreach (PaperItem paper in exam.Papers)
+                    series.SetAttribute("Series", ((int)exam.Series).ToString());
+                    if (exam.GradeThreshold != null)
+                    {
+                        XmlElement gt = doc.CreateElement("GradeThreshold");
+                        gt.SetAttribute("Url", exam.GradeThreshold.Url);
+                        series.AppendChild(gt);
+                    }
+                    foreach (Paper paper in exam.Papers)
                     {
                         XmlElement pap = doc.CreateElement("Paper");
                         pap.SetAttribute("Url", paper.Url);

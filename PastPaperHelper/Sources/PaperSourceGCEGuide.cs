@@ -20,9 +20,8 @@ namespace PastPaperHelper.Sources
             HtmlDocument doc = web.Load(SubscriptionManager.SubjectUrlMap[subject]);
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='file']");
 
-            Dictionary<(string, ExamSeries), List<PaperItem>> tmpRepo = new Dictionary<(string, ExamSeries), List<PaperItem>>();
-            List<PaperItem> tmpSyllabus = new List<PaperItem>();
-            List<Exam> tmpExams = new List<Exam>();
+            Dictionary<Exam, List<Paper>> tmpRepo = new Dictionary<Exam, List<Paper>>();
+            List<Syllabus> tmpSyllabus = new List<Syllabus>();
 
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -30,6 +29,8 @@ namespace PastPaperHelper.Sources
                 string[] split = file.Substring(0, file.Length - 4).Split('_');
 
                 if (split.Length > 4 || split.Length < 3) continue;
+
+                string yr = "20" + split[1].Substring(1);
 
                 ExamSeries es;
                 switch (split[1][0])
@@ -40,18 +41,55 @@ namespace PastPaperHelper.Sources
                     case 'w': es = ExamSeries.Winter; break;
                 }
 
+                Exam exam = null;
+                foreach (KeyValuePair<Exam, List<Paper>> item in tmpRepo)
+                {
+                    if (item.Key.Year == yr && item.Key.Series == es)
+                    {
+                        exam = item.Key;
+                        break;
+                    }
+                }
+                if (exam == null)
+                {
+                    exam = new Exam
+                    {
+                        Subject = subject,
+                        Year = yr,
+                        Series = es
+                    };
+                    tmpRepo.Add(exam, new List<Paper>());
+                }
+
                 FileTypes t;
                 switch (split[2])
                 {
                     default: t = FileTypes.Unknown; break;
+                    case "ir": t = FileTypes.ConfidentialInstructions; break;
+                    case "ci": t = FileTypes.ConfidentialInstructions; break;
                     case "er": t = FileTypes.ExaminersReport; break;
-                    case "gt": t = FileTypes.GradeThreshold; break;
                     case "su": t = FileTypes.ListeningAudio; break;
                     case "sf": t = FileTypes.ListeningAudio; break;
                     case "ms": t = FileTypes.MarkScheme; break;
                     case "qp": t = FileTypes.QuestionPaper; break;
                     case "rp": t = FileTypes.SpeakingTestCards; break;
-                    case "sy": t = FileTypes.Syllabus; break;
+
+                    case "sy":
+                        tmpSyllabus.Add(new Syllabus
+                        {
+                            Url = url + file,
+                            Year = yr
+                        });
+                        continue;
+
+                    case "gt":
+                        exam.GradeThreshold = new GradeThreshold
+                        {
+                            Exam = exam,
+                            Url = url + file,
+                        };
+                        continue;
+
                     case "tn": t = FileTypes.TeachersNotes; break;
                     case "qr": t = FileTypes.Transcript; break;
                     case "in": t = FileTypes.Insert; break;
@@ -66,56 +104,25 @@ namespace PastPaperHelper.Sources
                     if (split[3].Length > 1) varCode = split[3][1];
                 }
 
-                //Create a new paper
-                string yr = "20" + split[1].Substring(1);
-                PaperItem paper = new PaperItem
+                //Create a new paper and add to temporary list
+                tmpRepo[exam].Add(new Paper
                 {
+                    Exam = exam,
                     //Exames will be assigned later
                     ComponentCode = compCode,
                     VariantCode = varCode,
                     Type = t,
                     Url = url + file,
-                };
-
-                if (paper.Type == FileTypes.Syllabus)
-                {
-                    paper.Exam = new Exam { Year = yr };
-                    tmpSyllabus.Add(paper);
-                    continue;
-                }
-                //Add to temporary list
-                if (tmpRepo.ContainsKey((yr, es)))
-                {
-                    tmpRepo[(yr, es)].Add(paper);
-                }
-                else
-                {
-                    tmpRepo.Add((yr, es), new List<PaperItem> { paper });
-                }
+                });
             }
-
-            foreach (KeyValuePair<(string, ExamSeries), List<PaperItem>> item in tmpRepo)
+            foreach (KeyValuePair<Exam, List<Paper>> item in tmpRepo)
             {
-                (string y, ExamSeries e) = item.Key;
-                List<PaperItem> lst = item.Value;
-                Exam exam = new Exam
-                {
-                    Subject = subject,
-                    Year = y,
-                    ExamSeries = e
-                };
-                for (int itor = 0; itor < lst.Count; itor++)
-                {
-                    PaperItem itm = lst[itor];
-                    itm.Exam = exam;
-                }
-                exam.Papers = lst.ToArray();
-                tmpExams.Add(exam);
+                item.Key.Papers = item.Value.ToArray();
             }
 
             return new PaperRepository(subject)
             {
-                Exams = tmpExams.ToArray(),
+                Exams = tmpRepo.Keys.ToArray(),
                 Syllabus = tmpSyllabus.ToArray()
             };
         }

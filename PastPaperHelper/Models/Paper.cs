@@ -1,33 +1,37 @@
 ﻿namespace PastPaperHelper.Models
 {
-    public class PaperItem
+    public class PaperBase
+    {
+        public string Url { get; set; }
+    }
+
+    public class Paper : PaperBase
     {
         public Exam Exam { get; set; }
         public char ComponentCode { get; set; }
         public char VariantCode { get; set; }
         public FileTypes Type { get; set; }
-        public string Url { get; set; }
-
-        public PaperItem() { }
-        public PaperItem(Exam exam, char componentCode, char variantCode, FileTypes type)
-        {
-            Exam = exam;
-            ComponentCode = componentCode;
-            VariantCode = variantCode;
-            Type = type;
-        }
     }
+
+    public class Syllabus : PaperBase
+    {
+        public string Year { get; set; }
+    }
+
+    public class GradeThreshold : PaperBase
+    {
+        public Exam Exam { get; set; }
+    }
+
 
     public enum ExamSeries { Spring, Summer, Winter, Specimen }
     public enum FileTypes
     {
         ExaminersReport,
-        Syllabus,
         ConfidentialInstructions,
         TeachersNotes,
         ListeningAudio,
         SpeakingTestCards ,
-        GradeThreshold,
         QuestionPaper,
         MarkScheme,
         Insert,
