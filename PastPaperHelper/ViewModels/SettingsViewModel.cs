@@ -48,6 +48,9 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand RemoveSubjectCommand { get; set; }
         private void RemoveSubject(object param)
         {
+            Subject subject = (Subject)param;
+            //TODO: hot reload
+
             string code = param as string;
             for (int i = 0; i < SubjectsSubscripted.Count; i++)
             {
@@ -79,7 +82,6 @@ namespace PastPaperHelper.ViewModels
         private void AddSelectedSubject(object param)
         {
             Dictionary<Subject, PaperRepository> item = SubscriptionManager.Subscription;
-            //TODO: Hot reload papers at download view
             Subject subject = (Subject)param;
             if (!SubjectsSubscripted.Contains(subject))
             {

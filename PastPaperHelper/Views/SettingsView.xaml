@@ -157,7 +157,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Subject}">
                             <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
-                                <Grid Width="325" Margin="0,0,0,5">
+                                <Grid Width="300" Margin="0,0,0,5">
                                     <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
                                     <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                     <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
@@ -165,7 +165,7 @@
                                         <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
                                         <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
                                     </StackPanel>
-                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" CommandParameter="{Binding SyllabusCode}"
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" CommandParameter="{Binding}"
                                     Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
                                         <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
                                     </Button>
@@ -174,7 +174,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding Subjects.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding SubjectsSubscripted.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
             </Grid>
         </GroupBox>
     </Grid>

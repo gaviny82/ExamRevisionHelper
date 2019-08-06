@@ -12,7 +12,7 @@ namespace PastPaperHelper.Sources
         private static readonly XmlDocument subjectList = new XmlDocument();
         private static readonly XmlDocument subscription = new XmlDocument();
 
-        public static Subject[] AllSubjects { get; set; }
+        public static Subject[] AllSubjects { get; set; }//TODO: Use a dictionary to map syllabus code to subject
         public static Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
         public static Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
         public static PaperSource CurrentPaperSource { get; set; }
@@ -204,12 +204,23 @@ namespace PastPaperHelper.Sources
 
         public static void Subscribe(Subject subject)
         {
-
+            if (Subscription.ContainsKey(subject)) return;
+            
+            Subscription.Add(subject, null);//TODO: hot reload subscription here
+            if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode))
+            {
+                Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
+                Properties.Settings.Default.Save();
+            }
         }
 
         public static void Unsubscribe(Subject subject)
         {
+            if (!Subscription.ContainsKey(subject)) return;
 
+            Subscription.Remove(subject);
+            Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SyllabusCode);
+            Properties.Settings.Default.Save();
         }
     }
 }

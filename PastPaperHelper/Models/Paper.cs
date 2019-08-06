@@ -1,11 +1,11 @@
 ﻿namespace PastPaperHelper.Models
 {
-    public class PaperBase
+    public class PastPaperResource
     {
         public string Url { get; set; }
     }
 
-    public class Paper : PaperBase
+    public class Paper : PastPaperResource
     {
         public Exam Exam { get; set; }
         public char ComponentCode { get; set; }
@@ -13,12 +13,12 @@
         public FileTypes Type { get; set; }
     }
 
-    public class Syllabus : PaperBase
+    public class Syllabus : PastPaperResource
     {
         public string Year { get; set; }
     }
 
-    public class GradeThreshold : PaperBase
+    public class GradeThreshold : PastPaperResource
     {
         public Exam Exam { get; set; }
     }
