@@ -94,7 +94,7 @@
                         </ComboBox>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Update" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="0,16,0,0">
+                <GroupBox Header="Update" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="0,16,0,0" IsEnabled="False">
                     <GroupBox.HeaderTemplate>
                         <DataTemplate>
                             <Grid>
