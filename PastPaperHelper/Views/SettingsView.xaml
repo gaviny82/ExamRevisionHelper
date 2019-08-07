@@ -161,10 +161,14 @@
                                     <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
                                     <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                     <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
-                                    <StackPanel Orientation="Horizontal" Margin="32,0,0,0" VerticalAlignment="Top" Height="18">
-                                        <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
-                                    </StackPanel>
+                                    <TextBlock FontWeight="Bold" Margin="40,0,0,0" VerticalAlignment="Top" Height="18" TextTrimming="CharacterEllipsis" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Text}">
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} {1}">
+                                                <Binding Path="Curriculum"/>
+                                                <Binding Path="Name"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
                                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" CommandParameter="{Binding}"
                                     Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
                                         <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
