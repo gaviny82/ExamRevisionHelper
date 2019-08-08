@@ -29,5 +29,13 @@ namespace PastPaperHelper.Views
             DataContext = new FilesViewModel();
         }
 
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListView view = sender as ListView;
+            if (view.SelectedItem != null)
+            {
+                (DataContext as FilesViewModel).OpenOnlineResourceCommand.Execute(view.SelectedItem);
+            }
+        }
     }
 }

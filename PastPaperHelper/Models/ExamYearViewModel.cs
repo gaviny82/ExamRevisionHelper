@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PastPaperHelper.ViewModels
+namespace PastPaperHelper.Models
 {
-    class ExamYearViewModel
+    class ExamYear
     {
         public string Year { get; set; }
         public Syllabus Syllabus { get; set; }

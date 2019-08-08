@@ -55,17 +55,17 @@ namespace PastPaperHelper.Sources
                 Subject subject = item.Key;
                 PaperRepository repo = item.Value;
 
-                XmlElement subj = doc.CreateElement("Subject");
-                subj.SetAttribute("Name", subject.Name);
-                subj.SetAttribute("SyllabusCode", subject.SyllabusCode);
-                data.AppendChild(subj);
+                XmlElement subjNode = doc.CreateElement("Subject");
+                subjNode.SetAttribute("Name", subject.Name);
+                subjNode.SetAttribute("SyllabusCode", subject.SyllabusCode);
+                data.AppendChild(subjNode);
 
                 foreach (Syllabus sy in repo.Syllabus)
                 {
                     XmlElement syl = doc.CreateElement("Syllabus");
                     syl.SetAttribute("Year", sy.Year);
                     syl.SetAttribute("Url", sy.Url);
-                    subj.AppendChild(syl);
+                    subjNode.AppendChild(syl);
                 }
 
                 foreach (Exam exam in repo.Exams)
@@ -81,14 +81,14 @@ namespace PastPaperHelper.Sources
                     }
                     foreach (Paper paper in exam.Papers)
                     {
-                        XmlElement pap = doc.CreateElement("Paper");
-                        pap.SetAttribute("Url", paper.Url);
-                        pap.SetAttribute("Component", paper.ComponentCode.ToString());
-                        pap.SetAttribute("Variant", paper.VariantCode.ToString());
-                        pap.SetAttribute("Type", ((int)paper.Type).ToString());
-                        series.AppendChild(pap);
+                        XmlElement paperNode = doc.CreateElement("Paper");
+                        paperNode.SetAttribute("Url", paper.Url);
+                        paperNode.SetAttribute("Component", paper.ComponentCode.ToString());
+                        paperNode.SetAttribute("Variant", paper.VariantCode.ToString());
+                        paperNode.SetAttribute("Type", ((int)paper.Type).ToString());
+                        series.AppendChild(paperNode);
                     }
-                    subj.AppendChild(series);
+                    subjNode.AppendChild(series);
                 }
             }
         }

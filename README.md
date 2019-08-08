@@ -6,7 +6,6 @@ We are currently in the beta phase. More functions including are in progress.
 
 | Version |       Date      |
 |---------|-----------------|
-|Beta 0.3 |18 August, 2019  |
 |RC       |End of August    |
 |GA       |September        |
 
@@ -15,16 +14,19 @@ We are currently in the beta phase. More functions including are in progress.
 
 ## Beta 0.3
 
-Planned release date: 18 August, 2019
-
 ### New
 - Subject selection and subscription
+- View exam series and papers on Files page
 
 ### Changes
 - Subject data is now updated every 7 days
 - Data loaded from local files instead of servers on startup
 - Performance Improvements
 - New data structure for storing papers
+
+### Known Issues
+- Virtualization of the ItemsControl on Files page is not working
+- Crashes when selecting a subject that is added without restarting (hot reload of paper repos should be added)
 
 ## Beta 0.2
 

@@ -11,7 +11,7 @@ using System.Windows.Data;
 
 namespace PastPaperHelper.Converters
 {
-    class SubjectToExamYearViewModelConverter : IValueConverter
+    class SubjectToExamYearConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -22,10 +22,10 @@ namespace PastPaperHelper.Converters
 
             foreach(Exam item in repo.Exams)
             {
-                ExamYearViewModel year = collection.GetExamYear(item.Year);
+                ExamYear year = collection.GetExamYear(item.Year);
                 if (year == null)
                 {
-                    year = new ExamYearViewModel { Year = item.Year };
+                    year = new ExamYear { Year = item.Year };
                     collection.Add(year);
                 }
                 switch (item.Series)
@@ -50,7 +50,7 @@ namespace PastPaperHelper.Converters
             for (int i = 0; i < repo.Syllabus.Length; i++)
             {
                 Syllabus syllabus = repo.Syllabus[i];
-                ExamYearViewModel year = collection.GetExamYear(syllabus.Year);
+                ExamYear year = collection.GetExamYear(syllabus.Year);
                 if (year != null)
                 {
                     string yearEnd = "";

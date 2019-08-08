@@ -25,7 +25,7 @@ namespace PastPaperHelper.Sources
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                string file = nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
+                string file = "/" + nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
                 string[] split = file.Substring(0, file.Length - 4).Split('_');
 
                 if (split.Length > 4 || split.Length < 3) continue;

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace PastPaperHelper.Models
 {
-    class ExamYearsCollection : ObservableCollection<ExamYearViewModel>
+    class ExamYearsCollection : ObservableCollection<ExamYear>
     {
-        public ExamYearViewModel GetExamYear(string Year)
+        public ExamYear GetExamYear(string Year)
         {
-            foreach (ExamYearViewModel item in this)
+            foreach (ExamYear item in this)
             {
                 if (item.Year == Year) return item;
             }
@@ -30,7 +30,7 @@ namespace PastPaperHelper.Models
                     int.TryParse(this[j + 1].Year, out int year2);
                     if (year1 < year2)
                     {
-                        ExamYearViewModel tmp = this[j];
+                        ExamYear tmp = this[j];
                         this[j] = this[j + 1];
                         this[j + 1] = tmp;
                         flag = false;

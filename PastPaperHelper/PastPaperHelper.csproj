@@ -61,6 +61,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -83,9 +84,9 @@
     <Compile Include="Converters\IsMouseOverToVisibilityConverter.cs" />
     <Compile Include="Converters\MessageVisibilityConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
-    <Compile Include="Converters\SubjectToSubjectViewConverter.cs" />
+    <Compile Include="Converters\SubjectToExamYearConverter.cs" />
     <Compile Include="Models\Exam.cs" />
-    <Compile Include="ViewModels\ExamYearViewModel.cs" />
+    <Compile Include="Models\ExamYearViewModel.cs" />
     <Compile Include="Models\Paper.cs" />
     <Compile Include="Models\PaperRepository.cs" />
     <Compile Include="Models\Subject.cs" />

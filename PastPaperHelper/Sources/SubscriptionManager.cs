@@ -146,7 +146,7 @@ namespace PastPaperHelper.Sources
                     if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
                     List<Syllabus> syllabuses = new List<Syllabus>();
-                    foreach (XmlNode syllabusNode in subjectNode.SelectNodes("//Syllabus"))
+                    foreach (XmlNode syllabusNode in subjectNode.SelectNodes("./Syllabus"))
                     {
                         //init syllabuses
                         syllabuses.Add(new Syllabus
@@ -158,7 +158,7 @@ namespace PastPaperHelper.Sources
                     repo.Syllabus = syllabuses.ToArray();
 
                     List<Exam> exams = new List<Exam>();
-                    foreach (XmlNode examNode in subjectNode.SelectNodes("//ExamSeries"))
+                    foreach (XmlNode examNode in subjectNode.SelectNodes("./ExamSeries"))
                     {
                         List<Paper> papers = new List<Paper>();
                         Exam exam = new Exam
@@ -168,7 +168,8 @@ namespace PastPaperHelper.Sources
                             Year = examNode.Attributes["Year"].Value
                         };
 
-                        foreach (XmlNode paperNode in examNode.SelectNodes("//Paper"))
+                        var col = examNode.SelectNodes("./Paper");
+                        foreach (XmlNode paperNode in col)
                         {
                             papers.Add(new Paper
                             {
