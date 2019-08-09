@@ -12,6 +12,7 @@ namespace PastPaperHelper.Models
         public string Year { get; set; }
         public ExamSeries Series { get; set; }
         public GradeThreshold GradeThreshold { get; set; }
+        public ExaminersReport ExaminersReport { get; set; }
         public Paper[] Papers { get; set; }
     }
 

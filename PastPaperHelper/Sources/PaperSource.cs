@@ -79,6 +79,12 @@ namespace PastPaperHelper.Sources
                         gt.SetAttribute("Url", exam.GradeThreshold.Url);
                         series.AppendChild(gt);
                     }
+                    if (exam.ExaminersReport != null)
+                    {
+                        XmlElement er = doc.CreateElement("ExaminersReport");
+                        er.SetAttribute("Url", exam.ExaminersReport.Url);
+                        series.AppendChild(er);
+                    }
                     foreach (Paper paper in exam.Papers)
                     {
                         XmlElement paperNode = doc.CreateElement("Paper");

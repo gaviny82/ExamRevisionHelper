@@ -23,6 +23,11 @@
         public Exam Exam { get; set; }
     }
 
+    public class ExaminersReport : PastPaperResource
+    {
+        public Exam Exam { get; set; }
+    }
+
 
     public enum ExamSeries { Spring, Summer, Winter, Specimen }
     public enum FileTypes

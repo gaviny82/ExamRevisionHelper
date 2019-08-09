@@ -12,7 +12,7 @@ namespace PastPaperHelper.Sources
         private static readonly XmlDocument subjectList = new XmlDocument();
         private static readonly XmlDocument subscription = new XmlDocument();
 
-        public static Subject[] AllSubjects { get; set; }//TODO: Use a dictionary to map syllabus code to subject
+        public static Subject[] AllSubjects { get; set; }
         public static Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
         public static Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
         public static PaperSource CurrentPaperSource { get; set; }
@@ -168,8 +168,19 @@ namespace PastPaperHelper.Sources
                             Year = examNode.Attributes["Year"].Value
                         };
 
-                        var col = examNode.SelectNodes("./Paper");
-                        foreach (XmlNode paperNode in col)
+                        XmlNode gt = examNode.SelectSingleNode("./GradeThreshold");
+                        if (gt != null)
+                        {
+                            exam.GradeThreshold = new GradeThreshold { Url = gt.Attributes["Url"].Value, Exam = exam };
+                        }
+
+                        XmlNode er = examNode.SelectSingleNode("./ExaminersReport");
+                        if (er != null)
+                        {
+                            exam.GradeThreshold = new GradeThreshold { Url = er.Attributes["Url"].Value, Exam = exam };
+                        }
+
+                        foreach (XmlNode paperNode in examNode.SelectNodes("./Paper"))
                         {
                             papers.Add(new Paper
                             {

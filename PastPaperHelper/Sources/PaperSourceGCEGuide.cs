@@ -67,7 +67,6 @@ namespace PastPaperHelper.Sources
                     default: t = FileTypes.Unknown; break;
                     case "ir": t = FileTypes.ConfidentialInstructions; break;
                     case "ci": t = FileTypes.ConfidentialInstructions; break;
-                    case "er": t = FileTypes.ExaminersReport; break;
                     case "su": t = FileTypes.ListeningAudio; break;
                     case "sf": t = FileTypes.ListeningAudio; break;
                     case "ms": t = FileTypes.MarkScheme; break;
@@ -84,6 +83,14 @@ namespace PastPaperHelper.Sources
 
                     case "gt":
                         exam.GradeThreshold = new GradeThreshold
+                        {
+                            Exam = exam,
+                            Url = url + file,
+                        };
+                        continue;
+
+                    case "er":
+                        exam.ExaminersReport = new ExaminersReport
                         {
                             Exam = exam,
                             Url = url + file,
