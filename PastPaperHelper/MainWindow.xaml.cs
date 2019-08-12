@@ -19,9 +19,10 @@ namespace PastPaperHelper
 
         public MainWindow()
         {
-            //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTA0NzY1QDMxMzcyZTMxMmUzMEJ2UkIvNUk0T0M2OXNEYnY0cFRWUnNWUWZ0QkFyR3NVaDBlbjZuYi9NUEU9;MTA0NzY2QDMxMzcyZTMxMmUzMEVsMFlPRElYWjgyNUFYYjZBVXN2R2RHRW05QlYzYVd6S0NUL093R29PcEk9;MTA0NzY3QDMxMzcyZTMxMmUzMExYTEpvcCtUNWJ2T3NaQ01aZGJGbloxamFSN2lOaGlRM0UwUmlQcFBLSzg9");
             InitializeComponent();
             MainSnackbar = mainSnackbar;
+            Properties.Settings.Default.FirstRun = true;
+            Properties.Settings.Default.Save();
 
             bool updateSubjectList =false, updateSubscription=false;
             Task.Factory.StartNew(() =>
