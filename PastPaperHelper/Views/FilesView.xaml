@@ -69,7 +69,6 @@
                 </materialDesign:Card>
             </Border>
         </DataTemplate>
-
     </Grid.Resources>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*"/>
@@ -92,26 +91,6 @@
             </DataTemplate>
         </ComboBox.ItemTemplate>
     </ComboBox>
-    <DataGrid Visibility="Hidden" Margin="16,50,16,10" HeadersVisibility="All" ItemsSource="{Binding ExamYears}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False">
-        <DataGrid.Columns>
-            <DataGridTemplateColumn Header="Spring" IsReadOnly="True" Width="*"/>
-            <DataGridTemplateColumn Header="Summer" IsReadOnly="True" Width="*"/>
-            <DataGridTemplateColumn Header="Winter" IsReadOnly="True" Width="*"/>
-        </DataGrid.Columns>
-        <DataGrid.RowHeaderTemplate>
-            <DataTemplate>
-                <TextBlock Margin="5,10" Text="{Binding DataContext.Year, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRowHeader}}}">
-                    <TextBlock.LayoutTransform>
-                        <RotateTransform Angle="-90"/>
-                    </TextBlock.LayoutTransform>
-                </TextBlock>
-            </DataTemplate>
-        </DataGrid.RowHeaderTemplate>
-    </DataGrid>
-    <!--<ScrollViewer Margin="8,58,0,16" Visibility="Hidden">
-        <ItemsControl VirtualizingPanel.IsVirtualizing="True"  VirtualizingPanel.VirtualizationMode="Recycling" ItemsSource="{Binding ElementName=subjectSelector, Path=SelectedItem, Mode=OneWay, Converter={StaticResource SubjectToSubjectViewConverter}}" ItemTemplate="{StaticResource ExamYearTemplate}"/>
-    </ScrollViewer>-->
-
     <ItemsControl Margin="8,58,0,16"
                 ItemsSource="{Binding ElementName=subjectSelector, Path=SelectedItem, Mode=OneWay, Converter={StaticResource SubjectToExamYearConverter}}" 
                 ItemTemplate="{StaticResource ExamYearTemplate}"
@@ -139,8 +118,6 @@
             </ControlTemplate>
         </ItemsControl.Template>
     </ItemsControl>
-
-
     <TextBlock Grid.Column="1" Text="{Binding SelectedExamSeries.Series}"/>
     <ListView Grid.Column="1" ItemsSource="{Binding SelectedExamSeries.Papers}" Margin="8,50,8,8" MouseDoubleClick="ListView_MouseDoubleClick">
         <ListView.View>

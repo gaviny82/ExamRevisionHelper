@@ -32,7 +32,7 @@ namespace PastPaperHelper
             }
             else
             {
-                Application.Current.StartupUri = new Uri("pack://application:,,,/PastPaperHelper;component/MainWindow.xaml");
+                Application.Current.StartupUri = new Uri("pack://application:,,,/PastPaperHelper;component/Views/MainWindow.xaml");
             }
         }
     }

@@ -2,15 +2,11 @@
 using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using PastPaperHelper.Views;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace PastPaperHelper.ViewModels
 {

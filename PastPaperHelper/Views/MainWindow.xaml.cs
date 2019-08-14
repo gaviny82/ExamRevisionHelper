@@ -1,15 +1,13 @@
 ﻿using MaterialDesignThemes.Wpf;
 using PastPaperHelper.Sources;
 using PastPaperHelper.ViewModels;
-using PastPaperHelper.Views;
-using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.Views
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
@@ -25,7 +23,7 @@ namespace PastPaperHelper
             
             //OOBE Test
             //Properties.Settings.Default.FirstRun = true;
-            Properties.Settings.Default.Save();
+            //Properties.Settings.Default.Save();
 
             bool updateSubjectList =false, updateSubscription=false;
             Task.Factory.StartNew(() =>
@@ -34,8 +32,8 @@ namespace PastPaperHelper
                 SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription);
             }).ContinueWith(t =>
             {
-                if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSources.GCE_Guide.Name);
-                if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSources.GCE_Guide.Name);
+                if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSource.CurrentPaperSource.Name);
+                if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name);
                 SettingsViewModel.RefreshSubjectLists();
                 SettingsViewModel.RefreshSubscription();
                 //((DataContext as MainWindowViewModel).ListItems[1].Content as FilesView).UpdateSelectedItem();
@@ -53,14 +51,6 @@ namespace PastPaperHelper
                 dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
             }
             MenuToggleButton.IsChecked = false;
-        }
-
-        public void UpdateUI(Action action)
-        {
-            Task.Factory.StartNew(() => {  }).ContinueWith(t =>
-            {
-                action();
-            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }
