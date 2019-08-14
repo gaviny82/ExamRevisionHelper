@@ -12,7 +12,7 @@ namespace PastPaperHelper.Test
     {
         public UnitTest1()
         {
-            SubscriptionManager.CurrentPaperSource = PaperSources.GCE_Guide;
+            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
             LoadRepoTest();
         }
 
@@ -54,7 +54,7 @@ namespace PastPaperHelper.Test
         [TestMethod]
         public void SavePaperRepoTest()
         {
-            SubscriptionManager.CurrentPaperSource = PaperSources.GCE_Guide;
+            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
             var phy = new Subject
             {
                 Curriculum = Curriculums.ALevel,

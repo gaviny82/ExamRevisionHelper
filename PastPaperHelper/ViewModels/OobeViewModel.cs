@@ -16,32 +16,26 @@ namespace PastPaperHelper.ViewModels
 {
     class OobeViewModel : NotificationObject
     {
+        public ObservableCollection<SubjectSelection> IGSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
+        public ObservableCollection<SubjectSelection> ALSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
         public OobeViewModel()
         {
-            SaveSettingsCommand = new DelegateCommand(SaveSettings);
             SaveCommand = new DelegateCommand(Save);
+            BrowseCommand = new DelegateCommand(Browse);
 
-            bool updateSubjectList = false, updateSubscription = false;
             Task.Factory.StartNew(() =>
             {
-                SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription);
-                SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription);
+                SubscriptionManager.UpdateAndInit(true, false);
             }).ContinueWith(t =>
             {
-                if (SubscriptionManager.AllSubjects != null)
+                IGSubjects.Clear();
+                ALSubjects.Clear();
+                foreach (Subject item in SubscriptionManager.AllSubjects)
                 {
-                    IGSubjects.Clear();
-                    ALSubjects.Clear();
-                    foreach (Subject item in SubscriptionManager.AllSubjects)
-                    {
-                        if (item.Curriculum == Curriculums.ALevel)
-                            ALSubjects.Add(new SubjectSelection(item, false));
-                        else
-                            IGSubjects.Add(new SubjectSelection(item, false));
-                    }
-                    IsLoading = Visibility.Hidden;
-                    //((DataContext as MainWindowViewModel).ListItems[1].Content as FilesView).UpdateSelectedItem();
+                    if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(new SubjectSelection(item, false));
+                    else ALSubjects.Add(new SubjectSelection(item, false));
                 }
+                IsLoading = Visibility.Hidden;
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
@@ -61,17 +55,6 @@ namespace PastPaperHelper.ViewModels
             }
         }
 
-
-        public DelegateCommand SaveSettingsCommand { get; set; }
-        private void SaveSettings(object param)
-        {
-
-            //DEBUG:
-            //PastPaperHelper.Properties.Settings.Default.FirstRun = false;
-            //PastPaperHelper.Properties.Settings.Default.Save();
-        }
-
-
         private Visibility _isLoading;
         public Visibility IsLoading
         {
@@ -80,10 +63,7 @@ namespace PastPaperHelper.ViewModels
         }
 
 
-        public ICommand BrowseCommand
-        {
-            get => new DelegateCommand(Browse);
-        }
+        public DelegateCommand BrowseCommand { get; set; }
         private void Browse(object param)
         {
             CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true };
@@ -100,6 +80,7 @@ namespace PastPaperHelper.ViewModels
             if (!Directory.Exists(Path)) return;
 
             Properties.Settings.Default.Path = Path;
+            Properties.Settings.Default.SubjectsSubcripted.Clear();
             foreach (SubjectSelection item in IGSubjects)
             {
                 if (item.IsSelected == true) Properties.Settings.Default.SubjectsSubcripted.Add(item.Subject.SyllabusCode);
@@ -113,12 +94,9 @@ namespace PastPaperHelper.ViewModels
             Application.Current.Shutdown();
             Process.Start(Environment.CurrentDirectory + "/PastPaperHelper.exe");
         }
-
-        public ObservableCollection<SubjectSelection> IGSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
-        public ObservableCollection<SubjectSelection> ALSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
     }
 
-    class SubjectSelection
+    internal class SubjectSelection
     {
         public SubjectSelection(Subject subject, bool isSelected)
         {

@@ -2,6 +2,7 @@
 using PastPaperHelper.Sources;
 using PastPaperHelper.ViewModels;
 using PastPaperHelper.Views;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -21,6 +22,8 @@ namespace PastPaperHelper
         {
             InitializeComponent();
             MainSnackbar = mainSnackbar;
+            
+            //OOBE Test
             Properties.Settings.Default.FirstRun = true;
             Properties.Settings.Default.Save();
 
@@ -33,7 +36,8 @@ namespace PastPaperHelper
             {
                 if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSources.GCE_Guide.Name);
                 if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSources.GCE_Guide.Name);
-                SettingsViewModel.RefreshSubjectList();
+                SettingsViewModel.RefreshSubjectLists();
+                SettingsViewModel.RefreshSubscription();
                 //((DataContext as MainWindowViewModel).ListItems[1].Content as FilesView).UpdateSelectedItem();
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
@@ -49,6 +53,14 @@ namespace PastPaperHelper
                 dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
             }
             MenuToggleButton.IsChecked = false;
+        }
+
+        public void UpdateUI(Action action)
+        {
+            Task.Factory.StartNew(() => {  }).ContinueWith(t =>
+            {
+                action();
+            }, TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 }

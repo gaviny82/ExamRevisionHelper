@@ -134,15 +134,8 @@ namespace PastPaperHelper.Sources
             };
         }
 
-        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums? curriculum = null)
+        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
         {
-            if (curriculum == null)
-            {
-                Dictionary<Subject, string> tmp = new Dictionary<Subject, string>();
-                foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.IGCSE)) tmp.Add(item.Key, item.Value);
-                foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.ALevel)) tmp.Add(item.Key, item.Value);
-                return tmp;
-            }
             string url = Url;
             switch (curriculum)
             {

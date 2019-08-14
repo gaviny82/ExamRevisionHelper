@@ -8,6 +8,7 @@
       xmlns:converters="clr-namespace:PastPaperHelper.Converters"
       xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+    xmlns:source="clr-namespace:PastPaperHelper.Sources"
       xmlns:models="clr-namespace:PastPaperHelper.Models" x:Name="rootDlg" x:Class="PastPaperHelper.Views.SettingsView"
       mc:Ignorable="d" Background="White" SizeChanged="RootDlg_SizeChanged"
       d:DesignHeight="450" d:DesignWidth="800" Style="{StaticResource MaterialDesignEmbeddedDialogHost}">
@@ -56,7 +57,7 @@
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" ToolTip="View changelog" Click="OpenReleases_Click">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Tag"/>
-                    <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Beta 0.3"/>
+                    <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Beta 0.4"/>
                 </StackPanel>
             </Button>
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" Click="OpenGithub_Click">
@@ -153,7 +154,7 @@
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <Grid>
-                <ListBox x:Name="SubjectList" ItemsSource="{Binding SubjectsSubscripted}" SelectedItem="{Binding SelectedSubject}">
+                <ListBox x:Name="SubjectList" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Subject}">
                             <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
@@ -178,7 +179,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding SubjectsSubscripted.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding ElementName=SubjectList, Path=Items.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
             </Grid>
         </GroupBox>
     </Grid>

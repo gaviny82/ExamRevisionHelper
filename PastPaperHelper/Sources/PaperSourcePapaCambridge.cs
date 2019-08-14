@@ -19,7 +19,7 @@ namespace PastPaperHelper.Sources
             throw new NotImplementedException();
         }
 
-        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums? curriculum = null)
+        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
         {
             throw new NotImplementedException();
         }

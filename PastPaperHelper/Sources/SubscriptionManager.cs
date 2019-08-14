@@ -1,8 +1,10 @@
 ﻿using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace PastPaperHelper.Sources
@@ -15,7 +17,6 @@ namespace PastPaperHelper.Sources
         public static Subject[] AllSubjects { get; set; }
         public static Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
         public static Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
-        public static PaperSource CurrentPaperSource { get; set; }
 
         /// <summary>
         /// This method checks update for subject list and subscribed subjects.
@@ -93,32 +94,33 @@ namespace PastPaperHelper.Sources
             if (UpdateSubjectList)
             {
                 //Download from web servers
-                Dictionary<Subject, string> subjects = CurrentPaperSource.GetSubjectUrlMap();
-                PaperSource.SaveSubjectList(subjects, subjectList);
-                subjectList.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
-
-                Subject[] arrSubjects = new Subject[subjects.Count];
-                subjects.Keys.CopyTo(arrSubjects, 0);
-                AllSubjects = arrSubjects;
+                SubjectUrlMap.Clear();
+                Dictionary<Subject, string> subjects = PaperSource.CurrentPaperSource.GetSubjectUrlMap();
+                AllSubjects = new Subject[subjects.Count];
+                subjects.Keys.CopyTo(AllSubjects, 0);
                 SubjectUrlMap = subjects;
+
+                PaperSource.SaveSubjectList(SubjectUrlMap, subjectList);
+                subjectList.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
             }
             else
             {
                 //Load from local files
-                Dictionary<Subject, string> list = new Dictionary<Subject, string>();
-                foreach (XmlNode node in subjectList.SelectNodes("//Subject"))
+                SubjectUrlMap.Clear();
+                XmlNodeList nodes = subjectList.SelectNodes("//Subject");
+                AllSubjects = new Subject[nodes.Count];
+                int i = 0;
+                foreach (XmlNode node in nodes)
                 {
-                    list.Add(new Subject
+                    Subject subj = new Subject
                     {
                         Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
                         Name = node.Attributes["Name"].Value,
                         SyllabusCode = node.Attributes["SyllabusCode"].Value,
-                    }, node.Attributes["Url"].Value);
+                    };
+                    SubjectUrlMap.Add(subj, node.Attributes["Url"].Value);//TODO: Execute in the UI  thread
+                    AllSubjects[i++] = subj;
                 }
-                Subject[] arrSubjects = new Subject[list.Count];
-                list.Keys.CopyTo(arrSubjects, 0);
-                AllSubjects = arrSubjects;
-                SubjectUrlMap = list;
             }
             if (UpdateSubscription)
             {
@@ -127,9 +129,9 @@ namespace PastPaperHelper.Sources
                 Subscription.Clear();
                 foreach (string item in subscriptionStr)
                 {
-                    if (TryFindSubject(item, AllSubjects, out Subject subject))
+                    if (TryFindSubject(item, out Subject subject))
                     {
-                        PaperRepository papers = CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
+                        PaperRepository papers = PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
                         Subscription.Add(subject, papers);
                     }
                 }
@@ -138,10 +140,10 @@ namespace PastPaperHelper.Sources
             }
             else
             {
-                //Load from local files//TODO: new format to store examiners reports and grade thresholds
+                //Load from local files
                 foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
                 {
-                    TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, AllSubjects, out Subject subject);
+                    TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subject);
                     PaperRepository repo = new PaperRepository(subject);
                     if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
@@ -200,11 +202,11 @@ namespace PastPaperHelper.Sources
             }
         }
 
-        public static bool TryFindSubject(string SyllabusCode, Subject[] list, out Subject result)
+        public static bool TryFindSubject(string syllabusCode, out Subject result)
         {
-            foreach (Subject item in list)
+            foreach (Subject item in AllSubjects)
             {
-                if (item.SyllabusCode == SyllabusCode)
+                if (item.SyllabusCode == syllabusCode)
                 {
                     result = item;
                     return true;

@@ -7,10 +7,19 @@ namespace PastPaperHelper.Sources
 {
     public abstract class PaperSource
     {
+        public static PaperSource CurrentPaperSource { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
 
-        public abstract Dictionary<Subject, string> GetSubjectUrlMap(Curriculums? curriculum = null);
+
+        public virtual Dictionary<Subject, string> GetSubjectUrlMap()
+        {
+            Dictionary<Subject, string> tmp = new Dictionary<Subject, string>();
+            foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.IGCSE)) tmp.Add(item.Key, item.Value);
+            foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.ALevel)) tmp.Add(item.Key, item.Value);
+            return tmp;
+        }
+        public abstract Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum);
         public abstract PaperRepository GetPapers(Subject subject, string url);
 
         public static void SaveSubjectList(Dictionary<Subject, string> map, XmlDocument doc)
@@ -19,7 +28,7 @@ namespace PastPaperHelper.Sources
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
             XmlElement data = doc.CreateElement("Data");
             data.SetAttribute("Time", DateTime.Now.ToString());
-            data.SetAttribute("Source", SubscriptionManager.CurrentPaperSource.Name);
+            data.SetAttribute("Source", PaperSource.CurrentPaperSource.Name);
             doc.AppendChild(data);
 
             XmlElement IG = doc.CreateElement("IGCSE");
@@ -47,7 +56,7 @@ namespace PastPaperHelper.Sources
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
             XmlElement data = doc.CreateElement("Data");
             data.SetAttribute("Time", DateTime.Now.ToString());
-            data.SetAttribute("Source", SubscriptionManager.CurrentPaperSource.Name);
+            data.SetAttribute("Source", PaperSource.CurrentPaperSource.Name);
             doc.AppendChild(data);
 
             foreach(KeyValuePair<Subject, PaperRepository> item in list)
