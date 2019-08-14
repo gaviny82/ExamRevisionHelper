@@ -7,6 +7,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -42,7 +44,7 @@ namespace PastPaperHelper.ViewModels
         public SettingsViewModel()
         {
             RemoveSelectedSubjectsCommand = new DelegateCommand(RemoveSelectedSubjects);
-            RemoveSubjectCommand = new DelegateCommand(RemoveSubject);
+            RemoveSubjectCommand = new DelegateCommand(RemoveSubjectAsync);
             AddSelectedSubjectCommand = new DelegateCommand(AddSelectedSubject);
             BrowseCommand = new DelegateCommand(Browse);
 
@@ -117,22 +119,11 @@ namespace PastPaperHelper.ViewModels
 
 
         public DelegateCommand RemoveSubjectCommand { get; set; }
-        private void RemoveSubject(object param)
+        private void RemoveSubjectAsync(object param)
         {
             Subject subject = (Subject)param;
-            //TODO: hot reload
-
-            string code = param as string;
-            for (int i = 0; i < SubjectSubscribed.Count; i++)
-            {
-                if (SubjectSubscribed[i].SyllabusCode == code)
-                {
-                    SubjectSubscribed.RemoveAt(i);
-                    Properties.Settings.Default.SubjectsSubcripted.Remove(code);
-                    Properties.Settings.Default.Save();
-                    return;
-                }
-            }
+            SubscriptionManager.Unsubscribe(subject);
+            SubjectSubscribed.Remove(subject);
         }
 
         public DelegateCommand RemoveSelectedSubjectsCommand { get; set; }
@@ -143,22 +134,16 @@ namespace PastPaperHelper.ViewModels
             {
                 Subject subject = (Subject)list[0];
                 SubjectSubscribed.Remove(subject);
-                Properties.Settings.Default.SubjectsSubcripted.Remove(subject.SyllabusCode);
+                SubscriptionManager.Unsubscribe(subject);
             }
-            Properties.Settings.Default.Save();
         }
 
         public DelegateCommand AddSelectedSubjectCommand { get; set; }
         private void AddSelectedSubject(object param)
         {
-            Dictionary<Subject, PaperRepository> item = SubscriptionManager.Subscription;
             Subject subject = (Subject)param;
-            if (!SubjectSubscribed.Contains(subject))
-            {
-                SubjectSubscribed.Add(subject);
-                Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
-                Properties.Settings.Default.Save();
-            }
+            SubscriptionManager.Subscribe(subject);
+            SubjectSubscribed.Add(subject);
         }
 
         public DelegateCommand BrowseCommand { get; set; }

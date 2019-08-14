@@ -118,7 +118,7 @@ namespace PastPaperHelper.Sources
                         Name = node.Attributes["Name"].Value,
                         SyllabusCode = node.Attributes["SyllabusCode"].Value,
                     };
-                    SubjectUrlMap.Add(subj, node.Attributes["Url"].Value);//TODO: Execute in the UI  thread
+                    SubjectUrlMap.Add(subj, node.Attributes["Url"].Value);
                     AllSubjects[i++] = subj;
                 }
             }
@@ -219,8 +219,8 @@ namespace PastPaperHelper.Sources
         public static void Subscribe(Subject subject)
         {
             if (Subscription.ContainsKey(subject)) return;
-            
-            Subscription.Add(subject, null);//TODO: hot reload subscription here
+            //TODO: download papers async
+            Subscription.Add(subject, PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]));
             if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode))
             {
                 Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);

@@ -8,12 +8,14 @@
       xmlns:converters="clr-namespace:PastPaperHelper.Converters"
       xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
-    xmlns:source="clr-namespace:PastPaperHelper.Sources"
-      xmlns:models="clr-namespace:PastPaperHelper.Models" x:Name="rootDlg" x:Class="PastPaperHelper.Views.SettingsView"
+      xmlns:source="clr-namespace:PastPaperHelper.Sources"
+      xmlns:models="clr-namespace:PastPaperHelper.Models" 
+      x:Name="rootDlg"
+      x:Class="PastPaperHelper.Views.SettingsView"
       mc:Ignorable="d" Background="White" SizeChanged="RootDlg_SizeChanged"
-      d:DesignHeight="450" d:DesignWidth="800" Style="{StaticResource MaterialDesignEmbeddedDialogHost}">
+      d:DesignHeight="500" d:DesignWidth="800" Style="{StaticResource MaterialDesignEmbeddedDialogHost}">
     <materialDesign:DialogHost.Resources>
-        <local:PaperSourceConverter x:Key="PaperSourceConverter"/>
+        <converters:PaperSourceConverter x:Key="PaperSourceConverter"/>
         <converters:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
         <converters:MessageVisibilityConverter x:Key="MessageVisibilityConverter"/>
         <converters:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
@@ -88,7 +90,7 @@
                             </Binding>
                         </TextBox>
                         <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Browse" Margin="0,4,0,0" Width="80" Command="{Binding BrowseCommand}"/>
-                        <ComboBox x:Name="source" SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceConverter}, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Source" Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" Margin="0,55,0,0">
+                        <ComboBox x:Name="source" SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceConverter}}" materialDesign:HintAssist.Hint="Source" Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" Margin="0,55,0,0">
                             <ComboBoxItem Content="GCE Guide (https://papers.gceguide.com/)"/>
                             <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)"/>
                             <ComboBoxItem Content="CIEnotes (https://www.cienotes.com/)"/>
@@ -154,7 +156,7 @@
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <Grid>
-                <ListBox x:Name="SubjectList" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}">
+                <ListBox x:Name="SubjectList" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectionMode="Extended">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Subject}">
                             <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
@@ -170,8 +172,10 @@
                                             </MultiBinding>
                                         </TextBlock.Text>
                                     </TextBlock>
-                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}" CommandParameter="{Binding}"
-                                    Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Width="16" Height="16" BorderBrush="LightGray" Background="LightGray" Foreground="Black" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                            Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}, Mode=FindAncestor}}" 
+                                            CommandParameter="{Binding}"
+                                            Visibility="{Binding IsMouseOver, Converter={StaticResource IsMouseOverToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
                                         <materialDesign:PackIcon Kind="Close" Width="10" Height="10"/>
                                     </Button>
                                 </Grid>
@@ -179,7 +183,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <TextBlock Text="Add your first subject..." FontStyle="Italic" Visibility="{Binding ElementName=SubjectList, Path=Items.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
+                <TextBlock Text="Empty..." FontStyle="Italic" FontSize="20" FontWeight="DemiBold" Visibility="{Binding ElementName=SubjectList, Path=Items.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
             </Grid>
         </GroupBox>
     </Grid>

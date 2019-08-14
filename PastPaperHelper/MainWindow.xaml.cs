@@ -24,7 +24,7 @@ namespace PastPaperHelper
             MainSnackbar = mainSnackbar;
             
             //OOBE Test
-            Properties.Settings.Default.FirstRun = true;
+            //Properties.Settings.Default.FirstRun = true;
             Properties.Settings.Default.Save();
 
             bool updateSubjectList =false, updateSubscription=false;
