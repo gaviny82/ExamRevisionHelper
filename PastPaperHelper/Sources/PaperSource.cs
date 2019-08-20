@@ -112,7 +112,7 @@ namespace PastPaperHelper.Sources
     public static class PaperSources
     {
         public static PaperSource GCE_Guide { get; } = new PaperSourceGCEGuide();
-        public static PaperSource PapaCambridge { get; } //= new PaperSourcePapaCambridge();
+        public static PaperSource PapaCambridge { get; } = new PaperSourcePapaCambridge();
         public static PaperSource CIE_Notes { get; } //= new PaperSourceCIENotes();
     }
 }

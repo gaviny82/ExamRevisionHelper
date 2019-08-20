@@ -81,6 +81,7 @@ namespace PastPaperHelper.ViewModels
             {
                 _paperSource = value;
                 RaisePropertyChangedEvent("PaperSource");
+                if (value == null) return;
                 PaperSource.CurrentPaperSource = value;
                 Properties.Settings.Default.PaperSource = value.Name;
                 Properties.Settings.Default.Save();
