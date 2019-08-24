@@ -98,8 +98,8 @@ namespace PastPaperHelper.Sources
                     {
                         XmlElement paperNode = doc.CreateElement("Paper");
                         paperNode.SetAttribute("Url", paper.Url);
-                        paperNode.SetAttribute("Component", paper.ComponentCode.ToString());
-                        paperNode.SetAttribute("Variant", paper.VariantCode.ToString());
+                        paperNode.SetAttribute("Component", paper.Component.ToString());
+                        paperNode.SetAttribute("Variant", paper.Variant.ToString());
                         paperNode.SetAttribute("Type", ((int)paper.Type).ToString());
                         series.AppendChild(paperNode);
                     }

@@ -9,6 +9,8 @@
         public PaperRepository(Subject subject)
         {
             Subject = subject;
+            Syllabus = new Syllabus[0];
+            Exams = new Exam[0];
         }
 
     }

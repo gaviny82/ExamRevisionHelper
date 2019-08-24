@@ -24,7 +24,7 @@ namespace PastPaperHelper.Sources
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                string file = "/" + nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
+                string file = nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
                 string[] split = file.Substring(0, file.Length - 4).Split('_');
 
                 if (split.Length > 4 || split.Length < 3) continue;
@@ -75,7 +75,7 @@ namespace PastPaperHelper.Sources
                     case "sy":
                         tmpSyllabus.Add(new Syllabus
                         {
-                            Url = url + file,
+                            Url = url + "/" + file,
                             Year = yr
                         });
                         continue;
@@ -84,7 +84,7 @@ namespace PastPaperHelper.Sources
                         exam.GradeThreshold = new GradeThreshold
                         {
                             Exam = exam,
-                            Url = url + file,
+                            Url = url + "/" + file,
                         };
                         continue;
 
@@ -92,7 +92,7 @@ namespace PastPaperHelper.Sources
                         exam.ExaminersReport = new ExaminersReport
                         {
                             Exam = exam,
-                            Url = url + file,
+                            Url = url + "/" + file,
                         };
                         continue;
 
@@ -114,11 +114,10 @@ namespace PastPaperHelper.Sources
                 tmpRepo[exam].Add(new Paper
                 {
                     Exam = exam,
-                    //Exames will be assigned later
-                    ComponentCode = compCode,
-                    VariantCode = varCode,
+                    Component = compCode,
+                    Variant = varCode,
                     Type = t,
-                    Url = url + file,
+                    Url = url + "/" + file,
                 });
             }
             foreach (KeyValuePair<Exam, List<Paper>> item in tmpRepo)

@@ -8,9 +8,45 @@
     public class Paper : PastPaperResource
     {
         public Exam Exam { get; set; }
-        public char ComponentCode { get; set; }
-        public char VariantCode { get; set; }
+        public char Component { get; set; }
+        public char Variant { get; set; }
         public FileTypes Type { get; set; }
+
+        public Paper() { }
+
+        public Paper(string fileName, Exam exam, string uri)
+        {
+            string[] split = fileName.Substring(0, fileName.Length - 4).Split('_');
+
+            if (split.Length < 3) return;
+
+            Exam = exam;
+            Url = uri;
+
+            switch (split[2])
+            {
+                default: Type = FileTypes.Unknown; break;
+                case "ir": Type = FileTypes.ConfidentialInstructions; break;
+                case "ci": Type = FileTypes.ConfidentialInstructions; break;
+                case "su": Type = FileTypes.ListeningAudio; break;
+                case "sf": Type = FileTypes.ListeningAudio; break;
+                case "ms": Type = FileTypes.MarkScheme; break;
+                case "qp": Type = FileTypes.QuestionPaper; break;
+                case "rp": Type = FileTypes.SpeakingTestCards; break;
+                case "tn": Type = FileTypes.TeachersNotes; break;
+                case "qr": Type = FileTypes.Transcript; break;
+                case "in": Type = FileTypes.Insert; break;
+                case "in2": Type = FileTypes.Insert; break;
+                case "i2": Type = FileTypes.Insert; break;
+            }
+
+            if (split.Length > 3)
+            {
+                Component = split[3][0];
+                if (split[3].Length > 1) Variant = split[3][1];
+            }
+
+        }
     }
 
     public class Syllabus : PastPaperResource

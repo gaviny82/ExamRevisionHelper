@@ -185,8 +185,8 @@ namespace PastPaperHelper.Sources
                             papers.Add(new Paper
                             {
                                 Exam = exam,
-                                ComponentCode = char.Parse(paperNode.Attributes["Component"].Value),
-                                VariantCode = char.Parse(paperNode.Attributes["Variant"].Value),
+                                Component = char.Parse(paperNode.Attributes["Component"].Value),
+                                Variant = char.Parse(paperNode.Attributes["Variant"].Value),
                                 Type = (FileTypes)int.Parse(paperNode.Attributes["Type"].Value),
                                 Url = paperNode.Attributes["Url"].Value
                             });
