@@ -18,13 +18,13 @@ namespace PastPaperHelper.Sources
             PaperRepository repo = new PaperRepository(subject);
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
-            HtmlNodeCollection examNodes = doc.DocumentNode.SelectNodes("/html/body/section[2]/div/div/div[1]/div[1]/div/div[2]/div/div/section/div/div/div/div/div/div/div/div/table/tbody/tr[@class=\"point\"]");
+            HtmlNodeCollection examNodes = doc.DocumentNode.SelectNodes("//table[1]//td");
 
             string resUrl1 = "", resUrl2 = "";
             List<Exam> examList = new List<Exam>();
             foreach (HtmlNode examNode in examNodes)
             {
-                HtmlNode linkNode = examNode.ChildNodes.FindFirst("td").ChildNodes.FindFirst("a");
+                HtmlNode linkNode = examNode.ChildNodes.FindFirst("a");
                 string examUrl = linkNode.Attributes["href"].Value;
                 HtmlNode textNode = linkNode.ChildNodes.FindFirst("label");
                 string label = textNode.InnerText;
@@ -51,7 +51,12 @@ namespace PastPaperHelper.Sources
                 };
 
                 HtmlDocument examPage = web.Load(examUrl);
-                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectNodes("//*[@id=\"data\"]/div/div/div[1]/div/table/tbody//td[@data-name!=\"..\"]");
+                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectNodes("//table[1]/tbody//td[@data-name!=\"..\"]");
+
+                foreach (HtmlNode paperNode in paperNodes)
+                {
+
+                }
 
                 examList.Add(exam);
             }

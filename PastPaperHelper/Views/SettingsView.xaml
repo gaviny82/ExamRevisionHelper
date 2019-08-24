@@ -140,6 +140,10 @@
             </StackPanel>
         </ScrollViewer>
 
+        <!-- TODO: Performance improvement 
+        1. Remove the local dialog host
+        2. Load subjects quicker
+        -->
         <GroupBox Header="Subjects" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="10" Grid.Row="1">
             <GroupBox.HeaderTemplate>
                 <DataTemplate>

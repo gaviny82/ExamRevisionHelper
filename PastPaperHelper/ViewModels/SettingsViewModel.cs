@@ -45,13 +45,8 @@ namespace PastPaperHelper.ViewModels
             BrowseCommand = new DelegateCommand(Browse);
 
             Path = Properties.Settings.Default.Path;
-            switch (Properties.Settings.Default.PaperSource)
-            {
-                default: PaperSource = PaperSources.PapaCambridge; break;
-                case "GCE Guide": PaperSource = PaperSources.GCE_Guide; break;
-                case "PapaCambridge": PaperSource = PaperSources.PapaCambridge; break;
-                case "CIE Notes": PaperSource = PaperSources.CIE_Notes; break;
-            }
+            PaperSource = PaperSource.CurrentPaperSource;
+
             AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
             AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
         }
