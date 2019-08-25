@@ -71,10 +71,10 @@
         </DataTemplate>
     </Grid.Resources>
     <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="486"/>
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
-    <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectedIndex="0">
+    <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectedIndex="0" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}">
         <ComboBox.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Subject}">
                 <Border x:Name="border1" Margin="0,-8" Padding="2,3,0,4" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}" Background="Transparent">
@@ -82,10 +82,14 @@
                         <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
                         <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                         <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
-                        <StackPanel Orientation="Horizontal" Margin="32,0,0,0" VerticalAlignment="Top" Height="18">
-                            <TextBlock Text="{Binding Curriculum}" FontWeight="Bold" Margin="8,0,0,0"/>
-                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="6,0,0,0"/>
-                        </StackPanel>
+                        <TextBlock Margin="40,0,0,0" VerticalAlignment="Top" FontWeight="Bold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Mode=Self}}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="Curriculum"/>
+                                    <Binding Path="Name"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </Grid>
                 </Border>
             </DataTemplate>
@@ -118,14 +122,23 @@
             </ControlTemplate>
         </ItemsControl.Template>
     </ItemsControl>
-    <TextBlock Grid.Column="1" Text="{Binding SelectedExamSeries.Series}"/>
+
+    <TextBlock Grid.Column="1" Margin="8,12" VerticalAlignment="Top" FontSize="24" FontWeight="Bold">
+        <TextBlock.Text>
+            <MultiBinding StringFormat="{}{0} {1}">
+                <Binding Path="SelectedExamSeries.Series"/>
+                <Binding Path="SelectedExamSeries.Year"/>
+            </MultiBinding>
+        </TextBlock.Text>
+    </TextBlock>
+    <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
     <ListView Grid.Column="1" ItemsSource="{Binding SelectedExamSeries.Papers}" Margin="8,50,8,8" MouseDoubleClick="ListView_MouseDoubleClick">
         <ListView.View>
             <GridView>
                 <GridView.Columns>
                     <GridViewColumn Header="File Name" DisplayMemberBinding="{Binding Url}"/>
-                    <GridViewColumn Header="Component" DisplayMemberBinding="{Binding ComponentCode}"/>
-                    <GridViewColumn Header="Variant" DisplayMemberBinding="{Binding VariantCode}"/>
+                    <GridViewColumn Header="Component" DisplayMemberBinding="{Binding Component}"/>
+                    <GridViewColumn Header="Variant" DisplayMemberBinding="{Binding Variant}"/>
                 </GridView.Columns>
             </GridView>
         </ListView.View>
