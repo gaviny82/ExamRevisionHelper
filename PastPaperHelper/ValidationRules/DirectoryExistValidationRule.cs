@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace PastPaperHelper.ValidationRules
@@ -8,7 +9,10 @@ namespace PastPaperHelper.ValidationRules
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return Directory.Exists(value as string) ? ValidationResult.ValidResult : new ValidationResult(false, "Directory does not exisit.");
+            string path = value as string;
+            if (string.IsNullOrEmpty(path)) return new ValidationResult(false, "Directory does not exisit.");
+            string[] split = path.Split('\\');
+            return Directory.Exists(path.Substring(0,path.Length-split.Last().Length-1)) ? ValidationResult.ValidResult : new ValidationResult(false, "Directory does not exisit.");
         }
     }
 }

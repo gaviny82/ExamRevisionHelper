@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,6 +19,7 @@ namespace PastPaperHelper.ViewModels
         {
             SaveCommand = new DelegateCommand(Save);
             BrowseCommand = new DelegateCommand(Browse);
+            Path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)+"\\Past Papers";
 
             Task.Factory.StartNew(() =>
             {
@@ -65,7 +67,7 @@ namespace PastPaperHelper.ViewModels
             CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true };
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                Path = dialog.FileName;
+                Path = dialog.FileName + "\\Past Papers";
             }
         }
 
@@ -73,7 +75,10 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand SaveCommand { get; set; }
         private void Save(object param)
         {
-            if (!Directory.Exists(Path)) return;
+            string[] split = Path.Split('\\');
+            if (!Directory.Exists(Path.Substring(0, Path.Length - split.Last().Length - 1))) return;
+
+            if (!Directory.Exists(Path)) Directory.CreateDirectory(Path);
 
             Properties.Settings.Default.Path = Path;
             Properties.Settings.Default.SubjectsSubcripted.Clear();

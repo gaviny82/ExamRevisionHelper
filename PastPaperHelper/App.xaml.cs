@@ -1,5 +1,6 @@
 ﻿using PastPaperHelper.Sources;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace PastPaperHelper
@@ -11,6 +12,7 @@ namespace PastPaperHelper
     {
         static App()
         {
+            if (!Directory.Exists(Environment.CurrentDirectory + "\\data")) Directory.CreateDirectory(Environment.CurrentDirectory + "\\data");
             PaperSource source = null;
             switch (PastPaperHelper.Properties.Settings.Default.PaperSource)
             {
