@@ -9,6 +9,7 @@ namespace PastPaperHelper.ViewModels
         {
             OpenExamSeriesCommand = new DelegateCommand(OpenExamSeries);
             OpenOnlineResourceCommand = new DelegateCommand(OpenOnlineResource);
+            SelectedExamSeries = new Exam();
         }
 
 
@@ -29,8 +30,7 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand OpenOnlineResourceCommand { get; set; }
         private void OpenOnlineResource(object param)
         {
-            PastPaperResource res = param as PastPaperResource;
-            if (res != null) Process.Start(res.Url);
+            if (param is PastPaperResource res) Process.Start(res.Url);
         }
     }
 }

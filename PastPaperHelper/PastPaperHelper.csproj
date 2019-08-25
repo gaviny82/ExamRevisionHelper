@@ -80,6 +80,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
     <Compile Include="Converters\IsNullToIsEnabledConverter.cs" />
     <Compile Include="Converters\IsMouseOverToVisibilityConverter.cs" />
     <Compile Include="Converters\MessageVisibilityConverter.cs" />

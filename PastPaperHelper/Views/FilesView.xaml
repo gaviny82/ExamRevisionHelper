@@ -14,7 +14,7 @@
         <Converters:SubjectToExamYearConverter x:Key="SubjectToExamYearConverter"/>
         <Converters:IsNullToIsEnabledConverter x:Key="IsNullToIsEnabledConverter"/>
         <Converters:IsSyllabusUpdatedToVisibilityConverter x:Key="IsSyllabusUpdatedToVisibilityConverter"/>
-        <Converters:IsNullToIsVisibilityConverter x:Key="IsNullToIsVisibilityConverter"/>
+        <Converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"/>
 
         <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
             <Border Margin="8">
@@ -45,7 +45,7 @@
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" 
                                         CommandParameter="{Binding Winter}"/>
                         <Button Grid.Row="0" Grid.Column="2" Content="Specimen" Margin="0,0,8,0" ToolTip="View specimen papers" 
-                                        Visibility="{Binding Specimen, Converter={StaticResource IsNullToIsVisibilityConverter}}"
+                                        Visibility="{Binding Specimen, Converter={StaticResource IsNullToVisibilityConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Specimen}"/>
                         <materialDesign:Chip Grid.Column="1" Grid.ColumnSpan="2" Content="New Syllabus" Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" CommandParameter="{Binding Syllabus}">
@@ -123,7 +123,7 @@
         </ItemsControl.Template>
     </ItemsControl>
 
-    <TextBlock Grid.Column="1" Margin="8,12" VerticalAlignment="Top" FontSize="24" FontWeight="Bold">
+    <TextBlock Grid.Column="1" Margin="8,12" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" FontWeight="Bold" Visibility="{Binding SelectedExamSeries.Year, Converter={StaticResource IsNullToVisibilityConverter}}">
         <TextBlock.Text>
             <MultiBinding StringFormat="{}{0} {1}">
                 <Binding Path="SelectedExamSeries.Series"/>
@@ -131,6 +131,23 @@
             </MultiBinding>
         </TextBlock.Text>
     </TextBlock>
+    <materialDesign:Chip x:Name="er_chip" Grid.Column="1" Content="Examiners Report" VerticalAlignment="Top" HorizontalAlignment="Right" 
+                         Visibility="{Binding SelectedExamSeries.ExaminersReport, Converter={StaticResource IsNullToVisibilityConverter}}"
+                         Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
+                         CommandParameter="{Binding SelectedExamSeries.ExaminersReport}">
+        <materialDesign:Chip.Icon>
+            <materialDesign:PackIcon Kind="FileDocumentBoxCheck"/>
+        </materialDesign:Chip.Icon>
+    </materialDesign:Chip>
+    <materialDesign:Chip x:Name="gt_chip" Grid.Column="1" Content="Grade Threshold" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,42,0,0"
+                         Visibility="{Binding SelectedExamSeries.GradeThreshold, Converter={StaticResource IsNullToVisibilityConverter}}"
+                         Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
+                         CommandParameter="{Binding SelectedExamSeries.GradeThreshold}">
+        <materialDesign:Chip.Icon>
+            <materialDesign:PackIcon Kind="ChartBar"/>
+        </materialDesign:Chip.Icon>
+    </materialDesign:Chip>
+
     <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
     <ListView Grid.Column="1" ItemsSource="{Binding SelectedExamSeries.Papers}" Margin="8,50,8,8" MouseDoubleClick="ListView_MouseDoubleClick">
         <ListView.View>

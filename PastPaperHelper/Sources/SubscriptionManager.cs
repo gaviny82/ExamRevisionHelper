@@ -177,7 +177,7 @@ namespace PastPaperHelper.Sources
                         XmlNode er = examNode.SelectSingleNode("./ExaminersReport");
                         if (er != null)
                         {
-                            exam.GradeThreshold = new GradeThreshold { Url = er.Attributes["Url"].Value, Exam = exam };
+                            exam.ExaminersReport = new ExaminersReport { Url = er.Attributes["Url"].Value, Exam = exam };
                         }
 
                         foreach (XmlNode paperNode in examNode.SelectNodes("./Paper"))
