@@ -39,7 +39,7 @@
                 case "in2": Type = FileTypes.Insert; break;
                 case "i2": Type = FileTypes.Insert; break;
             }
-
+            //TODO: consider the last 2-digit split part as the component code
             if (split.Length > 3)
             {
                 Component = split[3][0];

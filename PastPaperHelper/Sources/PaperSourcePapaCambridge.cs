@@ -57,16 +57,11 @@ namespace PastPaperHelper.Sources
                     string fileName = paperNode.Attributes["data-name"].Value;
                     string fileUrl = "https://pastpapers.papacambridge.com/" + paperNode.Attributes["data-href"].Value;
                     if (fileName.Contains("gt"))
-                    {
-                        exam.GradeThreshold= new GradeThreshold();
-                        //
-                    }
+                        exam.GradeThreshold = new GradeThreshold { Exam = exam, Url = fileUrl };
                     else if(fileName.Contains("er"))
-                    {
-                        exam.ExaminersReport = new ExaminersReport();
-                        //
-                    }
-                    else paperList.Add(new Paper(fileName, exam, fileUrl));
+                        exam.ExaminersReport = new ExaminersReport { Exam = exam, Url = fileUrl };//Not available
+                    else
+                        paperList.Add(new Paper(fileName, exam, fileUrl));
                 }
                 exam.Papers = paperList.ToArray();
                 examList.Add(exam);
