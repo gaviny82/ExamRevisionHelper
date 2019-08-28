@@ -100,6 +100,7 @@
     <Compile Include="Converters\SubjectToPapersConverter.cs" />
     <Compile Include="Sources\SubscriptionManager.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TouchableScrollViewer.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\OobeViewModel.cs" />
     <Compile Include="Views\FilesView.xaml.cs">
