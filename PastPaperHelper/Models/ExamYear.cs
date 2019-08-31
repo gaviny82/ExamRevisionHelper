@@ -1,6 +1,6 @@
 ﻿namespace PastPaperHelper.Models
 {
-    class ExamYear
+    public class ExamYear
     {
         public string Year { get; set; }
         public Syllabus Syllabus { get; set; }

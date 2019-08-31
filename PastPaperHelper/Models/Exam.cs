@@ -1,4 +1,6 @@
-﻿namespace PastPaperHelper.Models
+﻿using System.Xml;
+
+namespace PastPaperHelper.Models
 {
     public class Exam
     {
@@ -8,7 +10,19 @@
         public GradeThreshold GradeThreshold { get; set; }
         public ExaminersReport ExaminersReport { get; set; }
         public Paper[] Papers { get; set; }
-    }
 
-    public enum Curriculums { IGCSE, ALevel }
+        public Exam()
+        {
+
+        }
+        public Exam(XmlNode node)
+        {
+            throw new System.Exception();
+        }
+
+        public XmlNode GetXmlNode()
+        {
+            return null;
+        }
+    }
 }

@@ -69,6 +69,15 @@ namespace PastPaperHelper.Sources
                 subjNode.SetAttribute("SyllabusCode", subject.SyllabusCode);
                 data.AppendChild(subjNode);
 
+                foreach (ExamYear year in repo)
+                {
+                    XmlElement yearNode = doc.CreateElement("ExamYear");
+                    yearNode.SetAttribute("Year", year.Year);
+                    if (year.Syllabus != null)  yearNode.SetAttribute("Syllabus", year.Syllabus.Url);
+
+                }
+
+
                 foreach (Syllabus sy in repo.Syllabus)
                 {
                     XmlElement syl = doc.CreateElement("Syllabus");

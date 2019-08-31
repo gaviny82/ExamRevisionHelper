@@ -68,7 +68,7 @@ namespace PastPaperHelper.Sources
             }
             //read specimen papers and syllabus
 
-            repo.Exams = examList.ToArray();
+            //repo.Exams = examList.ToArray();
             return repo;
         }
 

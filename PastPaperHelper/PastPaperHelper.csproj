@@ -87,12 +87,12 @@
     <Compile Include="Converters\PaperSourceConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
     <Compile Include="Converters\SubjectToExamYearConverter.cs" />
+    <Compile Include="Models\Curriculums.cs" />
     <Compile Include="Models\Exam.cs" />
-    <Compile Include="Models\ExamYearViewModel.cs" />
+    <Compile Include="Models\ExamYear.cs" />
     <Compile Include="Models\Paper.cs" />
     <Compile Include="Models\PaperRepository.cs" />
     <Compile Include="Models\Subject.cs" />
-    <Compile Include="Models\ExamYearsCollection.cs" />
     <Compile Include="Sources\PaperSourceCIENotes.cs" />
     <Compile Include="Sources\PaperSourcePapaCambridge.cs" />
     <Compile Include="Sources\PaperSourceGCEGuide.cs" />

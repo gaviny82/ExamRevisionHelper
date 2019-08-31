@@ -19,8 +19,8 @@ namespace PastPaperHelper.Sources
             HtmlDocument doc = web.Load(SubscriptionManager.SubjectUrlMap[subject]);
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='file']");
 
+            PaperRepository repository = new PaperRepository(subject);
             Dictionary<Exam, List<Paper>> tmpRepo = new Dictionary<Exam, List<Paper>>();
-            List<Syllabus> tmpSyllabus = new List<Syllabus>();
 
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -30,34 +30,44 @@ namespace PastPaperHelper.Sources
                 if (split.Length > 4 || split.Length < 3) continue;
 
                 string yr = "20" + split[1].Substring(1);
-
-                ExamSeries es;
-                switch (split[1][0])
+                ExamYear year = repository.GetExamYear(yr);
+                if (year == null)
                 {
-                    default: es = ExamSeries.Specimen; break;
-                    case 'm': es = ExamSeries.Spring; break;
-                    case 's': es = ExamSeries.Summer; break;
-                    case 'w': es = ExamSeries.Winter; break;
+                    year = new ExamYear { Year = yr };
+                    repository.Add(year);
                 }
 
                 Exam exam = null;
-                foreach (KeyValuePair<Exam, List<Paper>> item in tmpRepo)
+                switch (split[1][0])
                 {
-                    if (item.Key.Year == yr && item.Key.Series == es)
-                    {
-                        exam = item.Key;
-                        break;
-                    }
-                }
-                if (exam == null)
-                {
-                    exam = new Exam
-                    {
-                        Subject = subject,
-                        Year = yr,
-                        Series = es
-                    };
-                    tmpRepo.Add(exam, new List<Paper>());
+                    default:
+                        if (year.Specimen == null)
+                        {
+                            exam = new Exam { Series = ExamSeries.Specimen };
+                            year.Specimen = exam;
+                        }
+                        else exam = year.Specimen;  break;
+                    case 'm':
+                        if (year.Spring == null)
+                        {
+                            exam = new Exam { Series = ExamSeries.Spring };
+                            year.Spring = exam;
+                        }
+                        else exam = year.Spring; break;
+                    case 's':
+                        if (year.Summer == null)
+                        {
+                            exam = new Exam { Series = ExamSeries.Summer };
+                            year.Summer = exam;
+                        }
+                        else exam = year.Summer; break;
+                    case 'w':
+                        if (year.Winter == null)
+                        {
+                            exam = new Exam { Series = ExamSeries.Winter };
+                            year.Winter = exam;
+                        }
+                        else exam = year.Winter; break;
                 }
 
                 FileTypes t;
@@ -73,11 +83,11 @@ namespace PastPaperHelper.Sources
                     case "rp": t = FileTypes.SpeakingTestCards; break;
 
                     case "sy":
-                        tmpSyllabus.Add(new Syllabus
+                        year.Syllabus = new Syllabus
                         {
                             Url = url + "/" + file,
                             Year = yr
-                        });
+                        };
                         continue;
 
                     case "gt":
@@ -120,16 +130,14 @@ namespace PastPaperHelper.Sources
                     Url = url + "/" + file,
                 });
             }
+
+
             foreach (KeyValuePair<Exam, List<Paper>> item in tmpRepo)
             {
                 item.Key.Papers = item.Value.ToArray();
             }
 
-            return new PaperRepository(subject)
-            {
-                Exams = tmpRepo.Keys.ToArray(),
-                Syllabus = tmpSyllabus.ToArray()
-            };
+            return repository;
         }
 
         public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
