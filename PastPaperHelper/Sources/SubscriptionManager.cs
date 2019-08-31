@@ -139,64 +139,43 @@ namespace PastPaperHelper.Sources
             else
             {
                 //Load from local files
-                //foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
-                //{
-                //    TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subject);
-                //    PaperRepository repo = new PaperRepository(subject);
-                //    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
-                //    List<Syllabus> syllabuses = new List<Syllabus>();
-                //    foreach (XmlNode syllabusNode in subjectNode.SelectNodes("./Syllabus"))
-                //    {
-                //        //init syllabuses
-                //        syllabuses.Add(new Syllabus
-                //        {
-                //            Year = syllabusNode.Attributes["Year"].Value,
-                //            Url = syllabusNode.Attributes["Url"].Value
-                //        });
-                //    }
-                //    repo.Syllabus = syllabuses.ToArray();
+                foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
+                {
+                    TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subject);
+                    PaperRepository repo = new PaperRepository(subject);
+                    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
-                //    List<Exam> exams = new List<Exam>();
-                //    foreach (XmlNode examNode in subjectNode.SelectNodes("./ExamSeries"))
-                //    {
-                //        List<Paper> papers = new List<Paper>();
-                //        Exam exam = new Exam
-                //        {
-                //            Series = (ExamSeries)int.Parse(examNode.Attributes["Series"].Value),
-                //            Subject = subject,
-                //            Year = examNode.Attributes["Year"].Value
-                //        };
+                    foreach (XmlNode yearNode in subjectNode.ChildNodes)
+                    {
+                        ExamYear year = new ExamYear { Year = yearNode.Attributes["Year"].Value };
+                        if (yearNode.Attributes["Syllabus"] != null) year.Syllabus = new Syllabus { Year = year.Year, Url = yearNode.Attributes["Syllabus"].Value };
 
-                //        XmlNode gt = examNode.SelectSingleNode("./GradeThreshold");
-                //        if (gt != null)
-                //        {
-                //            exam.GradeThreshold = new GradeThreshold { Url = gt.Attributes["Url"].Value, Exam = exam };
-                //        }
+                        foreach (XmlNode examNode in yearNode.ChildNodes)
+                        {
+                            Exam exam = new Exam(examNode, subject);
+                            switch (exam.Series)
+                            {
+                                case ExamSeries.Spring:
+                                    year.Spring = exam;
+                                    break;
+                                case ExamSeries.Summer:
+                                    year.Summer = exam;
+                                    break;
+                                case ExamSeries.Winter:
+                                    year.Winter = exam;
+                                    break;
+                                default:
+                                    year.Specimen = exam;
+                                    break;
+                            }
+                        }
+                        repo.Add(year);
+                    }
 
-                //        XmlNode er = examNode.SelectSingleNode("./ExaminersReport");
-                //        if (er != null)
-                //        {
-                //            exam.ExaminersReport = new ExaminersReport { Url = er.Attributes["Url"].Value, Exam = exam };
-                //        }
-
-                //        foreach (XmlNode paperNode in examNode.SelectNodes("./Paper"))
-                //        {
-                //            papers.Add(new Paper
-                //            {
-                //                Exam = exam,
-                //                Component = char.Parse(paperNode.Attributes["Component"].Value),
-                //                Variant = char.Parse(paperNode.Attributes["Variant"].Value),
-                //                Type = (FileTypes)int.Parse(paperNode.Attributes["Type"].Value),
-                //                Url = paperNode.Attributes["Url"].Value
-                //            });
-                //        }
-                //        exam.Components = papers.ToArray();
-                //        exams.Add(exam);
-                //    }
-                //    repo.Exams = exams.ToArray();
-                //    Subscription.Add(subject, repo);
-                //}
+                    repo.Sort();
+                    Subscription.Add(subject, repo);
+                }
             }
         }
 

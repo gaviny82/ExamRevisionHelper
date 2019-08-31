@@ -189,6 +189,7 @@ namespace PastPaperHelper.Sources
                 }
             }
 
+            repository.Sort();
             return repository;
         }
 

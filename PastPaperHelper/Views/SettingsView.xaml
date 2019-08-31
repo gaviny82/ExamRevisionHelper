@@ -54,7 +54,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <materialDesign:PackIcon Kind="About" HorizontalAlignment="Left" VerticalAlignment="Top" Width="64" Height="64"/>
+            <materialDesign:PackIcon Kind="FileDocument" HorizontalAlignment="Left" VerticalAlignment="Top" Width="64" Height="64"/>
             <TextBlock Text="Past Paper Helper" VerticalAlignment="Center" Style="{StaticResource MaterialDesignDisplay1TextBlock}"/>
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" ToolTip="View changelog" Click="OpenReleases_Click">
                 <StackPanel Orientation="Horizontal">
@@ -163,8 +163,8 @@
                 <ListBox x:Name="SubjectList" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectionMode="Extended">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Subject}">
-                            <Border x:Name="border1" BorderThickness="0 0 0 1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-5" Background="Transparent">
-                                <Grid Width="300" Margin="0,0,0,5">
+                            <Border x:Name="border1" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-8" Background="Transparent">
+                                <Grid Width="300" Margin="5,6,5,5">
                                     <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
                                     <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                     <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
