@@ -16,7 +16,7 @@ namespace PastPaperHelper.Sources
         public override PaperRepository GetPapers(Subject subject, string url)
         {
             PaperRepository repo = new PaperRepository(subject);
-            HtmlWeb web = new HtmlWeb();
+            /*HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
             HtmlNodeCollection examNodes = doc.DocumentNode.SelectNodes("//table[1]//td[@data-name and @data-href]");
 
@@ -68,7 +68,7 @@ namespace PastPaperHelper.Sources
             }
             //read specimen papers and syllabus
 
-            //repo.Exams = examList.ToArray();
+            //repo.Exams = examList.ToArray();*/
             return repo;
         }
 

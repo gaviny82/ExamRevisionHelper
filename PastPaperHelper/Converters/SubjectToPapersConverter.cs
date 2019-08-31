@@ -6,16 +6,15 @@ using System.Windows.Data;
 
 namespace PastPaperHelper.Converters
 {
-    class SubjectToPapersConverter : IValueConverter
+    class SubjectToRepositoryConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Subject)
+            if (value is Subject subject)
             {
-                Subject subject = (Subject)value;
                 return SubscriptionManager.Subscription[subject];
             }
-            else return null;            
+            else return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

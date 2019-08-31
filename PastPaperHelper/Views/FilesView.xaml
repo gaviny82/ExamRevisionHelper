@@ -12,10 +12,10 @@
       d:DesignHeight="450" d:DesignWidth="800">
     <Grid.Resources>
         <Converters:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
-        <Converters:SubjectToExamYearConverter x:Key="SubjectToExamYearConverter"/>
         <Converters:IsNullToIsEnabledConverter x:Key="IsNullToIsEnabledConverter"/>
         <Converters:IsSyllabusUpdatedToVisibilityConverter x:Key="IsSyllabusUpdatedToVisibilityConverter"/>
         <Converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"/>
+        <Converters:SubjectToRepositoryConverter x:Key="SubjectToRepositoryConverter"/>
 
         <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
             <Border Margin="8">
@@ -97,7 +97,7 @@
         </ComboBox.ItemTemplate>
     </ComboBox>
     <ItemsControl Margin="8,58,0,16"
-                ItemsSource="{Binding ElementName=subjectSelector, Path=SelectedItem, Mode=OneWay, Converter={StaticResource SubjectToExamYearConverter}}" 
+                ItemsSource="{Binding ElementName=subjectSelector, Path=SelectedItem, Mode=OneWay, Converter={StaticResource SubjectToRepositoryConverter}}" 
                 ItemTemplate="{StaticResource ExamYearTemplate}"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 ScrollViewer.CanContentScroll="True"

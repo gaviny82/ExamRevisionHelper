@@ -47,8 +47,7 @@ namespace PastPaperHelper.Test
                 SyllabusCode = "0455"
             };
             var result = PaperSources.GCE_Guide.GetPapers(subj, SubscriptionManager.SubjectUrlMap[subj]);
-            Assert.IsNotNull(result.Exams);
-            Assert.IsNotNull(result.Subject);
+            Assert.IsNotNull(result);
         }
 
         [TestMethod]
@@ -67,7 +66,6 @@ namespace PastPaperHelper.Test
             repo.Add(phy, result);
             PaperSource.SaveSubscription(repo, doc);
             doc.Save(Environment.CurrentDirectory + "\\data\\physics.xml");
-            Assert.IsNotNull(result.Exams);
             Assert.IsNotNull(result.Subject);
         }
     }

@@ -10,7 +10,7 @@
         public Exam Exam { get; set; }
         public char Component { get; set; }
         public char Variant { get; set; }
-        public FileTypes Type { get; set; }
+        public ResourceType Type { get; set; }
 
         public Paper() { }
 
@@ -25,19 +25,19 @@
 
             switch (split[2])
             {
-                default: Type = FileTypes.Unknown; break;
-                case "ir": Type = FileTypes.ConfidentialInstructions; break;
-                case "ci": Type = FileTypes.ConfidentialInstructions; break;
-                case "su": Type = FileTypes.ListeningAudio; break;
-                case "sf": Type = FileTypes.ListeningAudio; break;
-                case "ms": Type = FileTypes.MarkScheme; break;
-                case "qp": Type = FileTypes.QuestionPaper; break;
-                case "rp": Type = FileTypes.SpeakingTestCards; break;
-                case "tn": Type = FileTypes.TeachersNotes; break;
-                case "qr": Type = FileTypes.Transcript; break;
-                case "in": Type = FileTypes.Insert; break;
-                case "in2": Type = FileTypes.Insert; break;
-                case "i2": Type = FileTypes.Insert; break;
+                default: Type = ResourceType.Unknown; break;
+                case "ir": Type = ResourceType.ConfidentialInstructions; break;
+                case "ci": Type = ResourceType.ConfidentialInstructions; break;
+                case "su": Type = ResourceType.ListeningAudio; break;
+                case "sf": Type = ResourceType.ListeningAudio; break;
+                case "ms": Type = ResourceType.MarkScheme; break;
+                case "qp": Type = ResourceType.QuestionPaper; break;
+                case "rp": Type = ResourceType.SpeakingTestCards; break;
+                case "tn": Type = ResourceType.TeachersNotes; break;
+                case "qr": Type = ResourceType.Transcript; break;
+                case "in": Type = ResourceType.Insert; break;
+                case "in2": Type = ResourceType.Insert; break;
+                case "i2": Type = ResourceType.Insert; break;
             }
             //TODO: consider the last 2-digit split part as the component code
             if (split.Length > 3)
@@ -66,9 +66,10 @@
 
 
     public enum ExamSeries { Spring, Summer, Winter, Specimen }
-    public enum FileTypes
+    public enum ResourceType
     {
         ExaminersReport,
+        GradeThreshold,
         ConfidentialInstructions,
         TeachersNotes,
         ListeningAudio,

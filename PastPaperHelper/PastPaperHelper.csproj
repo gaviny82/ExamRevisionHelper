@@ -86,7 +86,7 @@
     <Compile Include="Converters\MessageVisibilityConverter.cs" />
     <Compile Include="Converters\PaperSourceConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
-    <Compile Include="Converters\SubjectToExamYearConverter.cs" />
+    <Compile Include="Models\Component.cs" />
     <Compile Include="Models\Curriculums.cs" />
     <Compile Include="Models\Exam.cs" />
     <Compile Include="Models\ExamYear.cs" />

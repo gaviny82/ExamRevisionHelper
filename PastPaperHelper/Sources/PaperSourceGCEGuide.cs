@@ -37,50 +37,17 @@ namespace PastPaperHelper.Sources
                     repository.Add(year);
                 }
 
-                Exam exam = null;
-                switch (split[1][0])
-                {
-                    default:
-                        if (year.Specimen == null)
-                        {
-                            exam = new Exam { Series = ExamSeries.Specimen };
-                            year.Specimen = exam;
-                        }
-                        else exam = year.Specimen;  break;
-                    case 'm':
-                        if (year.Spring == null)
-                        {
-                            exam = new Exam { Series = ExamSeries.Spring };
-                            year.Spring = exam;
-                        }
-                        else exam = year.Spring; break;
-                    case 's':
-                        if (year.Summer == null)
-                        {
-                            exam = new Exam { Series = ExamSeries.Summer };
-                            year.Summer = exam;
-                        }
-                        else exam = year.Summer; break;
-                    case 'w':
-                        if (year.Winter == null)
-                        {
-                            exam = new Exam { Series = ExamSeries.Winter };
-                            year.Winter = exam;
-                        }
-                        else exam = year.Winter; break;
-                }
-
-                FileTypes t;
+                ResourceType t;
                 switch (split[2])
                 {
-                    default: t = FileTypes.Unknown; break;
-                    case "ir": t = FileTypes.ConfidentialInstructions; break;
-                    case "ci": t = FileTypes.ConfidentialInstructions; break;
-                    case "su": t = FileTypes.ListeningAudio; break;
-                    case "sf": t = FileTypes.ListeningAudio; break;
-                    case "ms": t = FileTypes.MarkScheme; break;
-                    case "qp": t = FileTypes.QuestionPaper; break;
-                    case "rp": t = FileTypes.SpeakingTestCards; break;
+                    default: t = ResourceType.Unknown; break;
+                    case "ir": t = ResourceType.ConfidentialInstructions; break;
+                    case "ci": t = ResourceType.ConfidentialInstructions; break;
+                    case "su": t = ResourceType.ListeningAudio; break;
+                    case "sf": t = ResourceType.ListeningAudio; break;
+                    case "ms": t = ResourceType.MarkScheme; break;
+                    case "qp": t = ResourceType.QuestionPaper; break;
+                    case "rp": t = ResourceType.SpeakingTestCards; break;
 
                     case "sy":
                         year.Syllabus = new Syllabus
@@ -90,28 +57,89 @@ namespace PastPaperHelper.Sources
                         };
                         continue;
 
-                    case "gt":
-                        exam.GradeThreshold = new GradeThreshold
-                        {
-                            Exam = exam,
-                            Url = url + "/" + file,
-                        };
-                        continue;
-
-                    case "er":
-                        exam.ExaminersReport = new ExaminersReport
-                        {
-                            Exam = exam,
-                            Url = url + "/" + file,
-                        };
-                        continue;
-
-                    case "tn": t = FileTypes.TeachersNotes; break;
-                    case "qr": t = FileTypes.Transcript; break;
-                    case "in": t = FileTypes.Insert; break;
-                    case "in2": t = FileTypes.Insert; break;
-                    case "i2": t = FileTypes.Insert; break;
+                    case "gt": t = ResourceType.GradeThreshold; break;
+                    case "er": t = ResourceType.ExaminersReport; break;
+                    case "tn": t = ResourceType.TeachersNotes; break;
+                    case "qr": t = ResourceType.Transcript; break;
+                    case "in": t = ResourceType.Insert; break;
+                    case "in2": t = ResourceType.Insert; break;
+                    case "i2": t = ResourceType.Insert; break;
                 }
+
+                //Select an exsisting exam or create a new one
+                Exam exam;
+                switch (split[1][0])
+                {
+                    default:
+                        if (year.Specimen == null)
+                        {
+                            exam = new Exam
+                            {
+                                Year = yr,
+                                Subject = subject,
+                                Series = ExamSeries.Specimen
+                            };
+                            year.Specimen = exam;
+                        }
+                        else exam = year.Specimen; break;
+                    case 'm':
+                        if (year.Spring == null)
+                        {
+                            exam = new Exam
+                            {
+                                Year = yr,
+                                Subject = subject,
+                                Series = ExamSeries.Spring
+                            };
+                            year.Spring = exam;
+                        }
+                        else exam = year.Spring; break;
+                    case 's':
+                        if (year.Summer == null)
+                        {
+                            exam = new Exam
+                            {
+                                Year = yr,
+                                Subject = subject,
+                                Series = ExamSeries.Summer
+                            };
+                            year.Summer = exam;
+                        }
+                        else exam = year.Summer; break;
+                    case 'w':
+                        if (year.Winter == null)
+                        {
+                            exam = new Exam
+                            {
+                                Year = yr,
+                                Subject = subject,
+                                Series = ExamSeries.Winter
+                            };
+                            year.Winter = exam;
+                        }
+                        else exam = year.Winter; break;
+                }
+
+                //Create er/gt after exam is selected
+                if (t == ResourceType.ExaminersReport)
+                {
+                    exam.ExaminersReport = new ExaminersReport
+                    {
+                        Exam = exam,
+                        Url = url + "/" + file,
+                    };
+                    continue;
+                }
+                else if( t== ResourceType.GradeThreshold)
+                {
+                    exam.GradeThreshold = new GradeThreshold
+                    {
+                        Exam = exam,
+                        Url = url + "/" + file,
+                    };
+                    continue;
+                }
+
 
                 char compCode=' ', varCode=' ';
                 if (split.Length > 3)
@@ -121,20 +149,44 @@ namespace PastPaperHelper.Sources
                 }
 
                 //Create a new paper and add to temporary list
-                tmpRepo[exam].Add(new Paper
+                Paper paper = new Paper
                 {
                     Exam = exam,
                     Component = compCode,
                     Variant = varCode,
                     Type = t,
                     Url = url + "/" + file,
-                });
+                };
+                if (tmpRepo.ContainsKey(exam))
+                    tmpRepo[exam].Add(paper);
+                else
+                    tmpRepo.Add(exam, new List<Paper> { paper });
             }
 
 
             foreach (KeyValuePair<Exam, List<Paper>> item in tmpRepo)
             {
-                item.Key.Papers = item.Value.ToArray();
+                //Sort by components
+                Exam exam = item.Key;
+                Dictionary<char, List<Paper>> components = new Dictionary<char, List<Paper>>();
+                foreach (Paper paper in item.Value)
+                {
+                    if (!components.ContainsKey(paper.Component))
+                        components.Add(paper.Component, new List<Paper> { paper });
+                    else
+                        components[paper.Component].Add(paper);
+                }
+
+                exam.Components = new Component[components.Count];
+                int i = 0;
+                foreach (KeyValuePair<char, List<Paper>> component in components)
+                {
+                    exam.Components[i++] = new Component
+                    {
+                        Code = component.Key,
+                        Papers = component.Value.ToArray()
+                    };
+                }
             }
 
             return repository;

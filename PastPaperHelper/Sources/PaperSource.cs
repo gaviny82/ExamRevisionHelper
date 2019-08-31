@@ -20,6 +20,7 @@ namespace PastPaperHelper.Sources
             return tmp;
         }
         public abstract Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum);
+
         public abstract PaperRepository GetPapers(Subject subject, string url);
 
         public static void SaveSubjectList(Dictionary<Subject, string> map, XmlDocument doc)
@@ -74,45 +75,11 @@ namespace PastPaperHelper.Sources
                     XmlElement yearNode = doc.CreateElement("ExamYear");
                     yearNode.SetAttribute("Year", year.Year);
                     if (year.Syllabus != null)  yearNode.SetAttribute("Syllabus", year.Syllabus.Url);
-
-                }
-
-
-                foreach (Syllabus sy in repo.Syllabus)
-                {
-                    XmlElement syl = doc.CreateElement("Syllabus");
-                    syl.SetAttribute("Year", sy.Year);
-                    syl.SetAttribute("Url", sy.Url);
-                    subjNode.AppendChild(syl);
-                }
-
-                foreach (Exam exam in repo.Exams)
-                {
-                    XmlElement series = doc.CreateElement("ExamSeries");
-                    series.SetAttribute("Year", exam.Year);
-                    series.SetAttribute("Series", ((int)exam.Series).ToString());
-                    if (exam.GradeThreshold != null)
-                    {
-                        XmlElement gt = doc.CreateElement("GradeThreshold");
-                        gt.SetAttribute("Url", exam.GradeThreshold.Url);
-                        series.AppendChild(gt);
-                    }
-                    if (exam.ExaminersReport != null)
-                    {
-                        XmlElement er = doc.CreateElement("ExaminersReport");
-                        er.SetAttribute("Url", exam.ExaminersReport.Url);
-                        series.AppendChild(er);
-                    }
-                    foreach (Paper paper in exam.Papers)
-                    {
-                        XmlElement paperNode = doc.CreateElement("Paper");
-                        paperNode.SetAttribute("Url", paper.Url);
-                        paperNode.SetAttribute("Component", paper.Component.ToString());
-                        paperNode.SetAttribute("Variant", paper.Variant.ToString());
-                        paperNode.SetAttribute("Type", ((int)paper.Type).ToString());
-                        series.AppendChild(paperNode);
-                    }
-                    subjNode.AppendChild(series);
+                    if (year.Specimen != null) yearNode.AppendChild(year.Specimen.GetXmlNode(doc));
+                    if (year.Spring != null) yearNode.AppendChild(year.Spring.GetXmlNode(doc));
+                    if (year.Summer != null) yearNode.AppendChild(year.Summer.GetXmlNode(doc));
+                    if (year.Winter != null) yearNode.AppendChild(year.Winter.GetXmlNode(doc));
+                    subjNode.AppendChild(yearNode);
                 }
             }
         }

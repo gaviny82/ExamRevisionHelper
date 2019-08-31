@@ -139,64 +139,64 @@ namespace PastPaperHelper.Sources
             else
             {
                 //Load from local files
-                foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
-                {
-                    TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subject);
-                    PaperRepository repo = new PaperRepository(subject);
-                    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
+                //foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
+                //{
+                //    TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subject);
+                //    PaperRepository repo = new PaperRepository(subject);
+                //    if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) continue;
 
-                    List<Syllabus> syllabuses = new List<Syllabus>();
-                    foreach (XmlNode syllabusNode in subjectNode.SelectNodes("./Syllabus"))
-                    {
-                        //init syllabuses
-                        syllabuses.Add(new Syllabus
-                        {
-                            Year = syllabusNode.Attributes["Year"].Value,
-                            Url = syllabusNode.Attributes["Url"].Value
-                        });
-                    }
-                    repo.Syllabus = syllabuses.ToArray();
+                //    List<Syllabus> syllabuses = new List<Syllabus>();
+                //    foreach (XmlNode syllabusNode in subjectNode.SelectNodes("./Syllabus"))
+                //    {
+                //        //init syllabuses
+                //        syllabuses.Add(new Syllabus
+                //        {
+                //            Year = syllabusNode.Attributes["Year"].Value,
+                //            Url = syllabusNode.Attributes["Url"].Value
+                //        });
+                //    }
+                //    repo.Syllabus = syllabuses.ToArray();
 
-                    List<Exam> exams = new List<Exam>();
-                    foreach (XmlNode examNode in subjectNode.SelectNodes("./ExamSeries"))
-                    {
-                        List<Paper> papers = new List<Paper>();
-                        Exam exam = new Exam
-                        {
-                            Series = (ExamSeries)int.Parse(examNode.Attributes["Series"].Value),
-                            Subject = subject,
-                            Year = examNode.Attributes["Year"].Value
-                        };
+                //    List<Exam> exams = new List<Exam>();
+                //    foreach (XmlNode examNode in subjectNode.SelectNodes("./ExamSeries"))
+                //    {
+                //        List<Paper> papers = new List<Paper>();
+                //        Exam exam = new Exam
+                //        {
+                //            Series = (ExamSeries)int.Parse(examNode.Attributes["Series"].Value),
+                //            Subject = subject,
+                //            Year = examNode.Attributes["Year"].Value
+                //        };
 
-                        XmlNode gt = examNode.SelectSingleNode("./GradeThreshold");
-                        if (gt != null)
-                        {
-                            exam.GradeThreshold = new GradeThreshold { Url = gt.Attributes["Url"].Value, Exam = exam };
-                        }
+                //        XmlNode gt = examNode.SelectSingleNode("./GradeThreshold");
+                //        if (gt != null)
+                //        {
+                //            exam.GradeThreshold = new GradeThreshold { Url = gt.Attributes["Url"].Value, Exam = exam };
+                //        }
 
-                        XmlNode er = examNode.SelectSingleNode("./ExaminersReport");
-                        if (er != null)
-                        {
-                            exam.ExaminersReport = new ExaminersReport { Url = er.Attributes["Url"].Value, Exam = exam };
-                        }
+                //        XmlNode er = examNode.SelectSingleNode("./ExaminersReport");
+                //        if (er != null)
+                //        {
+                //            exam.ExaminersReport = new ExaminersReport { Url = er.Attributes["Url"].Value, Exam = exam };
+                //        }
 
-                        foreach (XmlNode paperNode in examNode.SelectNodes("./Paper"))
-                        {
-                            papers.Add(new Paper
-                            {
-                                Exam = exam,
-                                Component = char.Parse(paperNode.Attributes["Component"].Value),
-                                Variant = char.Parse(paperNode.Attributes["Variant"].Value),
-                                Type = (FileTypes)int.Parse(paperNode.Attributes["Type"].Value),
-                                Url = paperNode.Attributes["Url"].Value
-                            });
-                        }
-                        exam.Papers = papers.ToArray();
-                        exams.Add(exam);
-                    }
-                    repo.Exams = exams.ToArray();
-                    Subscription.Add(subject, repo);
-                }
+                //        foreach (XmlNode paperNode in examNode.SelectNodes("./Paper"))
+                //        {
+                //            papers.Add(new Paper
+                //            {
+                //                Exam = exam,
+                //                Component = char.Parse(paperNode.Attributes["Component"].Value),
+                //                Variant = char.Parse(paperNode.Attributes["Variant"].Value),
+                //                Type = (FileTypes)int.Parse(paperNode.Attributes["Type"].Value),
+                //                Url = paperNode.Attributes["Url"].Value
+                //            });
+                //        }
+                //        exam.Components = papers.ToArray();
+                //        exams.Add(exam);
+                //    }
+                //    repo.Exams = exams.ToArray();
+                //    Subscription.Add(subject, repo);
+                //}
             }
         }
 
