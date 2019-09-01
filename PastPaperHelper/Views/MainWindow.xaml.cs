@@ -36,6 +36,8 @@ namespace PastPaperHelper.Views
                 if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name);
                 SettingsViewModel.RefreshSubjectLists();
                 SettingsViewModel.RefreshSubscription();
+                Resources["IsLoading"] = Visibility.Hidden;
+                //MainWindowViewModel.IsLoading = false;
                 //((DataContext as MainWindowViewModel).ListItems[1].Content as FilesView).UpdateSelectedItem();
             }, TaskScheduler.FromCurrentSynchronizationContext());
 

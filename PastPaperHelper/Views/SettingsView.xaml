@@ -59,7 +59,7 @@
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" ToolTip="View changelog" Click="OpenReleases_Click">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Tag"/>
-                    <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Beta 0.4"/>
+                    <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Beta 0.5"/>
                 </StackPanel>
             </Button>
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" Click="OpenGithub_Click">
@@ -190,5 +190,11 @@
                 <TextBlock Text="Empty..." FontStyle="Italic" FontSize="20" FontWeight="DemiBold" Visibility="{Binding ElementName=SubjectList, Path=Items.Count, Converter={StaticResource MessageVisibilityConverter}, Mode=OneWay}" HorizontalAlignment="Center"/>
             </Grid>
         </GroupBox>
+        <Border Grid.Row="1" Background="#60000000" Visibility="{DynamicResource IsLoading}">
+            <StackPanel VerticalAlignment="Center">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64" Visibility="{Binding IsLoading}"/>
+                <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </materialDesign:DialogHost>
