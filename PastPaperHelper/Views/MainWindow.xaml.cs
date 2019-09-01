@@ -29,15 +29,13 @@ namespace PastPaperHelper.Views
         public async void Init()
         {
             bool updateSubjectList = false, updateSubscription = false;
-            await Task.Run(() => { SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription); });
+            await Task.Run(() => SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription));
             if (updateSubjectList || updateSubscription)
             {
                 Resources["IsLoading"] = Visibility.Visible;
             }
-            await Task.Run(() =>
-            {
-                SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription);
-            });
+            await Task.Run(() => SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription));
+
             if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSource.CurrentPaperSource.Name);
             if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name);
             SettingsViewModel.RefreshSubjectLists();

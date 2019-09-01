@@ -15,6 +15,7 @@ namespace PastPaperHelper.Sources
 
         public override PaperRepository GetPapers(Subject subject, string url)
         {
+            throw new NotImplementedException();
             PaperRepository repo = new PaperRepository(subject);
             /*HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
@@ -74,6 +75,7 @@ namespace PastPaperHelper.Sources
 
         public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
         {
+            throw new NotImplementedException();
             string url = Url;
             switch (curriculum)
             {

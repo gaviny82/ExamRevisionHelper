@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Windows;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace PastPaperHelper.Sources
@@ -140,7 +141,6 @@ namespace PastPaperHelper.Sources
             else
             {
                 //Load from local files
-
                 foreach (XmlNode subjectNode in subscription.SelectNodes("//Subject"))
                 {
                     TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subject);
@@ -194,16 +194,23 @@ namespace PastPaperHelper.Sources
             return false;
         }
 
-        public static void Subscribe(Subject subject)
+        public static async void Subscribe(Subject subject)
         {
             if (Subscription.ContainsKey(subject)) return;
-            //TODO: download papers async
-            Subscription.Add(subject, PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]));
+
+            Task<PaperRepository> t = Task.Run(() =>
+            {
+                Thread.Sleep(10000);
+                return PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
+            });
+
             if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode))
             {
                 Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
                 Properties.Settings.Default.Save();
             }
+            PaperRepository repo = await t;
+            Subscription.Add(subject, repo);
         }
 
         public static void Unsubscribe(Subject subject)

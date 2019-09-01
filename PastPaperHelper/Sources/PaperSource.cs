@@ -11,14 +11,17 @@ namespace PastPaperHelper.Sources
         public string Name { get; set; }
         public string Url { get; set; }
 
-
         public virtual Dictionary<Subject, string> GetSubjectUrlMap()
         {
+            Dictionary<Subject, string> repoIG = GetSubjectUrlMap(Curriculums.IGCSE);
+            Dictionary<Subject, string> repoAL = GetSubjectUrlMap(Curriculums.ALevel);
+
             Dictionary<Subject, string> tmp = new Dictionary<Subject, string>();
-            foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.IGCSE)) tmp.Add(item.Key, item.Value);
-            foreach (KeyValuePair<Subject, string> item in GetSubjectUrlMap(Curriculums.ALevel)) tmp.Add(item.Key, item.Value);
+            foreach (KeyValuePair<Subject, string> item in repoIG) tmp.Add(item.Key, item.Value);
+            foreach (KeyValuePair<Subject, string> item in repoAL) tmp.Add(item.Key, item.Value);
             return tmp;
         }
+
         public abstract Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum);
 
         public abstract PaperRepository GetPapers(Subject subject, string url);

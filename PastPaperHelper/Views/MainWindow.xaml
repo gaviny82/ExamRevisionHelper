@@ -14,7 +14,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{StaticResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="Past Paper Helper" Height="576" Width="1024" MinWidth="800" MinHeight="450">
+        Title="Past Paper Helper" Height="576" Width="1024" MinWidth="800" MinHeight="450" Icon="pack://application:,,,/PastPaperHelper;component/icon.ico">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>

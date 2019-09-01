@@ -213,7 +213,7 @@ namespace PastPaperHelper.Sources
                 string code = entry.InnerText.Split(' ').Last();
                 result.Add(new Subject
                 {
-                    Curriculum = (Curriculums)curriculum,
+                    Curriculum = curriculum,
                     Name = entry.InnerText.Substring(0, entry.InnerText.Length - 7),
                     SyllabusCode = code.Substring(1, 4)
                 }, url + herf.Value);

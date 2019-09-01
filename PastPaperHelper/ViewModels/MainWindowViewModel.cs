@@ -1,5 +1,4 @@
 ﻿using PastPaperHelper.Views;
-using System.Windows;
 
 namespace PastPaperHelper.ViewModels
 {
