@@ -67,19 +67,23 @@ namespace PastPaperHelper.Models
             if (GradeThreshold != null) examNode.SetAttribute("GradeThreshold", GradeThreshold.Url);
             if (ExaminersReport != null) examNode.SetAttribute("ExaminersReport", ExaminersReport.Url);
 
-            foreach (Component component in Components)
+            if (Components != null)
             {
-                XmlElement componentNode = doc.CreateElement("Component");
-                componentNode.SetAttribute("Paper", component.Code.ToString());
-                foreach (Paper paper in component.Papers)
+                foreach (Component component in Components)
                 {
-                    XmlElement paperNode = doc.CreateElement("Paper");
-                    paperNode.SetAttribute("Url", paper.Url);
-                    paperNode.SetAttribute("Variant", paper.Variant.ToString());
-                    paperNode.SetAttribute("Type", ((int)paper.Type).ToString());
-                    componentNode.AppendChild(paperNode);
+                    XmlElement componentNode = doc.CreateElement("Component");
+                    componentNode.SetAttribute("Paper", component.Code.ToString());
+                    foreach (Paper paper in component.Papers)
+                    {
+                        XmlElement paperNode = doc.CreateElement("Paper");
+                        paperNode.SetAttribute("Url", paper.Url);
+                        paperNode.SetAttribute("Variant", paper.Variant.ToString());
+                        paperNode.SetAttribute("Type", ((int)paper.Type).ToString());
+                        componentNode.AppendChild(paperNode);
+                    }
+                    examNode.AppendChild(componentNode);
                 }
-                examNode.AppendChild(componentNode);
+
             }
 
             return examNode;

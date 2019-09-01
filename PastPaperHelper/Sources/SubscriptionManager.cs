@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml;
 
 namespace PastPaperHelper.Sources
@@ -194,23 +195,25 @@ namespace PastPaperHelper.Sources
             return false;
         }
 
-        public static async void Subscribe(Subject subject)
+        public static async Task Subscribe(Subject subject)
         {
+            if (Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) return;
+
+            Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
+            Properties.Settings.Default.Save();
+
             if (Subscription.ContainsKey(subject)) return;
 
+            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Visible;
             Task<PaperRepository> t = Task.Run(() =>
             {
-                Thread.Sleep(10000);
+                Thread.Sleep(5000);
                 return PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
             });
 
-            if (!Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode))
-            {
-                Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
-                Properties.Settings.Default.Save();
-            }
             PaperRepository repo = await t;
             Subscription.Add(subject, repo);
+            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
         }
 
         public static void Unsubscribe(Subject subject)

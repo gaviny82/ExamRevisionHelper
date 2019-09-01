@@ -131,11 +131,11 @@ namespace PastPaperHelper.ViewModels
         }
 
         public DelegateCommand AddSelectedSubjectCommand { get; set; }
-        private void AddSelectedSubject(object param)
+        private async void AddSelectedSubject(object param)
         {
             Subject subject = (Subject)param;
-            SubscriptionManager.Subscribe(subject);
-            SubjectSubscribed.Add(subject);
+            await SubscriptionManager.Subscribe(subject);
+            SubjectSubscribed.Add(subject);//ISSUE: Wrong sequence
         }
 
         public DelegateCommand BrowseCommand { get; set; }
