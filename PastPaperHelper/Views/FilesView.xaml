@@ -76,7 +76,7 @@
         <ColumnDefinition Width="486"/>
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
-    <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectedIndex="0" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}">
+    <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectedIndex="0" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}" SelectionChanged="SubjectSelector_SelectionChanged">
         <ComboBox.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Subject}">
                 <Border x:Name="border1" Margin="0,-8" Padding="2,3,0,4" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}" Background="Transparent">

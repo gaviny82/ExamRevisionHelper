@@ -1,4 +1,5 @@
-﻿using PastPaperHelper.ViewModels;
+﻿using PastPaperHelper.Models;
+using PastPaperHelper.ViewModels;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -22,6 +23,11 @@ namespace PastPaperHelper.Views
             {
                 (DataContext as FilesViewModel).OpenOnlineResourceCommand.Execute(view.SelectedItem);
             }
+        }
+
+        private void SubjectSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            (DataContext as FilesViewModel).SelectedExamSeries = new Exam();
         }
     }
 }

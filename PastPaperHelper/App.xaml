@@ -15,7 +15,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <windows:Visibility x:Key="IsLoading">
-                0
+                1
             </windows:Visibility>
         </ResourceDictionary>
     </Application.Resources>

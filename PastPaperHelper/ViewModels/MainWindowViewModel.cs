@@ -11,8 +11,8 @@ namespace PastPaperHelper.ViewModels
         {
             ListItems = new HamburgerMenuItemViewModel[]
             {
-                new HamburgerMenuItemViewModel("Search", new SearchView()),
                 new HamburgerMenuItemViewModel("Files", new FilesView()),
+                new HamburgerMenuItemViewModel("Search", new SearchView()),
                 new HamburgerMenuItemViewModel("Settings", new SettingsView()),
             };
         }

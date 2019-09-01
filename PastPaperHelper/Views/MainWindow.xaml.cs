@@ -20,27 +20,29 @@ namespace PastPaperHelper.Views
         {
             InitializeComponent();
             MainSnackbar = mainSnackbar;
+            Init();
             
             //OOBE Test
             //Properties.Settings.Default.FirstRun = true;
             //Properties.Settings.Default.Save();
-
-            bool updateSubjectList =false, updateSubscription=false;
-            Task.Factory.StartNew(() =>
+        }
+        public async void Init()
+        {
+            bool updateSubjectList = false, updateSubscription = false;
+            await Task.Run(() => { SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription); });
+            if (updateSubjectList || updateSubscription)
             {
-                SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription);
+                Resources["IsLoading"] = Visibility.Visible;
+            }
+            await Task.Run(() =>
+            {
                 SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription);
-            }).ContinueWith(t =>
-            {
-                if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSource.CurrentPaperSource.Name);
-                if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name);
-                SettingsViewModel.RefreshSubjectLists();
-                SettingsViewModel.RefreshSubscription();
-                Resources["IsLoading"] = Visibility.Hidden;
-                //MainWindowViewModel.IsLoading = false;
-                //((DataContext as MainWindowViewModel).ListItems[1].Content as FilesView).UpdateSelectedItem();
-            }, TaskScheduler.FromCurrentSynchronizationContext());
-
+            });
+            if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSource.CurrentPaperSource.Name);
+            if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name);
+            SettingsViewModel.RefreshSubjectLists();
+            SettingsViewModel.RefreshSubscription();
+            Resources["IsLoading"] = Visibility.Hidden;
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
