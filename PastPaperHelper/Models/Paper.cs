@@ -1,4 +1,6 @@
-﻿namespace PastPaperHelper.Models
+﻿using System.Linq;
+
+namespace PastPaperHelper.Models
 {
     public class PastPaperResource
     {
@@ -39,13 +41,28 @@
                 case "in2": Type = ResourceType.Insert; break;
                 case "i2": Type = ResourceType.Insert; break;
             }
-            //TODO: consider the last 2-digit split part as the component code
-            if (split.Length > 3)
-            {
-                Component = split[3][0];
-                if (split[3].Length > 1) Variant = split[3][1];
-            }
 
+            char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '0' };
+            string fname = fileName.Substring(4).Replace("_", "");
+            int index = fname.Length;
+            while (--index > 1)
+            {
+                char ch = fname[index];
+                if (numbers.Contains(ch))
+                {
+                    char prevCh = fname[index - 1];
+                    if (numbers.Contains(prevCh))
+                    {
+                        Component = prevCh;
+                        Variant = ch;
+                    }
+                    else
+                    {
+                        Component = ch;
+                        Variant = '0';
+                    }
+                }
+            }
         }
     }
 

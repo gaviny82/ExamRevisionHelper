@@ -27,9 +27,9 @@ namespace PastPaperHelper.Sources
                 string file = nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
                 string[] split = file.Substring(0, file.Length - 4).Split('_');
 
-                if (split.Length > 4 || split.Length < 3) continue;
+                if (split.Length > 4 || split.Length < 3 || file.Substring(0, 4) != subject.SyllabusCode) continue;
 
-                string yr = "20" + split[1].Substring(1);
+                string yr = "20" + split[1].Substring(1, 2);
                 ExamYear year = repository.GetExamYear(yr);
                 if (year == null)
                 {
