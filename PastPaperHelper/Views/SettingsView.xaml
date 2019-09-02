@@ -160,7 +160,7 @@
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <Grid>
-                <ListBox x:Name="SubjectList" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectionMode="Extended">
+                <ListBox x:Name="SubjectList" VirtualizingPanel.IsVirtualizing="True" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectionMode="Extended" Margin="-4">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:Subject}">
                             <Border x:Name="border1" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}" Margin="-8" Background="Transparent">

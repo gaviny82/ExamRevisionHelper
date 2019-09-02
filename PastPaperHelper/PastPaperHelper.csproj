@@ -106,6 +106,7 @@
     <Compile Include="TouchableScrollViewer.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\OobeViewModel.cs" />
+    <Compile Include="ViewModels\SubjectViewModel.cs" />
     <Compile Include="Views\FilesView.xaml.cs">
       <DependentUpon>FilesView.xaml</DependentUpon>
     </Compile>

@@ -32,7 +32,7 @@
                 </TextBox.InputBindings>
             </TextBox>
 
-            <DataGrid x:Name="resultsGrid" Margin="10,126,10,10" AlternatingRowBackground="#FFB39DDB" AutoGenerateColumns="False" ItemsSource="{Binding Questions}" FontSize="18" >
+            <DataGrid x:Name="resultsGrid" Margin="10,126,10,10" CanUserAddRows="False" AlternatingRowBackground="#FFB39DDB" AutoGenerateColumns="False" ItemsSource="{Binding Questions}" FontSize="18" >
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Year}" Header="Year" Width="100" IsReadOnly="True"/>
                     <DataGridTextColumn Binding="{Binding Series}" Header="Series" Width="100" IsReadOnly="True"/>
