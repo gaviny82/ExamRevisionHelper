@@ -29,6 +29,7 @@ namespace PastPaperHelper.Sources
 
                 if (split.Length > 4 || split.Length < 3 || file.Substring(0, 4) != subject.SyllabusCode) continue;
 
+                if (split[1].Length < 3) continue;
                 string yr = "20" + split[1].Substring(1, 2);
                 ExamYear year = repository.GetExamYear(yr);
                 if (year == null)
@@ -179,7 +180,9 @@ namespace PastPaperHelper.Sources
 
                 exam.Components = new Component[components.Count];
                 int i = 0;
-                foreach (KeyValuePair<char, List<Paper>> component in components)
+
+                var sortedComponents = from objDic in components orderby objDic.Key ascending select objDic;
+                foreach (KeyValuePair<char, List<Paper>> component in sortedComponents)
                 {
                     exam.Components[i++] = new Component
                     {

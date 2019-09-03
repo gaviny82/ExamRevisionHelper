@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using System.Linq;
 
 namespace PastPaperHelper.Models
 {
@@ -58,6 +59,8 @@ namespace PastPaperHelper.Models
                 }
                 Components[i] = component;
             }
+            var list = from obj in Components orderby obj.Code ascending select obj;
+            Components = list.ToArray();
         }
 
         public XmlNode GetXmlNode(XmlDocument doc)
