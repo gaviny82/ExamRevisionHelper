@@ -6,8 +6,9 @@
       xmlns:local="clr-namespace:PastPaperHelper.Views"
       xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
       xmlns:models="clr-namespace:PastPaperHelper.Models"
-    xmlns:base="clr-namespace:PastPaperHelper"
-      xmlns:Converters="clr-namespace:PastPaperHelper.Converters" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="PastPaperHelper.Views.FilesView"
+      xmlns:base="clr-namespace:PastPaperHelper"
+      xmlns:Converters="clr-namespace:PastPaperHelper.Converters" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="PastPaperHelper.Views.FilesView"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800">
     <Grid.Resources>
@@ -19,7 +20,7 @@
         <Converters:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
 
         <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
-            <Border Margin="8">
+            <Border>
                 <materialDesign:Card Padding="16">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -73,7 +74,7 @@
         </DataTemplate>
     </Grid.Resources>
     <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="486"/>
+        <ColumnDefinition Width="494"/>
         <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
     <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectedIndex="0" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}" SelectionChanged="SubjectSelector_SelectionChanged">
@@ -97,34 +98,13 @@
             </DataTemplate>
         </ComboBox.ItemTemplate>
     </ComboBox>
-    <ItemsControl Margin="8,58,0,16"
+    
+    <ListView Margin="4,54,4,4"
                 ItemsSource="{Binding ElementName=subjectSelector, Path=SelectedItem, Mode=OneWay, Converter={StaticResource SubjectToRepositoryConverter}}" 
                 ItemTemplate="{StaticResource ExamYearTemplate}"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                ScrollViewer.CanContentScroll="True"
-                VirtualizingStackPanel.IsVirtualizing="True"
-                VirtualizingStackPanel.VirtualizationMode="Recycling">
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <VirtualizingStackPanel Orientation="Vertical" />
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.Template>
-            <ControlTemplate>
-                <Border
-                            BorderThickness="{TemplateBinding Border.BorderThickness}"
-                            Padding="{TemplateBinding Control.Padding}"
-                            BorderBrush="{TemplateBinding Border.BorderBrush}"
-                            Background="{TemplateBinding Panel.Background}"
-                            SnapsToDevicePixels="True">
-                    <base:TouchableScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="False">
-                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                    </base:TouchableScrollViewer>
-                </Border>
-            </ControlTemplate>
-        </ItemsControl.Template>
-    </ItemsControl>
-
+                VirtualizingStackPanel.IsVirtualizing="True">
+    </ListView>
+    
     <TextBlock Grid.Column="1" Margin="8,12" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" FontWeight="Bold" Visibility="{Binding SelectedExamSeries.Year, Converter={StaticResource IsNullToVisibilityConverter}}">
         <TextBlock.Text>
             <MultiBinding StringFormat="{}{0} {1}">
@@ -145,12 +125,15 @@
              Grid.Column="1" ToolTip="Grade Threshold" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,8,0"/>
 
     <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
-    <ListView Grid.Column="1" SelectionMode="Single" ItemsSource="{Binding SelectedExamSeries.Components}" Margin="8,50,8,8" MouseDoubleClick="ListView_MouseDoubleClick">
+    <ListView Grid.Column="1" SelectionMode="Single" ItemsSource="{Binding SelectedExamSeries.Components}" Margin="0,50,8,0">
         <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Component}">
                 <materialDesign:Card>
-                    <Grid Width="200" Margin="8">
+                    <Grid Margin="8">
                         <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                        <ListBox ItemsSource="{Binding Papers}" DisplayMemberPath="Url" Margin="0,25,0,0" MouseDoubleClick="ListBox_MouseDoubleClick">
+                            
+                        </ListBox>
                     </Grid>
                 </materialDesign:Card>
             </DataTemplate>

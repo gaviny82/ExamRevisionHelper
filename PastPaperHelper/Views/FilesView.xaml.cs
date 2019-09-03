@@ -16,18 +16,18 @@ namespace PastPaperHelper.Views
             DataContext = new FilesViewModel();
         }
 
-        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void SubjectSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ListView view = sender as ListView;
+            (DataContext as FilesViewModel).SelectedExamSeries = new Exam();
+        }
+
+        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ListBox view = sender as ListBox;
             if (view.SelectedItem != null)
             {
                 (DataContext as FilesViewModel).OpenOnlineResourceCommand.Execute(view.SelectedItem);
             }
-        }
-
-        private void SubjectSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            (DataContext as FilesViewModel).SelectedExamSeries = new Exam();
         }
     }
 }
