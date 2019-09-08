@@ -34,7 +34,7 @@ namespace PastPaperHelper.Models
             }
 
             if (node.Attributes["GradeThreshold"] != null) GradeThreshold = new GradeThreshold { Exam = this, Url = node.Attributes["GradeThreshold"].Value };
-            if (node.Attributes["ExaminersReport"] != null) GradeThreshold = new GradeThreshold { Exam = this, Url = node.Attributes["ExaminersReport"].Value };
+            if (node.Attributes["ExaminersReport"] != null) ExaminersReport = new ExaminersReport { Exam = this, Url = node.Attributes["ExaminersReport"].Value };
 
             Components = new Component[node.ChildNodes.Count];
             for (int i = 0; i < node.ChildNodes.Count; i++)
