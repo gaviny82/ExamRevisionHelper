@@ -20,7 +20,7 @@
         <Converters:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
 
         <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
-            <Border>
+            <Border Margin="-8" Padding="8,8,10,8" Background="White">
                 <materialDesign:Card Padding="16">
                     <Grid>
                         <Grid.RowDefinitions>
