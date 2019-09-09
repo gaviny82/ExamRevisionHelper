@@ -129,18 +129,21 @@
     <ListView Grid.Column="1" SelectionMode="Single" ItemsSource="{Binding SelectedExamSeries.Components}" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Component}">
-                <materialDesign:Card>
-                    <Grid Margin="8">
-                        <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
-                        <ListBox ItemsSource="{Binding Papers}" DisplayMemberPath="Url" Margin="0,25,0,0" MouseDoubleClick="ListBox_MouseDoubleClick">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type models:Paper}">
-                                    <TextBlock Text="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-                </materialDesign:Card>
+                <Border Margin="-8" Background="White" Padding="8,8,9,8">
+                    <materialDesign:Card>
+                        <Grid Margin="8">
+                            <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                            <ListBox ItemsSource="{Binding Papers}" DisplayMemberPath="Url" Margin="0,25,0,0" MouseDoubleClick="ListBox_MouseDoubleClick">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:Paper}">
+                                        <TextBlock Text="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </materialDesign:Card>
+
+                </Border>
             </DataTemplate>
         </ListView.ItemTemplate>
         <ListView.ItemsPanel>
