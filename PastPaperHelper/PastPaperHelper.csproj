@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\UrlToDisplayNameConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
     <Compile Include="Converters\IsNullToIsEnabledConverter.cs" />
     <Compile Include="Converters\IsMouseOverToVisibilityConverter.cs" />

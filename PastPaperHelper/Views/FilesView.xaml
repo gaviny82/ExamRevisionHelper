@@ -18,9 +18,10 @@
         <Converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"/>
         <Converters:SubjectToRepositoryConverter x:Key="SubjectToRepositoryConverter"/>
         <Converters:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
+        <Converters:UrlToDisplayNameConverter x:Key="UrlToDisplayNameConverter"/>
 
         <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
-            <Border Margin="-8" Padding="8,8,10,8" Background="White">
+            <Border Margin="-8" Padding="8,8,9,8" Background="White">
                 <materialDesign:Card Padding="16">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -125,19 +126,28 @@
              Grid.Column="1" ToolTip="Grade Threshold" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,8,0"/>
 
     <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
-    <ListView Grid.Column="1" SelectionMode="Single" ItemsSource="{Binding SelectedExamSeries.Components}" Margin="0,50,8,0">
+    <ListView Grid.Column="1" SelectionMode="Single" ItemsSource="{Binding SelectedExamSeries.Components}" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ListView.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Component}">
                 <materialDesign:Card>
                     <Grid Margin="8">
                         <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
                         <ListBox ItemsSource="{Binding Papers}" DisplayMemberPath="Url" Margin="0,25,0,0" MouseDoubleClick="ListBox_MouseDoubleClick">
-                            
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:Paper}">
+                                    <TextBlock Text="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
                         </ListBox>
                     </Grid>
                 </materialDesign:Card>
             </DataTemplate>
-        </ListView.ItemTemplate>        
+        </ListView.ItemTemplate>
+        <ListView.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel/>
+            </ItemsPanelTemplate>
+        </ListView.ItemsPanel>
     </ListView>
     <Border Grid.ColumnSpan="2" Background="#60000000" Visibility="{DynamicResource IsLoading}">
         <StackPanel VerticalAlignment="Center">
