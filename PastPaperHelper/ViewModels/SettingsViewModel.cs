@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace PastPaperHelper.ViewModels
@@ -41,7 +42,7 @@ namespace PastPaperHelper.ViewModels
         {
             RemoveSelectedSubjectsCommand = new DelegateCommand(RemoveSelectedSubjects);
             RemoveSubjectCommand = new DelegateCommand(RemoveSubjectAsync);
-            AddSelectedSubjectCommand = new DelegateCommand(AddSelectedSubject);
+            AddSubjectCommand = new DelegateCommand(AddSubject);
             BrowseCommand = new DelegateCommand(Browse);
 
             Path = Properties.Settings.Default.Path;
@@ -130,12 +131,30 @@ namespace PastPaperHelper.ViewModels
             }
         }
 
-        public DelegateCommand AddSelectedSubjectCommand { get; set; }
-        private async void AddSelectedSubject(object param)
+        public DelegateCommand AddSubjectCommand { get; set; }
+        private async void AddSubject(object param)
         {
             Subject subject = (Subject)param;
-            await SubscriptionManager.Subscribe(subject);
-            SubjectSubscribed.Add(subject);//ISSUE: Wrong sequence
+            pending.Add(subject);
+            await CheckSubscription();
+        }
+
+        private bool isLoading = false;
+        private List<Subject> pending = new List<Subject>();
+        public async Task CheckSubscription()
+        {
+            if (isLoading) return;
+            isLoading = true;
+            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Visible;
+
+            while (pending.Count != 0)
+            {
+                bool result = await SubscriptionManager.Subscribe(pending[0]);
+                if (result) SubjectSubscribed.Add(pending[0]);
+                pending.RemoveAt(0);
+            }
+            isLoading = false;
+            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
         }
 
         public DelegateCommand BrowseCommand { get; set; }
