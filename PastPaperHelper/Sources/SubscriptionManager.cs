@@ -137,7 +137,6 @@ namespace PastPaperHelper.Sources
                     }
                 }
                 PaperSource.SaveSubscription(Subscription, subscription);
-                subscription.Save(Environment.CurrentDirectory + "\\data\\subscription.xml");
             }
             else
             {
@@ -204,13 +203,13 @@ namespace PastPaperHelper.Sources
 
             if (Subscription.ContainsKey(subject)) return false;
 
-            Task<PaperRepository> t = Task.Run(() =>
+            await Task.Run(() =>
             {
-                return PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
+                PaperRepository r = PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
+                Subscription.Add(subject, r);
+                PaperSource.SaveSubscription(Subscription, subscription);
             });
 
-            PaperRepository repo = await t;
-            Subscription.Add(subject, repo);
             return true;
         }
 

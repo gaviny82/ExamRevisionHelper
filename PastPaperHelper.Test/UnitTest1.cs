@@ -65,7 +65,6 @@ namespace PastPaperHelper.Test
             XmlDocument doc = new XmlDocument();
             repo.Add(phy, result);
             PaperSource.SaveSubscription(repo, doc);
-            doc.Save(Environment.CurrentDirectory + "\\data\\physics.xml");
             Assert.IsNotNull(result.Subject);
         }
     }

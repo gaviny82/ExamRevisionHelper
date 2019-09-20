@@ -85,6 +85,7 @@ namespace PastPaperHelper.Sources
                     subjNode.AppendChild(yearNode);
                 }
             }
+            doc.Save(Environment.CurrentDirectory + "\\data\\subscription.xml");
         }
     }
 
