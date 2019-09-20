@@ -1,6 +1,8 @@
 ﻿using MaterialDesignThemes.Wpf;
+using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using PastPaperHelper.ViewModels;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -54,5 +56,22 @@ namespace PastPaperHelper.Views
             }
             MenuToggleButton.IsChecked = false;
         }
+
+
+        private void RootDlg_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double newWidth = e.NewSize.Width, newHeight = e.NewSize.Height;
+            dlgGrid.Width = newWidth - 350;
+            dlgGrid.Height = newHeight - 150;
+        }
+
+        private void AddSubject_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(selectionTreeView.SelectedItem is Subject)) return;
+            Subject item = (Subject)selectionTreeView.SelectedItem;
+            SettingsViewModel vm = ((DataContext as MainWindowViewModel).ListItems.Last().Content as SettingsView).DataContext as SettingsViewModel;
+            vm.AddSubjectCommand.Execute(item);
+        }
+
     }
 }

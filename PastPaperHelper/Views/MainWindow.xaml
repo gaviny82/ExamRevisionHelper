@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PastPaperHelper"
         xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
+        xmlns:models="clr-namespace:PastPaperHelper.Models"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -15,10 +16,36 @@
         FontFamily="{StaticResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="Past Paper Helper" Height="576" Width="1024" MinWidth="800" MinHeight="450" Icon="pack://application:,,,/PastPaperHelper;component/icon.ico">
+    <Window.Resources>
+        <DataTemplate x:Key="DisplaySubject" DataType="{x:Type models:Subject}">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} ({1})">
+                        <Binding Path="Name" />
+                        <Binding Path="SyllabusCode" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </DataTemplate>
+    </Window.Resources>
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    <materialDesign:DialogHost Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=mainSnackbar, Path=MessageQueue}">
+    <materialDesign:DialogHost x:Name="RootDialog" SnackbarMessageQueue="{Binding ElementName=mainSnackbar, Path=MessageQueue}">
+        <materialDesign:DialogHost.DialogContent>
+            <Grid x:Name="dlgGrid" Margin="16" Width="600" Height="400">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TreeView Grid.ColumnSpan="2" x:Name="selectionTreeView" VirtualizingPanel.IsVirtualizing="True" Margin="0,0,0,40">
+                    <TreeViewItem Header="IGCSE" ItemsSource="{x:Static vm:SettingsViewModel.IGSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
+                    <TreeViewItem Header="A-Level" ItemsSource="{x:Static vm:SettingsViewModel.ALSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
+                </TreeView>
+                <Button Content="Done" Margin="0,0,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" VerticalAlignment="Bottom" Grid.Column="0"/>
+                <Button Content="Add" Margin="8,0,0,0" VerticalAlignment="Bottom" Grid.Column="1" Click="AddSubject_Click"/>
+            </Grid>
+        </materialDesign:DialogHost.DialogContent>
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <DockPanel MinWidth="212">
