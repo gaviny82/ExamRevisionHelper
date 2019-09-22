@@ -64,10 +64,12 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand BrowseCommand { get; set; }
         private void Browse(object param)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true };
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true })
             {
-                Path = dialog.FileName + "\\Past Papers";
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    Path = dialog.FileName + "\\Past Papers";
+                }
             }
         }
 

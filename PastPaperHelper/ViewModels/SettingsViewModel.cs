@@ -160,13 +160,16 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand BrowseCommand { get; set; }
         private void Browse(object param)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true };
-            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            using(CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true })
             {
-                Path = dialog.FileName;
+                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    Path = dialog.FileName;
+                }
+                else return;
+                SearchViewModel model = ((Application.Current.MainWindow.DataContext as MainWindowViewModel).ListItems[1].Content as SearchView).DataContext as SearchViewModel;
+                model.SearchPath = Path;//TODO: Use binding instead
             }
-            SearchViewModel model = ((Application.Current.MainWindow.DataContext as MainWindowViewModel).ListItems[0].Content as SearchView).DataContext as SearchViewModel;
-            model.SearchPath = Path;
         }
     }
 }

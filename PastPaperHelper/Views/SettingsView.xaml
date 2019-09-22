@@ -35,7 +35,7 @@
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" ToolTip="View changelog" Click="OpenReleases_Click">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Tag"/>
-                    <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Beta 0.6"/>
+                    <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Release 1.0"/>
                 </StackPanel>
             </Button>
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" Click="OpenGithub_Click">
@@ -115,7 +115,7 @@
                 </Expander>
             </StackPanel>
         </ScrollViewer>
-
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="All papers © UCLES. Content provided solely for educational purpose." HorizontalAlignment="Right" VerticalAlignment="Bottom" FontSize="14" Margin="10"/>
         <GroupBox Header="Subjects" Style="{DynamicResource MaterialDesignCardGroupBox}" Margin="10" Grid.Row="1">
             <GroupBox.HeaderTemplate>
                 <DataTemplate>

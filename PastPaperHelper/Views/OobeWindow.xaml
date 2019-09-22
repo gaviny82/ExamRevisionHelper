@@ -6,8 +6,8 @@
       xmlns:local="clr-namespace:PastPaperHelper.Views"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:ValidationRules="clr-namespace:PastPaperHelper.ValidationRules" 
-    xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
-    xmlns:models="clr-namespace:PastPaperHelper.Models"
+      xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
+      xmlns:models="clr-namespace:PastPaperHelper.Models"
       x:Class="PastPaperHelper.Views.OobeWindow"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -35,6 +35,7 @@
         </DataTemplate>
     </Window.Resources>
     <Grid Margin="16">
+        <TextBlock VerticalAlignment="Bottom" Text="All papers © UCLES. Content provided solely for educational purpose."/>
         <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Done" FontSize="16" Command="{Binding SaveCommand}"/>
         <TextBox Margin="0,0,480,0" TextWrapping="NoWrap" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}" ToolTip="All files will be stored in this directory">
             <Binding Path="Path" UpdateSourceTrigger="PropertyChanged">
