@@ -145,25 +145,25 @@
 
     <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
     <ScrollViewer Grid.Column="1" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-    <ItemsControl ItemsSource="{Binding SelectedExamSeries.Components}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate DataType="{x:Type models:Component}">
-                <Border Margin="-8" Background="White" Padding="8,8,9,8">
-                    <materialDesign:Card Margin="16">
-                        <Grid Margin="8">
-                            <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="22" FontWeight="Bold" TextAlignment="Center"/>
-                            <ItemsControl ItemsSource="{Binding Variants}" Margin="0,25,0,0" ItemTemplate="{StaticResource VariantTemplate}"/>
-                        </Grid>
-                    </materialDesign:Card>
-                </Border>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <WrapPanel Orientation="Horizontal"/>
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-    </ItemsControl>
+        <ItemsControl ItemsSource="{Binding SelectedExamSeries.Components}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:Component}">
+                    <Border Margin="-8" Background="White" Padding="8,8,9,8">
+                        <materialDesign:Card Margin="16">
+                            <Grid Margin="8">
+                                <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="22" FontWeight="Bold" TextAlignment="Center"/>
+                                <ItemsControl ItemsSource="{Binding Variants}" Margin="0,30,0,0" ItemTemplate="{StaticResource VariantTemplate}"/>
+                            </Grid>
+                        </materialDesign:Card>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
     </ScrollViewer>
     <Border Grid.ColumnSpan="2" Background="#60000000" Visibility="{DynamicResource IsLoading}">
         <StackPanel VerticalAlignment="Center">

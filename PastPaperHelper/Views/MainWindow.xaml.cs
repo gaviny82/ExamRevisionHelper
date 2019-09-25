@@ -17,6 +17,7 @@ namespace PastPaperHelper.Views
     public partial class MainWindow : Window
     {
         public static Snackbar MainSnackbar;
+        public static readonly TaskScheduler SyncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
         public MainWindow()
         {
@@ -38,8 +39,6 @@ namespace PastPaperHelper.Views
             }
             await Task.Run(() => SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription));
 
-            if (updateSubjectList) MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSource.CurrentPaperSource.Name);
-            if (updateSubscription) MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name);
             SettingsViewModel.RefreshSubjectLists();
             SettingsViewModel.RefreshSubscription();
             Resources["IsLoading"] = Visibility.Hidden;

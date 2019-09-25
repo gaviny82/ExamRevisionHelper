@@ -2,10 +2,12 @@
 using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using PastPaperHelper.Views;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -149,9 +151,19 @@ namespace PastPaperHelper.ViewModels
 
             while (pending.Count != 0)
             {
-                bool result = await SubscriptionManager.Subscribe(pending[0]);
-                if (result) SubjectSubscribed.Add(pending[0]);
-                pending.RemoveAt(0);
+                try
+                {
+                    bool result = await SubscriptionManager.Subscribe(pending[0]);
+                    if (result) SubjectSubscribed.Add(pending[0]);
+                    pending.RemoveAt(0);
+                }
+                catch (Exception)
+                {
+                    await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PaperSource.CurrentPaperSource.Name + ", please check your Internet connection.\nYour subjects will be synced when connected to Internet"), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                    isLoading = false;
+                    Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
+                    return;
+                }
             }
             isLoading = false;
             Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;

@@ -1,4 +1,5 @@
 ﻿using PastPaperHelper.Models;
+using PastPaperHelper.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -95,14 +96,24 @@ namespace PastPaperHelper.Sources
             if (UpdateSubjectList)
             {
                 //Download from web servers
-                SubjectUrlMap.Clear();
-                Dictionary<Subject, string> subjects = PaperSource.CurrentPaperSource.GetSubjectUrlMap();
-                AllSubjects = new Subject[subjects.Count];
-                subjects.Keys.CopyTo(AllSubjects, 0);
-                SubjectUrlMap = subjects;
+                try
+                {
+                    SubjectUrlMap.Clear();
+                    Dictionary<Subject, string> subjects = PaperSource.CurrentPaperSource.GetSubjectUrlMap();
+                    AllSubjects = new Subject[subjects.Count];
+                    subjects.Keys.CopyTo(AllSubjects, 0);
+                    SubjectUrlMap = subjects;
 
-                PaperSource.SaveSubjectList(SubjectUrlMap, subjectList);
-                subjectList.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
+                    PaperSource.SaveSubjectList(SubjectUrlMap, subjectList);
+                    subjectList.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
+                }
+                catch (Exception)
+                {
+                    Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PaperSource.CurrentPaperSource.Name + ", please check your Internet connection."), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                    UpdateAndInit(false, UpdateSubscription);
+                    return;
+                }
+                Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSource.CurrentPaperSource.Name), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
             }
             else
             {
@@ -132,8 +143,18 @@ namespace PastPaperHelper.Sources
                 {
                     if (TryFindSubject(item, out Subject subject))
                     {
-                        PaperRepository papers = PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
-                        Subscription.Add(subject, papers);
+                        try
+                        {
+                            PaperRepository papers = PaperSource.CurrentPaperSource.GetPapers(subject, SubjectUrlMap[subject]);
+                            Subscription.Add(subject, papers);
+                        }
+                        catch (Exception)
+                        {
+                            Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PaperSource.CurrentPaperSource.Name + ", please check your Internet connection."), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                            UpdateAndInit(UpdateSubjectList, false);
+                            return;
+                        }
+                        Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
                     }
                 }
                 PaperSource.SaveSubscription(Subscription, subscription);
@@ -196,7 +217,11 @@ namespace PastPaperHelper.Sources
 
         public static async Task<bool> Subscribe(Subject subject)
         {
-            if (Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode)) return false;
+            if (Properties.Settings.Default.SubjectsSubcripted.Contains(subject.SyllabusCode))
+            {
+                await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue(subject.Name + " has already been subscribed."), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                return false;
+            }
 
             Properties.Settings.Default.SubjectsSubcripted.Add(subject.SyllabusCode);
             Properties.Settings.Default.Save();
