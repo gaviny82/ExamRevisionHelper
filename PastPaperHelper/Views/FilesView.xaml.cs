@@ -1,5 +1,6 @@
 ﻿using PastPaperHelper.Models;
 using PastPaperHelper.ViewModels;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -28,6 +29,11 @@ namespace PastPaperHelper.Views
             {
                 (DataContext as FilesViewModel).OpenOnlineResourceCommand.Execute(view.SelectedItem);
             }
+        }
+
+        private void ViewPaper_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Process.Start(((sender as Button).DataContext as Paper).Url);
         }
     }
 }

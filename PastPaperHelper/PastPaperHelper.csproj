@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\PaperTypeToIconConverter.cs" />
     <Compile Include="Converters\UrlToDisplayNameConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
     <Compile Include="Converters\IsNullToIsEnabledConverter.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Models\Paper.cs" />
     <Compile Include="Models\PaperRepository.cs" />
     <Compile Include="Models\Subject.cs" />
+    <Compile Include="Models\Variant.cs" />
     <Compile Include="Sources\PaperSourceCIENotes.cs" />
     <Compile Include="Sources\PaperSourcePapaCambridge.cs" />
     <Compile Include="Sources\PaperSourceGCEGuide.cs" />

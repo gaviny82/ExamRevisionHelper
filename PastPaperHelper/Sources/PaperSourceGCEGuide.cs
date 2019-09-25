@@ -185,10 +185,10 @@ namespace PastPaperHelper.Sources
                 foreach (KeyValuePair<char, List<Paper>> component in sortedComponents)
                 {
                     exam.Components[i++] = new Component
-                    {
-                        Code = component.Key,
-                        Papers = component.Value.ToArray()
-                    };
+                    (
+                        component.Key,
+                        component.Value.ToArray()
+                    );
                 }
             }
 

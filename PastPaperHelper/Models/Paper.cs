@@ -85,16 +85,16 @@ namespace PastPaperHelper.Models
     public enum ExamSeries { Spring, Summer, Winter, Specimen }
     public enum ResourceType
     {
+        QuestionPaper,
+        Insert,
+        MarkScheme,
+        ListeningAudio,
+        SpeakingTestCards,
+        Transcript,
+        TeachersNotes,
+        ConfidentialInstructions,
         ExaminersReport,
         GradeThreshold,
-        ConfidentialInstructions,
-        TeachersNotes,
-        ListeningAudio,
-        SpeakingTestCards ,
-        QuestionPaper,
-        MarkScheme,
-        Insert,
-        Transcript,
         Unknown
     }
 }

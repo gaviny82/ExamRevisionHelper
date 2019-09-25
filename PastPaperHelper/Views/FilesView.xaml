@@ -19,6 +19,7 @@
         <Converters:SubjectToRepositoryConverter x:Key="SubjectToRepositoryConverter"/>
         <Converters:IsMouseOverToVisibilityConverter x:Key="IsMouseOverToVisibilityConverter"/>
         <Converters:UrlToDisplayNameConverter x:Key="UrlToDisplayNameConverter"/>
+        <Converters:PaperTypeToIconConverter x:Key="PaperTypeToIconConverter"/>
 
         <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
             <Border Margin="-8" Padding="8,8,9,8" Background="White">
@@ -73,6 +74,23 @@
                 </materialDesign:Card>
             </Border>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type models:Variant}" x:Key="VariantTemplate">
+            <StackPanel Orientation="Horizontal" Margin="4,8,4,4">
+                <TextBlock Text="{Binding VariantCode, StringFormat=Variant {0}}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                <ItemsControl ItemsSource="{Binding Papers}" Margin="10,0,0,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:Paper}">
+                            <Button Content="{Binding Type, Converter={StaticResource PaperTypeToIconConverter}}" Style="{StaticResource MaterialDesignOutlinedButton}" ToolTip="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}" Margin="6,0,0,0" Click="ViewPaper_Click"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
     </Grid.Resources>
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="494"/>
@@ -126,32 +144,27 @@
              Grid.Column="1" ToolTip="Grade Threshold" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,8,0"/>
 
     <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
-    <ListView Grid.Column="1" SelectionMode="Single" ItemsSource="{Binding SelectedExamSeries.Components}" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-        <ListView.ItemTemplate>
+    <ScrollViewer Grid.Column="1" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+    <ItemsControl ItemsSource="{Binding SelectedExamSeries.Components}">
+        <ItemsControl.ItemTemplate>
             <DataTemplate DataType="{x:Type models:Component}">
                 <Border Margin="-8" Background="White" Padding="8,8,9,8">
-                    <materialDesign:Card>
+                    <materialDesign:Card Margin="16">
                         <Grid Margin="8">
-                            <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
-                            <ListBox ItemsSource="{Binding Papers}" DisplayMemberPath="Url" Margin="0,25,0,0" MouseDoubleClick="ListBox_MouseDoubleClick">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type models:Paper}">
-                                        <TextBlock Text="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}"/>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
+                            <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="22" FontWeight="Bold" TextAlignment="Center"/>
+                            <ItemsControl ItemsSource="{Binding Variants}" Margin="0,25,0,0" ItemTemplate="{StaticResource VariantTemplate}"/>
                         </Grid>
                     </materialDesign:Card>
-
                 </Border>
             </DataTemplate>
-        </ListView.ItemTemplate>
-        <ListView.ItemsPanel>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-                <WrapPanel/>
+                <WrapPanel Orientation="Horizontal"/>
             </ItemsPanelTemplate>
-        </ListView.ItemsPanel>
-    </ListView>
+        </ItemsControl.ItemsPanel>
+    </ItemsControl>
+    </ScrollViewer>
     <Border Grid.ColumnSpan="2" Background="#60000000" Visibility="{DynamicResource IsLoading}">
         <StackPanel VerticalAlignment="Center">
             <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64" Visibility="{Binding IsLoading}"/>

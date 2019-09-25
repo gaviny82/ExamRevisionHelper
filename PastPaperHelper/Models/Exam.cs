@@ -40,24 +40,22 @@ namespace PastPaperHelper.Models
             for (int i = 0; i < node.ChildNodes.Count; i++)
             {
                 XmlNode componentNode = node.ChildNodes[i];
-                Component component = new Component
-                {
-                    Code = char.Parse(componentNode.Attributes["Paper"].Value),
-                    Papers =new Paper[componentNode.ChildNodes.Count]
-                };
+                Paper[] plst = new Paper[componentNode.ChildNodes.Count];
+                char compCode = char.Parse(componentNode.Attributes["Paper"].Value);
+
                 for (int j = 0; j < componentNode.ChildNodes.Count; j++)
                 {
                     XmlNode paperNode = componentNode.ChildNodes[j];
-                    component.Papers[j] = new Paper
+                    plst[j] = new Paper
                     {
                         Exam = this,
-                        Component = component.Code,
+                        Component = compCode,
                         Type = (ResourceType)int.Parse(paperNode.Attributes["Type"].Value),
                         Variant = char.Parse(paperNode.Attributes["Variant"].Value),
                         Url = paperNode.Attributes["Url"].Value
                     };
                 }
-                Components[i] = component;
+                Components[i] = new Component(compCode, plst);
             }
             var list = from obj in Components orderby obj.Code ascending select obj;
             Components = list.ToArray();
@@ -76,13 +74,16 @@ namespace PastPaperHelper.Models
                 {
                     XmlElement componentNode = doc.CreateElement("Component");
                     componentNode.SetAttribute("Paper", component.Code.ToString());
-                    foreach (Paper paper in component.Papers)
+                    foreach (Variant vrt in component.Variants)
                     {
-                        XmlElement paperNode = doc.CreateElement("Paper");
-                        paperNode.SetAttribute("Url", paper.Url);
-                        paperNode.SetAttribute("Variant", paper.Variant.ToString());
-                        paperNode.SetAttribute("Type", ((int)paper.Type).ToString());
-                        componentNode.AppendChild(paperNode);
+                        foreach (Paper paper in vrt.Papers)
+                        {
+                            XmlElement paperNode = doc.CreateElement("Paper");
+                            paperNode.SetAttribute("Url", paper.Url);
+                            paperNode.SetAttribute("Variant", paper.Variant.ToString());
+                            paperNode.SetAttribute("Type", ((int)paper.Type).ToString());
+                            componentNode.AppendChild(paperNode);
+                        }
                     }
                     examNode.AppendChild(componentNode);
                 }
