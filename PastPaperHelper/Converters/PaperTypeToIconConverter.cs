@@ -31,7 +31,7 @@ namespace PastPaperHelper.Converters
                 case ResourceType.ConfidentialInstructions:
                     return new PackIcon { Kind = PackIconKind.FileLock };
                 case ResourceType.MarkScheme:
-                    return new PackIcon { Kind = PackIconKind.FileDocumentBox };
+                    return new PackIcon { Kind = PackIconKind.FileTick };
                 default:
                     return new PackIcon { Kind = PackIconKind.FileDocument };
             }

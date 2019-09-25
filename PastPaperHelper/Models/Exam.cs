@@ -32,6 +32,7 @@ namespace PastPaperHelper.Models
                     Series = ExamSeries.Winter;
                     break;
             }
+            Year = node.ParentNode.Attributes["Year"].Value;
 
             if (node.Attributes["GradeThreshold"] != null) GradeThreshold = new GradeThreshold { Exam = this, Url = node.Attributes["GradeThreshold"].Value };
             if (node.Attributes["ExaminersReport"] != null) ExaminersReport = new ExaminersReport { Exam = this, Url = node.Attributes["ExaminersReport"].Value };
