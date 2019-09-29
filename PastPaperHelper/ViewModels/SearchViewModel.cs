@@ -180,7 +180,7 @@ namespace PastPaperHelper.ViewModels
                             questions = lastPage.ExtractText(new RectangleF(0, 0, 56, lastPage.ActualSize.Height)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
                             questionList = ProcessQuestionNumbers(questions);
                         }
-
+                        
                         int questionNo;
                         if (questionList.Count == 0) questionNo = 0;
                         else int.TryParse(questionList.Last().ToString(), out questionNo);
