@@ -7,20 +7,6 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" Background="White"
       d:DesignHeight="450" d:DesignWidth="800">
-    <Grid.Resources>
-        <ResourceDictionary>
-            <StackPanel Margin="16" x:Key="InvalidPath">
-                <TextBlock Text="Invalid path" FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"/>
-                <TextBlock Text="Folder does not exist." FontSize="14" Margin="10"/>
-                <Button Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
-            </StackPanel>
-            <StackPanel Margin="16" x:Key="InvalidKeyword">
-                <TextBlock Text="Invalid keyword" FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"/>
-                <TextBlock Text="Keyword is required" FontSize="14" Margin="10"/>
-                <Button Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
-            </StackPanel>
-        </ResourceDictionary>
-    </Grid.Resources>
     <materialDesign:DialogHost Name="host">
         <Grid>
             <materialDesign:PackIcon Kind="FolderSearch" Width="32" Height="32" Margin="10,10,0,0"/>

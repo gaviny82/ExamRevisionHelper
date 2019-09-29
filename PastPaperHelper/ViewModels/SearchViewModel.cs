@@ -152,6 +152,10 @@ namespace PastPaperHelper.ViewModels
         }
         private void Search(string[] files, string kword, bool wholeWord, bool ignCases)
         {
+            TextFindParameter param = 0;
+            if (wholeWord) param |= TextFindParameter.WholeWord;
+            if (ignCases) param |= TextFindParameter.IgnoreCase;
+
             foreach (string file in files)
             {
                 List<int> fileResult = new List<int>();
@@ -164,7 +168,8 @@ namespace PastPaperHelper.ViewModels
                 {
                     cts.Token.ThrowIfCancellationRequested();
                     PdfPageBase page = doc.Pages[i];
-                    PdfTextFind[] coll = page.FindText(kword, wholeWord, ignCases).Finds;
+                    PdfTextFind[] coll = page.FindText(kword, param).Finds;
+
                     foreach (PdfTextFind result in coll)
                     {
                         //extract the question numbers

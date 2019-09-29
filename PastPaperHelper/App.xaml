@@ -17,6 +17,17 @@
             <windows:Visibility x:Key="IsLoading">
                 1
             </windows:Visibility>
+            <StackPanel Margin="16" x:Key="InvalidPath">
+                <TextBlock Text="Invalid path" FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"/>
+                <TextBlock Text="Folder does not exist." FontSize="14" Margin="10"/>
+                <Button Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+            </StackPanel>
+            <StackPanel Margin="16" x:Key="InvalidKeyword">
+                <TextBlock Text="Invalid keyword" FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"/>
+                <TextBlock Text="Keyword is required" FontSize="14" Margin="10"/>
+                <Button Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+            </StackPanel>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
