@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.ViewModels
 {
     public class DelegateCommand : ICommand
     {

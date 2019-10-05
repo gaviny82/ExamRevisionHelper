@@ -34,27 +34,40 @@
             </CheckBox>
         </DataTemplate>
     </Window.Resources>
-    <Grid Margin="16">
-        <TextBlock VerticalAlignment="Bottom" Text="All papers © UCLES. Content provided solely for educational purpose."/>
-        <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Done" FontSize="16" Command="{Binding SaveCommand}"/>
-        <TextBox Margin="0,0,480,0" TextWrapping="NoWrap" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}" ToolTip="All files will be stored in this directory">
-            <Binding Path="Path" UpdateSourceTrigger="PropertyChanged">
-                <Binding.ValidationRules>
-                    <ValidationRules:DirectoryExistValidationRule ValidatesOnTargetUpdated="True"/>
-                </Binding.ValidationRules>
-            </Binding>
-        </TextBox>
-        <TextBlock VerticalAlignment="Top" TextAlignment="Center" Text="Select the subjects you are learning" FontSize="24" FontWeight="Bold" Margin="0,70,0,0"/>
-        <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Browse" Margin="0,4,395,0" Width="80" Command="{Binding BrowseCommand}"/>
-        <TreeView x:Name="selectionTreeView" VirtualizingPanel.IsVirtualizing="True" Margin="0,100,0,37">
-            <TreeViewItem Header="IGCSE" ItemsSource="{Binding IGSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
-            <TreeViewItem Header="A-Level" ItemsSource="{Binding ALSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
-        </TreeView>
-        <Border Background="#60000000" Visibility="{Binding IsLoading}" Margin="0,104,0,0">
-            <StackPanel VerticalAlignment="Center">
-                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64"/>
-                <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
-            </StackPanel>
-        </Border>
-    </Grid>
+    <TabControl Style="{StaticResource WizardTabControlStyle}">
+        <TabItem Header="Select Path" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <Grid>
+                <TextBlock VerticalAlignment="Bottom" Text="All papers © UCLES. Content provided solely for educational purpose."/>
+                <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Done" FontSize="16" Command="{Binding SaveCommand}"/>
+                <TextBox Margin="0,0,480,0" TextWrapping="NoWrap" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}" ToolTip="All files will be stored in this directory">
+                    <Binding Path="Path" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <ValidationRules:DirectoryExistValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox>
+                <TextBlock VerticalAlignment="Top" TextAlignment="Center" Text="Select the subjects you are learning" FontSize="24" FontWeight="Bold" Margin="0,70,0,0"/>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Browse" Margin="0,4,395,0" Width="80" Command="{Binding BrowseCommand}"/>
+                <TreeView x:Name="selectionTreeView" VirtualizingPanel.IsVirtualizing="True" Margin="0,100,0,37">
+                    <TreeViewItem Header="IGCSE" ItemsSource="{Binding IGSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
+                    <TreeViewItem Header="A-Level" ItemsSource="{Binding ALSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
+                </TreeView>
+                <Border Background="#60000000" Visibility="{Binding IsLoading}" Margin="0,104,0,0">
+                    <StackPanel VerticalAlignment="Center">
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64"/>
+                        <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Select Subjects" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <TextBlock Text="Tab2"/>
+        </TabItem>
+        <TabItem Header="Update Settings" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <TextBlock Text="Tab2"/>
+        </TabItem>
+        <TabItem Header="Done" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <TextBlock Text="Tab2"/>
+        </TabItem>
+    </TabControl>
 </Window>

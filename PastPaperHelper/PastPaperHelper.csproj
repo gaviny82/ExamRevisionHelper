@@ -106,7 +106,6 @@
     <Compile Include="Converters\SubjectToPapersConverter.cs" />
     <Compile Include="Sources\SubscriptionManager.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="TouchableScrollViewer.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\OobeViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModel.cs" />
@@ -158,7 +157,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DelegateCommand.cs" />
+    <Compile Include="ViewModels\DelegateCommand.cs" />
     <Compile Include="ValidationRules\NotEmptyValidationRule.cs" />
     <Compile Include="NotificationObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

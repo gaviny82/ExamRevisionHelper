@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows.Threading;
 
-namespace PastPaperHelper
+namespace PastPaperHelper.ViewModels
 {
     public abstract class NotificationObject : INotifyPropertyChanged
     {
