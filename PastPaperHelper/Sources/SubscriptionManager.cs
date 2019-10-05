@@ -114,6 +114,7 @@ namespace PastPaperHelper.Sources
                     return;
                 }
               Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Subject list updated from " + PaperSource.CurrentPaperSource.Name), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+              //FIXME: in oobe
             }
             else
             {

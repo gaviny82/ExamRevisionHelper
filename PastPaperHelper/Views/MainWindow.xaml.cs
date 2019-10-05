@@ -26,8 +26,8 @@ namespace PastPaperHelper.Views
             Init();
 
             //OOBE Test
-            Properties.Settings.Default.FirstRun = true;
-            Properties.Settings.Default.Save();
+            //Properties.Settings.Default.FirstRun = true;
+            //Properties.Settings.Default.Save();
         }
         public async void Init()
         {
