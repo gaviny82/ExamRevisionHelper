@@ -71,7 +71,9 @@
             <Grid Margin="16">
                 <Button x:Name="next3" Content="Next" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Next_Click" Margin="0,0,0,0"/>
                 <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Back_Click" Margin="0,0,100,0"/>
-
+                <TextBlock VerticalAlignment="Top" TextAlignment="Center" Text="Select a source to find your papers" FontSize="24" FontWeight="Bold" Margin="0,40,0,0"/>
+                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="51,215,0,0" VerticalAlignment="Top"/>
+                <ComboBox HorizontalAlignment="Left" Margin="51,157,0,0" VerticalAlignment="Top" Width="120"/>
             </Grid>
         </TabItem>
         <TabItem x:Name="next4" Header="Done" Width="220" Style="{StaticResource WizardTabItemStyle}">
