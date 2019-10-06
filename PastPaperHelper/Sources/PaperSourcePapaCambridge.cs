@@ -15,9 +15,8 @@ namespace PastPaperHelper.Sources
 
         public override PaperRepository GetPapers(Subject subject, string url)
         {
-            throw new NotImplementedException();
             PaperRepository repo = new PaperRepository(subject);
-            /*HtmlWeb web = new HtmlWeb();
+            HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
             HtmlNodeCollection examNodes = doc.DocumentNode.SelectNodes("//table[1]//td[@data-name and @data-href]");
 
@@ -59,23 +58,22 @@ namespace PastPaperHelper.Sources
                     string fileUrl = "https://pastpapers.papacambridge.com/" + paperNode.Attributes["data-href"].Value;
                     if (fileName.Contains("gt"))
                         exam.GradeThreshold = new GradeThreshold { Exam = exam, Url = fileUrl };
-                    else if(fileName.Contains("er"))
+                    else if (fileName.Contains("er"))
                         exam.ExaminersReport = new ExaminersReport { Exam = exam, Url = fileUrl };//Not available
                     else
                         paperList.Add(new Paper(fileName, exam, fileUrl));
                 }
-                exam.Papers = paperList.ToArray();
+                //exam.Papers = paperList.ToArray();
                 examList.Add(exam);
             }
             //read specimen papers and syllabus
 
-            //repo.Exams = examList.ToArray();*/
+            //repo.Exams = examList.ToArray();
             return repo;
         }
 
         public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
         {
-            throw new NotImplementedException();
             string url = Url;
             switch (curriculum)
             {
