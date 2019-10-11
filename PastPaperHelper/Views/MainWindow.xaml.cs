@@ -22,12 +22,9 @@ namespace PastPaperHelper.Views
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainWindowViewModel();
             MainSnackbar = mainSnackbar;
             Init();
-
-            //OOBE Test
-            //Properties.Settings.Default.FirstRun = true;
-            //Properties.Settings.Default.Save();
         }
         public async void Init()
         {

@@ -10,7 +10,7 @@ namespace PastPaperHelper.Views
     /// <summary>
     /// Config.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingsView : Grid
+    public partial class SettingsView : Page
     {
         //TODO: Drop folder to select path
         public SettingsView()

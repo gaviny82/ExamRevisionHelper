@@ -28,6 +28,11 @@
                 <Button Content="Close" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
             </StackPanel>
 
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="FontFamily" Value="{StaticResource MaterialDesignFont}"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Ideal"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="Auto"/>
+            </Style>
 
             <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF"/>
             <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>

@@ -11,7 +11,7 @@ namespace PastPaperHelper.Views
     /// <summary>
     /// SearchView.xaml 的交互逻辑
     /// </summary>
-    public partial class SearchView : Grid
+    public partial class SearchView : Page
     {
         Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
         public SearchStatus SearchStatus { get => (SearchStatus)GetValue(SearchStatusProperty); set => SetValue(SearchStatusProperty, value); }

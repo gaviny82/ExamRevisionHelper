@@ -1,4 +1,5 @@
-﻿<Window x:Name="window" x:Class="PastPaperHelper.Views.MainWindow"
+﻿<Window x:Name="window" 
+        x:Class="PastPaperHelper.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,15 +8,10 @@
         xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
         xmlns:models="clr-namespace:PastPaperHelper.Models"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="16"
-        TextOptions.TextFormattingMode="Ideal" 
-        TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{StaticResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="Past Paper Helper" Height="576" Width="1024" MinWidth="800" MinHeight="450" Icon="pack://application:,,,/PastPaperHelper;component/icon.ico">
+        Height="576" Width="1024" MinWidth="800" MinHeight="450"
+        Title="Past Paper Helper"  Icon="pack://application:,,,/PastPaperHelper;component/icon.ico">
     <Window.Resources>
         <DataTemplate x:Key="DisplaySubject" DataType="{x:Type models:Subject}">
             <TextBlock>
@@ -28,9 +24,6 @@
             </TextBlock>
         </DataTemplate>
     </Window.Resources>
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
     <materialDesign:DialogHost x:Name="RootDialog" SnackbarMessageQueue="{Binding ElementName=mainSnackbar, Path=MessageQueue}">
         <materialDesign:DialogHost.DialogContent>
             <Grid x:Name="dlgGrid" Margin="16" Width="600" Height="400">
@@ -66,11 +59,12 @@
                         <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding ElementName=HamburgerMenu,Path=SelectedItem.Title}" FontSize="18" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
                     </StackPanel>
                 </materialDesign:ColorZone>
-                <ContentControl Content="{Binding ElementName=HamburgerMenu, Path=SelectedItem.Content}" Margin="0,52,0,0"/>
+                <Frame
+                    Content="{Binding ElementName=HamburgerMenu, Path=SelectedItem.Content}" 
+                    Margin="0,52,0,0"  NavigationUIVisibility="Hidden" />
                 <materialDesign:Snackbar x:Name="mainSnackbar" MessageQueue="{materialDesign:MessageQueue}"/>
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
-    
-    
+
 </Window>

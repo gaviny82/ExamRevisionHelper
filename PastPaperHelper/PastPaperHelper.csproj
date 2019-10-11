@@ -114,6 +114,9 @@
     <Compile Include="Views\FilesView.xaml.cs">
       <DependentUpon>FilesView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\LocalStorage.xaml.cs">
+      <DependentUpon>LocalStorage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\OobeWindow.xaml.cs">
       <DependentUpon>OobeWindow.xaml</DependentUpon>
     </Compile>
@@ -130,6 +133,10 @@
     </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Page Include="Views\FilesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LocalStorage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
