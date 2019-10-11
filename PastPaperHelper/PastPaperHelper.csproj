@@ -83,11 +83,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\ResourceStateToVisibilityConverter.cs" />
+    <Compile Include="Converters\IsSyllabusUpdatedToVisibilityConverter.cs" />
     <Compile Include="Converters\PaperTypeToIconConverter.cs" />
     <Compile Include="Converters\UrlToDisplayNameConverter.cs" />
     <Compile Include="Converters\IsNullToVisibilityConverter.cs" />
     <Compile Include="Converters\IsNullToIsEnabledConverter.cs" />
-    <Compile Include="Converters\IsMouseOverToVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\MessageVisibilityConverter.cs" />
     <Compile Include="Converters\PaperSourceConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />

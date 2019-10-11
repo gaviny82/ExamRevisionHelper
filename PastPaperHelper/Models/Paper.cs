@@ -2,9 +2,12 @@
 
 namespace PastPaperHelper.Models
 {
+    public enum ResourceStates { Online, Downloading, Offline }
     public class PastPaperResource
     {
         public string Url { get; set; }
+        public ResourceStates State { get; set; } = ResourceStates.Online;
+        public string Path { get; set; }
     }
 
     public class Paper : PastPaperResource
