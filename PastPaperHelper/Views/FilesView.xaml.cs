@@ -9,7 +9,7 @@ namespace PastPaperHelper.Views
     /// <summary>
     /// FilesView.xaml 的交互逻辑
     /// </summary>
-    public partial class FilesView : Page
+    public partial class FilesView : Grid
     {
         public FilesView()
         {
