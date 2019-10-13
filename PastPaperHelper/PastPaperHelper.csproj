@@ -108,11 +108,15 @@
     <Compile Include="Converters\SubjectToPapersConverter.cs" />
     <Compile Include="Sources\SubscriptionManager.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="ViewModels\LocalStorageViewModel.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\OobeViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModel.cs" />
     <Compile Include="Views\FilesView.xaml.cs">
       <DependentUpon>FilesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LocalStorage.xaml.cs">
+      <DependentUpon>LocalStorage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OobeWindow.xaml.cs">
       <DependentUpon>OobeWindow.xaml</DependentUpon>
@@ -130,6 +134,10 @@
     </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Page Include="Views\FilesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LocalStorage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -13,6 +13,7 @@ namespace PastPaperHelper.ViewModels
             {
                 new HamburgerMenuItemViewModel("Files", new FilesView()),
                 new HamburgerMenuItemViewModel("Download", new Grid()),
+                new HamburgerMenuItemViewModel("Local Storage", new LocalStorage()),
                 new HamburgerMenuItemViewModel("Search", new SearchView()),
                 new HamburgerMenuItemViewModel("Settings", new SettingsView()),
             };
