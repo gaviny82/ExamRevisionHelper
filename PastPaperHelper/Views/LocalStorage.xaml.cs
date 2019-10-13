@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PastPaperHelper.Models;
 
 namespace PastPaperHelper.Views
 {
@@ -25,6 +26,9 @@ namespace PastPaperHelper.Views
         {
             InitializeComponent();
             DataContext = new LocalStorageViewModel();
+            var item = new TreeGridItem("Tit", "Name", 10, "M", 0);
+            item.Children.Add(new TreeGridItem("ChildItem1", "N", 1, "1", 1));
+            _list.Items.Add(item);
         }
     }
 }
