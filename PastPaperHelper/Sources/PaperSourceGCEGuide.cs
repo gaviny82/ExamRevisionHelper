@@ -13,6 +13,7 @@ namespace PastPaperHelper.Sources
             Url = "https://papers.gceguide.com/";
         }
 
+        //TODO: scan all papers, then sort
         public override PaperRepository GetPapers(Subject subject, string url)
         {
             HtmlWeb web = new HtmlWeb();

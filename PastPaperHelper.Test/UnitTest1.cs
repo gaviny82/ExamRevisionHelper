@@ -12,7 +12,7 @@ namespace PastPaperHelper.Test
     {
         public UnitTest1()
         {
-            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
+            PaperSource.CurrentPaperSource = PaperSources.PapaCambridge;
             LoadRepoTest();
         }
 
@@ -27,13 +27,13 @@ namespace PastPaperHelper.Test
         public void SaveSubjectListTest()
         {
             XmlDocument doc = new XmlDocument();
-            PaperSource.SaveSubjectList(PaperSources.GCE_Guide.GetSubjectUrlMap(), doc);
+            PaperSource.SaveSubjectList(PaperSources.PapaCambridge.GetSubjectUrlMap(), doc);
             doc.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
         }
         [TestMethod]
         public void DownloadSubjectListTest()
         {
-            var result = PaperSources.GCE_Guide.GetSubjectUrlMap();
+            var result = PaperSource.CurrentPaperSource.GetSubjectUrlMap();
             Assert.IsNotNull(result);
         }
 
@@ -46,26 +46,12 @@ namespace PastPaperHelper.Test
                 Name = "Economics",
                 SyllabusCode = "0455"
             };
-            var result = PaperSources.GCE_Guide.GetPapers(subj, SubscriptionManager.SubjectUrlMap[subj]);
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        public void SavePaperRepoTest()
-        {
-            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
-            var phy = new Subject
-            {
-                Curriculum = Curriculums.ALevel,
-                Name = "Physics",
-                SyllabusCode = "9702"
-            };
-            var result = PaperSources.GCE_Guide.GetPapers(phy, @"https://papers.gceguide.com/A%20Levels/Physics%20(9702)/");
+            var result = PaperSource.CurrentPaperSource.GetPapers(subj, SubscriptionManager.SubjectUrlMap[subj]);
             Dictionary<Subject, PaperRepository> repo = new Dictionary<Subject, PaperRepository>();
             XmlDocument doc = new XmlDocument();
-            repo.Add(phy, result);
+            repo.Add(subj, result);
             PaperSource.SaveSubscription(repo, doc);
-            Assert.IsNotNull(result.Subject);
+            Assert.IsNotNull(result);
         }
     }
 }

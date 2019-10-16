@@ -18,9 +18,9 @@ namespace PastPaperHelper.Sources
             PaperRepository repo = new PaperRepository(subject);
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url);
-            HtmlNodeCollection examNodes = doc.DocumentNode.SelectNodes("//table[1]//td[@data-name and @data-href]");
+            HtmlNodeCollection examNodes = doc.DocumentNode.SelectSingleNode("//table").SelectNodes("//td[@data-name and @data-href]");
 
-            string resUrl1 = "", resUrl2 = "";
+            string resUrl1 = "", resUrl2 = ""; //specimen papers and syllabuses
             List<Exam> examList = new List<Exam>();
             foreach (HtmlNode examNode in examNodes)
             {
@@ -29,6 +29,7 @@ namespace PastPaperHelper.Sources
 
                 if (examCode.Contains("&"))
                 {
+                    //find the folder storing specimen papers and syllabuses
                     if (string.IsNullOrEmpty(resUrl1)) resUrl1 = examUrl;
                     else resUrl2 = examUrl;
                     continue;
@@ -49,7 +50,7 @@ namespace PastPaperHelper.Sources
                 };
 
                 HtmlDocument examPage = web.Load(examUrl);
-                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectNodes("//table[1]/tbody//td[@data-name!=\"..\"]");
+                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectSingleNode("//table").SelectNodes("//tbody//td[@data-name!=\"..\"]");
 
                 List<Paper> paperList = new List<Paper>();
                 foreach (HtmlNode paperNode in paperNodes)
@@ -63,12 +64,12 @@ namespace PastPaperHelper.Sources
                     else
                         paperList.Add(new Paper(fileName, exam, fileUrl));
                 }
-                //exam.Papers = paperList.ToArray();
+                //TODO: sort papers by Components/Variants
                 examList.Add(exam);
             }
             //read specimen papers and syllabus
 
-            //repo.Exams = examList.ToArray();
+            //TODO: sort exams by years//repo. = examList.ToArray();
             return repo;
         }
 
@@ -93,7 +94,7 @@ namespace PastPaperHelper.Sources
                 Subject subj = new Subject
                 {
                     Curriculum = curriculum,
-                    Name = nameTag.InnerText,
+                    Name = nameTag.InnerText.Trim(),
                     SyllabusCode = syCodeTag.InnerHtml.Substring(1, 4)
                 };
                 map.Add(subj, nameTag.Attributes[0].Value);
