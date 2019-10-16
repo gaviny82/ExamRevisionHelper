@@ -2,6 +2,7 @@
 using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PastPaperHelper.Sources
 {
@@ -64,12 +65,42 @@ namespace PastPaperHelper.Sources
                     else
                         paperList.Add(new Paper(fileName, exam, fileUrl));
                 }
-                //TODO: sort papers by Components/Variants
+
+                var comps = paperList.GroupBy(p => p.Component).ToArray();
+                exam.Components = new Component[comps.Count()];
+                for (int i = 0; i < exam.Components.Length; i++)
+                {
+                    exam.Components[i] = new Component(comps[i].Key, comps[i].ToArray());
+                }
                 examList.Add(exam);
             }
             //read specimen papers and syllabus
 
-            //TODO: sort exams by years//repo. = examList.ToArray();
+            foreach(var year in examList.GroupBy(exam => exam.Year))
+            {
+                ExamYear yr = new ExamYear { Year = year.Key };
+                foreach (Exam item in year)
+                {
+                    switch (item.Series)
+                    {
+                        case ExamSeries.Spring:
+                            yr.Spring = item;
+                            break;
+                        case ExamSeries.Summer:
+                            yr.Summer = item;
+                            break;
+                        case ExamSeries.Winter:
+                            yr.Winter = item;
+                            break;
+                        case ExamSeries.Specimen:
+                            yr.Specimen = item;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                repo.Add(yr);
+            }
             return repo;
         }
 
