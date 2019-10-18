@@ -44,7 +44,7 @@ namespace PastPaperHelper.Controls
     ///     <MyNamespace:TreeGrid/>
     ///
     /// </summary>
-    public class TreeGrid : Control
+    public class TreeGrid : TreeView
     {
         static TreeGrid()
         {
