@@ -21,11 +21,9 @@
 
 		<Button Grid.Row="0"/>
 
-		<DataGrid AutoGenerateColumns="False" Name="grid" Grid.Row="1" CanUserAddRows="False"
-				  AlternationCount="2" AlternatingRowBackground="LightGray">
+		<DataGrid AutoGenerateColumns="False" Name="grid" Grid.Row="1" CanUserAddRows="False" AlternationCount="2" AlternatingRowBackground="LightGray">
 			<DataGrid.Columns>
-				<DataGridTemplateColumn
-					Header="Name">
+				<DataGridTemplateColumn Header="Name">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<Grid>
@@ -35,13 +33,10 @@
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
 
-								<CheckBox 
-									Grid.Column="1"
+								<CheckBox Grid.Column="1"
 									IsChecked="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 									Visibility="{Binding HasChildren, Converter={StaticResource TreeToggleConverter}}"/>
-								<TextBlock
-									Grid.Column="2"
-									Text="{Binding Name}"/>
+								<TextBlock Grid.Column="2" Text="{Binding Name}"/>
 							</Grid>
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
