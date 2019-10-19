@@ -119,7 +119,7 @@ namespace PastPaperHelper.Views
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             // Return the width multiplied by the level
-            return new Thickness((int)value * LevelWidth.Value, 0, 0, 0);
+            return new Thickness(((int)value - 1) * LevelWidth.Value + 4, 0, 0, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
