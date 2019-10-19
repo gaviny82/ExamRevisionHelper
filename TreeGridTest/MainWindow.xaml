@@ -1,0 +1,55 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:Test"
+	x:Class="Test.MainWindow"
+	Width="800"
+	Height="600"
+	WindowStartupLocation="CenterScreen">
+
+	<Window.Resources>
+		<GridLength x:Key="TreeToggleWidth">20</GridLength>
+		<local:LevelConverter x:Key="LevelSpaceConverter" LevelWidth="{StaticResource TreeToggleWidth}"/>
+		<local:VisibilityConverter x:Key="TreeToggleConverter"/>
+	</Window.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="75"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<Button Grid.Row="0"/>
+
+		<DataGrid AutoGenerateColumns="False" Name="grid" Grid.Row="1" CanUserAddRows="False"
+				  AlternationCount="2" AlternatingRowBackground="LightGray">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn
+					Header="Name">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="{Binding Level, Converter={StaticResource LevelSpaceConverter}}"/>
+									<ColumnDefinition Width="{StaticResource TreeToggleWidth}"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+
+								<CheckBox 
+									Grid.Column="1"
+									IsChecked="{Binding IsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+									Visibility="{Binding HasChildren, Converter={StaticResource TreeToggleConverter}}"/>
+								<TextBlock
+									Grid.Column="2"
+									Text="{Binding Name}"/>
+							</Grid>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn
+					Header="Value"
+					Binding="{Binding Value}"/>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</Window>

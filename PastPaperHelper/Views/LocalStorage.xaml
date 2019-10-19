@@ -4,23 +4,21 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:PastPaperHelper.Views"
-      xmlns:controls="clr-namespace:PastPaperHelper.Controls"
-    x:Class="PastPaperHelper.Views.LocalStorage"
+      x:Class="PastPaperHelper.Views.LocalStorage"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800">
     <Grid.Resources>
         <ResourceDictionary Source="pack://application:,,,/PastPaperHelper;component/Controls/TreeGrid.xaml" />
     </Grid.Resources>
-    <TreeView x:Name="_list" Margin="0" BorderThickness="0" VerticalAlignment="Stretch" Background="Transparent" ItemsSource="{Binding Children}" >
-        <TreeView.ItemTemplate>
+    <!--<controls:TreeGrid x:Name="_list" Margin="0" BorderThickness="0" VerticalAlignment="Stretch" Background="Transparent" ItemsSource="{Binding Children}" >
+        <controls:TreeGrid.ItemTemplate>
             <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                <Border CornerRadius="0" Margin="1"  x:Name="back" MinWidth="70"
-                                Background="Transparent" DataContext="{Binding}" >
+                <Border CornerRadius="0" Margin="1"  x:Name="back" MinWidth="70" Background="Transparent" DataContext="{Binding}" >
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <TextBlock Text="{Binding Text}" Margin="2 0"/>
                     </StackPanel>
                 </Border>
             </HierarchicalDataTemplate>
-        </TreeView.ItemTemplate>
-    </TreeView>
+        </controls:TreeGrid.ItemTemplate>
+    </controls:TreeGrid>-->
 </Grid>

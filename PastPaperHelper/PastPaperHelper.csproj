@@ -83,8 +83,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\LevelToMarginConverter.cs" />
-    <Compile Include="Controls\TreeGrid.cs" />
     <Compile Include="Converters\ResourceStateToVisibilityConverter.cs" />
     <Compile Include="Converters\IsSyllabusUpdatedToVisibilityConverter.cs" />
     <Compile Include="Converters\PaperTypeToIconConverter.cs" />
@@ -136,10 +134,6 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
-    <Page Include="Controls\TreeGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -209,6 +203,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -26,16 +26,16 @@ namespace PastPaperHelper.Views
         {
             InitializeComponent();
             DataContext = new LocalStorageViewModel();
-            var item = new TreeGridItem { Age = 10, Name = "Name1", Sex = "Male" };
-            item.Children.Add(new TreeGridItem { Age = 12, Name = "Child1", Sex = "Female" });
-            item.Children.Add(new TreeGridItem { Age = 12, Name = "Child2", Sex = "Female" });
-            var item2 = new TreeGridItem { Age = 10, Name = "Name2", Sex = "Male" };
-            item2.Children.Add(new TreeGridItem { Age = 12, Name = "Child1", Sex = "Female" });
-            item2.Children.Add(new TreeGridItem { Age = 12, Name = "Child2", Sex = "Female" });
+            //var item = new TreeGridItem { Age = 10, Name = "Name1", Sex = "Male" };
+            //item.Children.Add(new TreeGridItem { Age = 12, Name = "Child1", Sex = "Female" });
+            //item.Children.Add(new TreeGridItem { Age = 12, Name = "Child2", Sex = "Female" });
+            //var item2 = new TreeGridItem { Age = 10, Name = "Name2", Sex = "Male" };
+            //item2.Children.Add(new TreeGridItem { Age = 12, Name = "Child1", Sex = "Female" });
+            //item2.Children.Add(new TreeGridItem { Age = 12, Name = "Child2", Sex = "Female" });
 
-            item.Children[0].Children.Add(new TreeGridItem { Age = 1, Name = "Level3" });
-            _list.Items.Add(item);
-            _list.Items.Add(item2);
+            //item.Children[0].Children.Add(new TreeGridItem { Age = 1, Name = "Level3" });
+            //_list.Items.Add(item);
+            //_list.Items.Add(item2);
         }
     }
 }
