@@ -51,7 +51,13 @@ namespace PastPaperHelper.Sources
                 };
 
                 HtmlDocument examPage = web.Load(examUrl);
-                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectSingleNode("//table").SelectNodes("//tbody//td[@data-name!=\"..\"]");
+                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectSingleNode("//table").SelectNodes("//tbody//td[@data-name]");
+
+                if (paperNodes.Count != 0 && paperNodes[0].Attributes["data-name"]?.Value == "..")
+                {
+                    paperNodes.RemoveAt(0);
+                }
+                else continue;
 
                 List<Paper> paperList = new List<Paper>();
                 foreach (HtmlNode paperNode in paperNodes)
@@ -101,6 +107,7 @@ namespace PastPaperHelper.Sources
                 }
                 repo.Add(yr);
             }
+            repo.Sort();
             return repo;
         }
 
