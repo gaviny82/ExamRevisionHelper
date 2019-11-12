@@ -66,7 +66,6 @@ namespace PastPaperHelper.Models
                         Variant = '0';
                         break;
                     }
-                    break;
                 }
             }
         }

@@ -19,7 +19,7 @@ namespace PastPaperHelper.Models
                            select new Variant
                            {
                                VariantCode = variant.Key,
-                               Papers = variant.ToArray()
+                               Papers = variant.OrderBy(p => p.Type).ToArray()
                            };
             Variants = variants.ToArray();
         }
