@@ -74,7 +74,7 @@ namespace PastPaperHelper.Sources
                 }
                 examList.Add(exam);
             }
-            //read specimen papers and syllabus
+            //TODO: read specimen papers and syllabus
 
             foreach(var year in examList.GroupBy(exam => exam.Year))
             {
