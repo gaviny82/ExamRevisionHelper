@@ -11,9 +11,9 @@
         <local:LevelSpaceConverter x:Key="LevelSpaceConverter" LevelWidth="16"/>
         <local:VisibilityConverter x:Key="TreeToggleConverter"/>
     </Grid.Resources>
-    <DataGrid x:Name="grid" AutoGenerateColumns="False" CanUserAddRows="False" AlternationCount="2" AlternatingRowBackground="{DynamicResource PrimaryHueLightBrush}">
+    <DataGrid x:Name="grid" AutoGenerateColumns="False" CanUserAddRows="False" AlternationCount="2" AlternatingRowBackground="LightGray">
         <DataGrid.Columns>
-            <DataGridTemplateColumn Header="File Name">
+            <DataGridTemplateColumn Header="Item">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -107,13 +107,13 @@
                                     </Style>
                                 </ToggleButton.Style>
                             </ToggleButton>
-                            <TextBlock Grid.Column="2" Text="{Binding Name}"/>
+                            <CheckBox Grid.Column="2" Content="{Binding Name}"/>
                         </StackPanel>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             <DataGridTextColumn Header="State" Binding="{Binding Value}" IsReadOnly="True"/>
-            <DataGridTextColumn Header="Items" Binding="{Binding Value}" IsReadOnly="True"/>
+            <DataGridTextColumn Header="Size" Binding="{Binding Value}" IsReadOnly="True"/>
         </DataGrid.Columns>
     </DataGrid>
 </Grid>

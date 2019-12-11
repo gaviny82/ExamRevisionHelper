@@ -35,6 +35,7 @@ namespace Common.Wpf.Data
         public TreeGridElement Parent { get; private set; }
         public TreeGridModel Model { get; private set; }
         public ObservableCollection<TreeGridElement> Children { get; private set; }
+        public TreeGridElement this[int index] { get => Children[index]; }
 
         static TreeGridElement()
         {
