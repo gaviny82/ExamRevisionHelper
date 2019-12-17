@@ -171,4 +171,5 @@
             <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
         </StackPanel>
     </Border>
+    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Download" Click="Download_Click"/>
 </Grid>
