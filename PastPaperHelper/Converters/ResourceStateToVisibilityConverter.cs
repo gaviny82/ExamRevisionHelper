@@ -6,16 +6,16 @@ using System.Windows.Data;
 
 namespace PastPaperHelper.Converters
 {
-    public class IsNullToIsEnabledConverter : IValueConverter
+    public class ResourceStateToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null;
+            return (ResourceStates)value == ResourceStates.Online ? Visibility.Visible : Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
