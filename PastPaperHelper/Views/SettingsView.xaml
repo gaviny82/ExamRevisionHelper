@@ -31,7 +31,7 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Orientation="Horizontal">
             <materialDesign:PackIcon Kind="FileDocument" HorizontalAlignment="Left" VerticalAlignment="Top" Width="64" Height="64"/>
-            <TextBlock Text="Past Paper Helper" VerticalAlignment="Center" Style="{StaticResource MaterialDesignDisplay1TextBlock}"/>
+            <TextBlock Text="Past Paper Helper" VerticalAlignment="Center" Style="{StaticResource MaterialDesignHeadline4TextBlock}"/>
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" ToolTip="View changelog" Click="OpenReleases_Click">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Tag"/>
@@ -53,7 +53,7 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Folder" Height="32" Width="32" VerticalAlignment="Center" />
-                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16"/>
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding}" FontSize="16"/>
                             </StackPanel>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
@@ -78,7 +78,7 @@
                         <DataTemplate>
                             <Grid>
                                 <materialDesign:PackIcon Kind="ArrowUpBoldCircleOutline" Height="32" Width="32" VerticalAlignment="Center" />
-                                <TextBlock Margin="40,6,0,6" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16" HorizontalAlignment="Left"/>
+                                <TextBlock Margin="40,6,0,6" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding}" FontSize="16" HorizontalAlignment="Left"/>
                                 <Button Style="{StaticResource MaterialDesignToolForegroundButton}" HorizontalAlignment="Right" VerticalAlignment="Center" Click="OpenReleases_Click" materialDesign:ButtonProgressAssist.IsIndeterminate="True">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="Update"/>
@@ -98,13 +98,13 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ColorLens" Height="32" Width="32" VerticalAlignment="Center" />
-                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16"/>
+                                <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding}" FontSize="16"/>
                             </StackPanel>
                         </DataTemplate>
                     </GroupBox.HeaderTemplate>
                     <TextBlock Text="Coming Soon."/>
                 </GroupBox>
-                <TextBlock Text="References" Style="{StaticResource MaterialDesignDisplay1TextBlock}" FontSize="24" Margin="0,32,0,0"/>
+                <TextBlock Text="References" Style="{StaticResource MaterialDesignBody2TextBlock}" FontSize="24" Margin="0,32,0,0"/>
                 <Border Background="{DynamicResource MaterialDesignDivider}" SnapsToDevicePixels="True" Height="1"/>
                 <Expander Header="MaterialDesignThemes.Wpf" FontSize="12">
                     <TextBlock TextWrapping="Wrap" Margin="24,0"><Run Text="The MIT License (MIT)"/><LineBreak/><Run/><LineBreak/><Run Text="Copyright (c) James Willock, Mulholland Software and Contributors"/><LineBreak/><Run/><LineBreak/><Run Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."/></TextBlock>
@@ -130,7 +130,7 @@
                 <DataTemplate>
                     <Grid>
                         <materialDesign:PackIcon Kind="Class" Height="32" Width="32" VerticalAlignment="Center" />
-                        <TextBlock Margin="40,6,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding}" FontSize="16"/>
+                        <TextBlock Margin="40,6,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding}" FontSize="16"/>
                         <Button Style="{StaticResource MaterialDesignToolForegroundButton}" Width="30" Padding="2 0 2 0" HorizontalAlignment="Right" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
                             <materialDesign:PackIcon Kind="Add"/>
                         </Button>

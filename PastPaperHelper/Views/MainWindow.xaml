@@ -63,7 +63,7 @@
                 <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Padding="10">
                     <StackPanel Orientation="Horizontal">
                         <ToggleButton x:Name="MenuToggleButton" Style="{DynamicResource MaterialDesignHamburgerToggleButton}" Width="32" Height="32"/>
-                        <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding ElementName=HamburgerMenu,Path=SelectedItem.Title}" FontSize="18" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+                        <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding ElementName=HamburgerMenu,Path=SelectedItem.Title}" FontSize="18" Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
                     </StackPanel>
                 </materialDesign:ColorZone>
                 <ContentControl Content="{Binding ElementName=HamburgerMenu, Path=SelectedItem.Content}" Margin="0,52,0,0"/>
