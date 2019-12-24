@@ -151,11 +151,10 @@ namespace PastPaperHelper.Sources
                         }
                         catch (Exception)
                         {
-                            Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PaperSource.CurrentPaperSource.Name + ", please check your Internet connection."), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                            UpdateAndInit(UpdateSubjectList, false);
-                            return;
+                            Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to update" + subject.Name + " from " + PaperSource.CurrentPaperSource.Name + ", please check your Internet connection."), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                            continue;
                         }
-                        Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Subscribed subjects updated from " + PaperSource.CurrentPaperSource.Name), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                        Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue(subject.Name + " updated from " + PaperSource.CurrentPaperSource.Name), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
                     }
                 }
                 PaperSource.SaveSubscription(Subscription, subscription);

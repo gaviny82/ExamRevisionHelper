@@ -68,7 +68,7 @@
                         <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Browse" Margin="0,4,0,0" Width="80" Command="{Binding BrowseCommand}"/>
                         <ComboBox x:Name="source" SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceConverter}}" materialDesign:HintAssist.Hint="Source" Style="{StaticResource MaterialDesignFloatingHintComboBox}" VerticalAlignment="Top" Margin="0,55,0,0">
                             <ComboBoxItem Content="GCE Guide (https://papers.gceguide.com/)"/>
-                            <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)" IsEnabled="False"/>
+                            <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)"/>
                             <ComboBoxItem Content="CIEnotes (https://www.cienotes.com/)" IsEnabled="False"/>
                         </ComboBox>
                     </Grid>

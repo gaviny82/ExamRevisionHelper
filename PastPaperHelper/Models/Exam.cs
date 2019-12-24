@@ -59,7 +59,7 @@ namespace PastPaperHelper.Models
                 Components[i] = new Component(compCode, plst);
             }
             var list = from obj in Components orderby obj.Code ascending select obj;
-            Components = list.ToArray();
+            Components = list.OrderBy(c => c.Code).ToArray();
         }
 
         public XmlNode GetXmlNode(XmlDocument doc)
