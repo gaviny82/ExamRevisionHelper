@@ -3,11 +3,14 @@ using System.Linq;
 
 namespace PastPaperHelper.Models
 {
+    public enum ExamSeries { Spring, Summer, Winter, Specimen }
+
     public class Exam
     {
         public Subject Subject { get; set; }
         public string Year { get; set; }
         public ExamSeries Series { get; set; }
+
         public GradeThreshold GradeThreshold { get; set; }
         public ExaminersReport ExaminersReport { get; set; }
         public Component[] Components { get; set; }
@@ -17,21 +20,13 @@ namespace PastPaperHelper.Models
         public Exam(XmlNode node, Subject subject)
         {
             Subject = subject;
-            switch (node.Attributes["Series"].Value)
+            Series = node.Attributes["Series"].Value switch
             {
-                default:
-                    Series = ExamSeries.Specimen;
-                    break;
-                case "Spring":
-                    Series = ExamSeries.Spring;
-                    break;
-                case "Summer":
-                    Series = ExamSeries.Summer;
-                    break;
-                case "Winter":
-                    Series = ExamSeries.Winter;
-                    break;
-            }
+                "Spring" => ExamSeries.Spring,
+                "Summer" => ExamSeries.Summer,
+                "Winter" => ExamSeries.Winter,
+                _ => ExamSeries.Specimen,
+            };
             Year = node.ParentNode.Attributes["Year"].Value;
 
             if (node.Attributes["GradeThreshold"] != null) GradeThreshold = new GradeThreshold { Exam = this, Url = node.Attributes["GradeThreshold"].Value };

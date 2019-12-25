@@ -11,6 +11,21 @@ namespace PastPaperHelper.Models
         public string Path { get; set; }
     }
 
+    public enum ResourceType
+    {
+        QuestionPaper,
+        Insert,
+        MarkScheme,
+        ListeningAudio,
+        SpeakingTestCards,
+        Transcript,
+        TeachersNotes,
+        ConfidentialInstructions,
+        ExaminersReport,
+        GradeThreshold,
+        Unknown
+    }
+
     public class Paper : PastPaperResource
     {
         public Exam Exam { get; set; }
@@ -23,29 +38,28 @@ namespace PastPaperHelper.Models
         static readonly char[] numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '0' };
         public Paper(string fileName, Exam exam, string uri)
         {
-            string[] split = fileName.Substring(0, fileName.Length - 4).Split('_');
+            string[] split = fileName[0..^4].Split('_');
 
             if (split.Length < 3) return;
 
             Exam = exam;
             Url = uri;
-
-            switch (split[2])
+            Type = (split[2]) switch
             {
-                default: Type = ResourceType.Unknown; break;
-                case "ir": Type = ResourceType.ConfidentialInstructions; break;
-                case "ci": Type = ResourceType.ConfidentialInstructions; break;
-                case "su": Type = ResourceType.ListeningAudio; break;
-                case "sf": Type = ResourceType.ListeningAudio; break;
-                case "ms": Type = ResourceType.MarkScheme; break;
-                case "qp": Type = ResourceType.QuestionPaper; break;
-                case "rp": Type = ResourceType.SpeakingTestCards; break;
-                case "tn": Type = ResourceType.TeachersNotes; break;
-                case "qr": Type = ResourceType.Transcript; break;
-                case "in": Type = ResourceType.Insert; break;
-                case "in2": Type = ResourceType.Insert; break;
-                case "i2": Type = ResourceType.Insert; break;
-            }
+                "ir" => ResourceType.ConfidentialInstructions,
+                "ci" => ResourceType.ConfidentialInstructions,
+                "su" => ResourceType.ListeningAudio,
+                "sf" => ResourceType.ListeningAudio,
+                "ms" => ResourceType.MarkScheme,
+                "qp" => ResourceType.QuestionPaper,
+                "rp" => ResourceType.SpeakingTestCards,
+                "tn" => ResourceType.TeachersNotes,
+                "qr" => ResourceType.Transcript,
+                "in" => ResourceType.Insert,
+                "in2" => ResourceType.Insert,
+                "i2" => ResourceType.Insert,
+                _ => ResourceType.Unknown,
+            };
 
             //finding component and variant code of this paper from its file name
             int index = fileName.Length;
@@ -90,20 +104,4 @@ namespace PastPaperHelper.Models
         public Exam Exam { get; set; }
     }
 
-
-    public enum ExamSeries { Spring, Summer, Winter, Specimen }
-    public enum ResourceType
-    {
-        QuestionPaper,
-        Insert,
-        MarkScheme,
-        ListeningAudio,
-        SpeakingTestCards,
-        Transcript,
-        TeachersNotes,
-        ConfidentialInstructions,
-        ExaminersReport,
-        GradeThreshold,
-        Unknown
-    }
 }
