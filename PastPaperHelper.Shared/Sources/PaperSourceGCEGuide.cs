@@ -17,7 +17,7 @@ namespace PastPaperHelper.Sources
         public override PaperRepository GetPapers(Subject subject, string url)
         {
             HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load(SubscriptionManager.SubjectUrlMap[subject] + "/");
+            HtmlDocument doc = web.Load(url + "/");
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='file']");
 
             PaperRepository repository = new PaperRepository(subject);
