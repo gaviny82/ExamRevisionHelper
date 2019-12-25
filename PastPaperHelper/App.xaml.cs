@@ -18,17 +18,14 @@ namespace PastPaperHelper
         static App()
         {
             if (!Directory.Exists(Environment.CurrentDirectory + "\\data")) Directory.CreateDirectory(Environment.CurrentDirectory + "\\data");
-            PaperSource source = null;
-            switch (PastPaperHelper.Properties.Settings.Default.PaperSource)
+            PaperSource source = PastPaperHelper.Properties.Settings.Default.PaperSource switch
             {
-                default: source = PaperSources.GCE_Guide; break;
-                case "GCE Guide": source = PaperSources.GCE_Guide; break;
-                case "PapaCambridge": source = PaperSources.PapaCambridge; break;
-                case "CIE Notes": source = PaperSources.CIE_Notes; break;
-            }
+                "GCE Guide" => PaperSources.GCE_Guide,
+                "PapaCambridge" => PaperSources.PapaCambridge,
+                "CIE Notes" => PaperSources.CIE_Notes,
+                _ => PaperSources.GCE_Guide,
+            };
             PaperSource.CurrentPaperSource = source;
-
-            //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MTA0NzY1QDMxMzcyZTMxMmUzMEJ2UkIvNUk0T0M2OXNEYnY0cFRWUnNWUWZ0QkFyR3NVaDBlbjZuYi9NUEU9;MTA0NzY2QDMxMzcyZTMxMmUzMEVsMFlPRElYWjgyNUFYYjZBVXN2R2RHRW05QlYzYVd6S0NUL093R29PcEk9;MTA0NzY3QDMxMzcyZTMxMmUzMExYTEpvcCtUNWJ2T3NaQ01aZGJGbloxamFSN2lOaGlRM0UwUmlQcFBLSzg9");
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

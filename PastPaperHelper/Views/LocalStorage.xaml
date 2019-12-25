@@ -11,7 +11,7 @@
         <local:LevelSpaceConverter x:Key="LevelSpaceConverter" LevelWidth="16"/>
         <local:VisibilityConverter x:Key="TreeToggleConverter"/>
     </Grid.Resources>
-    <DataGrid x:Name="grid" AutoGenerateColumns="False" CanUserAddRows="False" AlternationCount="2" AlternatingRowBackground="LightGray">
+    <DataGrid x:Name="grid" AutoGenerateColumns="False" CanUserAddRows="False" AlternationCount="2" AlternatingRowBackground="LightGray" Focusable="False">
         <DataGrid.Columns>
             <DataGridTemplateColumn Header="Item">
                 <DataGridTemplateColumn.CellTemplate>
