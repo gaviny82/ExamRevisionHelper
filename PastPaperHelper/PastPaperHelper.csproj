@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PastPaperHelper.Shared\PastPaperHelper.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="icon.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

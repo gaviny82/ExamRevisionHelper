@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:PastPaperHelper.Views"
       xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
-      xmlns:models="clr-namespace:PastPaperHelper.Models"
+      xmlns:models="clr-namespace:PastPaperHelper.Models;assembly=PastPaperHelper.Shared"
       xmlns:base="clr-namespace:PastPaperHelper"
       xmlns:Converters="clr-namespace:PastPaperHelper.Converters" 
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="PastPaperHelper.Views.FilesView"

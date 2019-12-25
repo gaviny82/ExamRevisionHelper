@@ -1,10 +1,9 @@
-﻿using Common.Wpf.Data;
-using System.Linq;
+﻿using System.Linq;
 
 namespace PastPaperHelper.Models
 {
     public enum ResourceStates { Online, Downloading, Offline }
-    public class PastPaperResource : TreeGridElement
+    public class PastPaperResource
     {
         public string Url { get; set; }
         public ResourceStates State { get; set; } = ResourceStates.Online;

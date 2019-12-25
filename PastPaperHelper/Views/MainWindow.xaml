@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PastPaperHelper"
         xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
-        xmlns:models="clr-namespace:PastPaperHelper.Models"
+        xmlns:models="clr-namespace:PastPaperHelper.Models;assembly=PastPaperHelper.Shared"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
