@@ -34,27 +34,21 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="{Binding Year, StringFormat=Year \{0\}}" VerticalAlignment="Center" FontWeight="Bold" FontSize="22" HorizontalAlignment="Left"/>
-
-                        <materialDesign:Badged Badge="{materialDesign:PackIcon Cloud}" Margin="0,8,16,0" Grid.Row="1" Grid.Column="0">
-                            <Button Content="March" ToolTip="Spring examination series" Width="120"
+                        
+                        <Button Content="March" ToolTip="Spring examination series" Width="120" Margin="0,8,16,0" Grid.Row="1" Grid.Column="0"
                                         IsEnabled="{Binding Spring, Converter={StaticResource IsNullToIsEnabledConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Spring}"/>
-                        </materialDesign:Badged>
 
-                        <materialDesign:Badged Badge="{materialDesign:PackIcon Cloud}" Margin="0,8,16,0" Grid.Row="1" Grid.Column="1">
-                            <Button Content="May/June" ToolTip="Spring examination series" Width="120"
+                        <Button Content="May/June" ToolTip="Spring examination series" Width="120" Margin="0,8,16,0" Grid.Row="1" Grid.Column="1"
                                         IsEnabled="{Binding Summer, Converter={StaticResource IsNullToIsEnabledConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Summer}"/>
-                        </materialDesign:Badged>
 
-                        <materialDesign:Badged Badge="{materialDesign:PackIcon Cloud}" Margin="0,8,16,0" Grid.Row="1" Grid.Column="2">
-                            <Button Content="Oct/Nov" ToolTip="Spring examination series" Width="120"
+                        <Button Content="Oct/Nov" ToolTip="Spring examination series" Width="120" Margin="0,8,8,0" Grid.Row="1" Grid.Column="2"
                                         IsEnabled="{Binding Winter, Converter={StaticResource IsNullToIsEnabledConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Winter}"/>
-                        </materialDesign:Badged>
 
                         <Button Grid.Row="0" Grid.Column="2" Content="Specimen" Margin="0,0,8,0" ToolTip="View specimen papers" 
                                         Visibility="{Binding Specimen, Converter={StaticResource IsNullToVisibilityConverter}}"
