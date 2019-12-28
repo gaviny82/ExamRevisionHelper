@@ -172,4 +172,6 @@
         </StackPanel>
     </Border>
     <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Download" Click="Download_Click"/>
+    <ProgressBar x:Name="progress" VerticalAlignment="Top" Height="10" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Value}"/>
+    <TextBox x:Name="error" AcceptsReturn="True" VerticalAlignment="Top" Height="150" Margin="5,40,0,0"/>
 </Grid>
