@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PastPaperHelper.Core.Tools;
+using System.Collections.Generic;
 
 namespace PastPaperHelper.Models
 {
@@ -9,6 +10,17 @@ namespace PastPaperHelper.Models
         public PaperRepository(Subject subject)
         {
             Subject = subject;
+        }
+        public PaperRepository(string syllabusCode)
+        {
+            foreach(Subject subj in PastPaperHelperCore.SubjectsLoaded)
+            {
+                if (subj.SyllabusCode == syllabusCode)
+                {
+                    Subject = subj;
+                    return;
+                }
+            }
         }
 
         public ExamYear this[string year] { get => GetExamYear(year); }

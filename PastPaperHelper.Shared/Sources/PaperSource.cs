@@ -7,6 +7,7 @@ namespace PastPaperHelper.Sources
 {
     public abstract class PaperSource
     {
+        public static PaperSource CurrentPaperSource;
         public string Name { get; set; }
         public string Url { get; set; }
 

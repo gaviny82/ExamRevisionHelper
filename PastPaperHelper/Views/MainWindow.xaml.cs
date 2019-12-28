@@ -23,7 +23,7 @@ namespace PastPaperHelper.Views
         {
             InitializeComponent();
             MainSnackbar = mainSnackbar;
-            Init();
+            //Init();
 
             //OOBE Test
             //Properties.Settings.Default.FirstRun = true;
@@ -35,13 +35,13 @@ namespace PastPaperHelper.Views
             await Task.Run(() => SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription));
             if (updateSubjectList || updateSubscription)
             {
-                Resources["IsLoading"] = Visibility.Visible;
+                Application.Current.Resources["IsLoading"] = Visibility.Visible;
             }
             await Task.Run(() => SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription));
 
             SettingsViewModel.RefreshSubjectLists();
             SettingsViewModel.RefreshSubscription();
-            Resources["IsLoading"] = Visibility.Hidden;
+            Application.Current.Resources["IsLoading"] = Visibility.Hidden;
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

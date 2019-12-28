@@ -1,4 +1,5 @@
-﻿using PastPaperHelper.Sources;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Sources;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml;
 
 namespace PastPaperHelper
 {
@@ -15,9 +17,16 @@ namespace PastPaperHelper
     /// </summary>
     public partial class App : Application
     {
-        static App()
+        public string UserDataFolderPath { get; private set; }
+        private void Application_Startup(object sender, StartupEventArgs e)
         {
-            if (!Directory.Exists(Environment.CurrentDirectory + "\\data")) Directory.CreateDirectory(Environment.CurrentDirectory + "\\data");
+            UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\PastPaperHelper\\PastPaperHelper";
+            if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
+
+            StartupUri = PastPaperHelper.Properties.Settings.Default.FirstRun ? 
+                new Uri("pack://application:,,,/PastPaperHelper;component/Views/OobeWindow.xaml") : 
+                new Uri("pack://application:,,,/PastPaperHelper;component/Views/MainWindow.xaml");
+
             PaperSource source = PastPaperHelper.Properties.Settings.Default.PaperSource switch
             {
                 "GCE Guide" => PaperSources.GCE_Guide,
@@ -25,19 +34,7 @@ namespace PastPaperHelper
                 "CIE Notes" => PaperSources.CIE_Notes,
                 _ => PaperSources.GCE_Guide,
             };
-            PaperSource.CurrentPaperSource = source;
-        }
-
-        private void Application_Startup(object sender, StartupEventArgs e)
-        {
-            if (PastPaperHelper.Properties.Settings.Default.FirstRun)
-            {
-                Application.Current.StartupUri = new Uri("pack://application:,,,/PastPaperHelper;component/Views/OobeWindow.xaml");
-            }
-            else
-            {
-                Application.Current.StartupUri = new Uri("pack://application:,,,/PastPaperHelper;component/Views/MainWindow.xaml");
-            }
+            bool? isUpdateNeeded = PastPaperHelperCore.Initialize(source, UserDataFolderPath + "\\user_data.xml", UpdatePolicy.Always, null);
         }
     }
 }
