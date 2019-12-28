@@ -7,7 +7,6 @@ namespace PastPaperHelper.Sources
 {
     public abstract class PaperSource
     {
-        public static PaperSource CurrentPaperSource { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
 
@@ -92,7 +91,7 @@ namespace PastPaperHelper.Sources
     public static class PaperSources
     {
         public static PaperSource GCE_Guide { get; } = new PaperSourceGCEGuide();
-        public static PaperSource PapaCambridge { get; } = new PaperSourcePapaCambridge();
+        public static PaperSource PapaCambridge { get; }// = new PaperSourcePapaCambridge();
         public static PaperSource CIE_Notes { get; } //= new PaperSourceCIENotes();
     }
 }

@@ -15,6 +15,13 @@ namespace PastPaperHelper.Models
         public ExaminersReport ExaminersReport { get; set; }
         public Component[] Components { get; set; }
 
+        private Paper[][] _papers { get; set; }
+
+        //public Paper GetPaper(char component, char varient)
+        //{
+
+        //}
+
         public Exam() { }
 
         public Exam(XmlNode node, Subject subject)

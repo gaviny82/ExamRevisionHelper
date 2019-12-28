@@ -12,7 +12,7 @@ namespace PastPaperHelper.Test
     {
         public UnitTest1()
         {
-            PaperSource.CurrentPaperSource = PaperSources.PapaCambridge;
+            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
             LoadRepoTest();
         }
 
@@ -24,34 +24,41 @@ namespace PastPaperHelper.Test
         }
 
         [TestMethod]
-        public void SaveSubjectListTest()
+        public void FetchSubjectListTest()
         {
+            //Download test
+            var subjList = PaperSource.CurrentPaperSource.GetSubjectUrlMap();
+            Assert.IsNotNull(subjList);
+
+            //Write to XML
             XmlDocument doc = new XmlDocument();
-            PaperSource.SaveSubjectList(PaperSources.PapaCambridge.GetSubjectUrlMap(), doc);
+            PaperSource.SaveSubjectList(subjList, doc);
             doc.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
-        }
-        [TestMethod]
-        public void DownloadSubjectListTest()
-        {
-            var result = PaperSource.CurrentPaperSource.GetSubjectUrlMap();
-            Assert.IsNotNull(result);
         }
 
         [TestMethod]
         public void DownloadPapersTest()
         {
+            //Sample subject
             var subj = new Subject
             {
                 Curriculum = Curriculums.IGCSE,
                 Name = "Economics",
                 SyllabusCode = "0455"
             };
+            //Download all papers of the sample subject
             var result = PaperSource.CurrentPaperSource.GetPapers(subj, SubscriptionManager.SubjectUrlMap[subj]);
-            Dictionary<Subject, PaperRepository> repo = new Dictionary<Subject, PaperRepository>();
-            XmlDocument doc = new XmlDocument();
-            repo.Add(subj, result);
-            PaperSource.SaveSubscription(repo, doc);
             Assert.IsNotNull(result);
+
+            //Create a test repo
+            Dictionary<Subject, PaperRepository> repo = new Dictionary<Subject, PaperRepository>
+            {
+                { subj, result }
+            };
+            //Write to XML
+            XmlDocument doc = new XmlDocument();
+            PaperSource.SaveSubscription(repo, doc);
+            doc.Save(Environment.CurrentDirectory + "\\data\\subject.xml");
         }
     }
 }
