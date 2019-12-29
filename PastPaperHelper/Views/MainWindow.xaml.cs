@@ -23,7 +23,7 @@ namespace PastPaperHelper.Views
         {
             InitializeComponent();
             MainSnackbar = mainSnackbar;
-            //Init();
+            Init();
 
             //OOBE Test
             //Properties.Settings.Default.FirstRun = true;

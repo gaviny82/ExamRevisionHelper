@@ -34,7 +34,11 @@ namespace PastPaperHelper
                 "CIE Notes" => PaperSources.CIE_Notes,
                 _ => PaperSources.GCE_Guide,
             };
-            bool? isUpdateNeeded = PastPaperHelperCore.Initialize(source, UserDataFolderPath + "\\user_data.xml", UpdatePolicy.Always, null);
+
+            //TODO: Read update policy from user preferences
+            //TODO: Read subscription from user preferences
+            InitializationResult initialization = PastPaperHelperCore.Initialize(source, UserDataFolderPath + "\\user_data.xml", UpdatePolicy.Always, null);
+            var v = Resources;
         }
     }
 }

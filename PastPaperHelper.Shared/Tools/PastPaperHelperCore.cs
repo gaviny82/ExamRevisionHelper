@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace PastPaperHelper.Core.Tools
 {
-    public enum UpdateStatus { NoUpdate, Updated, UpdateFailed }
+    public enum InitializationResult { SuccessNoUpdate, SuccessUpdateNeeded, Error }
     public static class PastPaperHelperCore
     {
         public static Subject[] SubjectsLoaded { get; set; }
@@ -22,6 +22,7 @@ namespace PastPaperHelper.Core.Tools
 
         /// <summary>
         /// This function should be called when the PastPaperHelper application starts.
+        /// Local user data is loaded, including subjects supported by the current data source, user's subscription and papers of the subscribed subjects, when an XML file path is provided.
         /// </summary>
         /// <param name="source">Initialize a data source</param>
         /// <param name="userDataPath">Path of a XML file that stores user data</param>
@@ -29,7 +30,7 @@ namespace PastPaperHelper.Core.Tools
         /// <param name="subscription">Syllabus codes of subjects subscribed by the user</param>
         /// <returns>Returns true when the local data needs update OR error is detected when loading user_data.xml.
         /// Returns null: error </returns>
-        public static bool? Initialize(PaperSource source, string userDataPath, UpdatePolicy updatePolicy, string[] subscription)
+        public static InitializationResult Initialize(PaperSource source, string userDataPath, UpdatePolicy updatePolicy, string[] subscription)
         {
             CurrentSource = source;
             PastPaperHelperCore.userDataPath = userDataPath;
@@ -39,15 +40,15 @@ namespace PastPaperHelper.Core.Tools
             {
                 userData.Load(userDataPath);
                 XmlNode updateInfo = userData.SelectSingleNode("/UpdateInfo");
-                if (updateInfo == null || updateInfo.Attributes["LastUpdate"] == null) return null;
+                if (updateInfo == null || updateInfo.Attributes["LastUpdate"] == null) return InitializationResult.Error;
                 else
                 {
                     //Load subject list
                     DateTime.TryParse(updateInfo.Attributes["LastUpdate"].Value, out DateTime lastUpdate);
-                    if ((DateTime.Now - lastUpdate).TotalDays > 100) return true;//TODO: set update frequency
+                    if ((DateTime.Now - lastUpdate).TotalDays > 100) return InitializationResult.SuccessUpdateNeeded;//TODO: set update frequency
 
                     XmlNodeList nodes = userData.SelectNodes("/SubjectList/Subject");
-                    if (nodes == null) return true;
+                    if (nodes == null) return InitializationResult.Error;
 
                     SubjectsLoaded = new Subject[nodes.Count];
                     for (int i = 0; i < nodes.Count; i++)
@@ -64,6 +65,7 @@ namespace PastPaperHelper.Core.Tools
                     }
 
                     //Load cached repositories of subscribed subjects
+                    if (subscription == null) return InitializationResult.SuccessNoUpdate;
                     foreach (XmlNode subjectNode in userData.SelectNodes("/Subscription/Repository"))
                     {
                         PaperRepository repo = new PaperRepository(subjectNode.Attributes["SyllabusCode"].Value);
@@ -100,9 +102,10 @@ namespace PastPaperHelper.Core.Tools
                         Subscription.Add(repo.Subject, repo);
                     }
                 }
-                return false;//TODO: Add try-catch block to prevent crashing when file format is upgraded
+                return InitializationResult.SuccessNoUpdate;
+                //TODO: Add try-catch block to prevent crashing when file format is upgraded
             }
-            else return null;
+            else return InitializationResult.Error;
         }
 
         public static async Task Update(Subject[] subscription)
