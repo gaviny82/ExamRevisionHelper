@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using PastPaperHelper.Views;
@@ -23,7 +24,7 @@ namespace PastPaperHelper.ViewModels
         {
             IGSubjects.Clear();
             ALSubjects.Clear();
-            foreach (Subject item in SubscriptionManager.AllSubjects)
+            foreach (Subject item in PastPaperHelperCore.SubjectsLoaded)
             {
                 if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(item);
                 else ALSubjects.Add(item);
@@ -33,7 +34,7 @@ namespace PastPaperHelper.ViewModels
         public static void RefreshSubscription()
         {
             SubjectSubscribed.Clear();
-            foreach (KeyValuePair<Subject, PaperRepository> item in SubscriptionManager.Subscription)
+            foreach (KeyValuePair<Subject, PaperRepository> item in PastPaperHelperCore.Subscription)
             {
                 SubjectSubscribed.Add(item.Key);
             }
@@ -117,7 +118,7 @@ namespace PastPaperHelper.ViewModels
         private void RemoveSubjectAsync(object param)
         {
             Subject subject = (Subject)param;
-            SubscriptionManager.Unsubscribe(subject);
+            //SubscriptionManager.Unsubscribe(subject);
             SubjectSubscribed.Remove(subject);
         }
 
@@ -129,7 +130,7 @@ namespace PastPaperHelper.ViewModels
             {
                 Subject subject = (Subject)list[0];
                 SubjectSubscribed.Remove(subject);
-                SubscriptionManager.Unsubscribe(subject);
+                //TODO: SubscriptionManager.Unsubscribe(subject);
             }
         }
 
@@ -153,7 +154,7 @@ namespace PastPaperHelper.ViewModels
             {
                 try
                 {
-                    bool result = await SubscriptionManager.Subscribe(pending[0]);
+                    bool result = true;//TODO: await PastPaperHelperCore.Subscribe(pending[0]);
                     if (result) SubjectSubscribed.Add(pending[0]);
                     pending.RemoveAt(0);
                 }

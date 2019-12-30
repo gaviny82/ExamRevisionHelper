@@ -36,13 +36,13 @@ namespace PastPaperHelper.Core.Tools
         public static InitializationResult Initialize(PaperSource source, string userDataPath, UpdatePolicy updatePolicy, string[] subscription)
         {
             CurrentSource = source;
-            PastPaperHelperCore.UserDataPath = userDataPath;
+            UserDataPath = userDataPath;
             userData = new XmlDocument();
 
             if (File.Exists(userDataPath))
             {
                 userData.Load(userDataPath);
-                XmlNode updateInfo = userData.SelectSingleNode("/UpdateInfo");
+                XmlNode updateInfo = userData.SelectSingleNode("/Data");
                 if (updateInfo == null || updateInfo.Attributes["LastUpdate"] == null) return InitializationResult.Error;
                 else
                 {

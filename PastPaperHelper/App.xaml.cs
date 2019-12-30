@@ -21,6 +21,11 @@ namespace PastPaperHelper
         public string UserDataFolderPath { get; private set; }
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //OOBE Test
+            //PastPaperHelper.Properties.Settings.Default.FirstRun = true;
+            PastPaperHelper.Properties.Settings.Default.FirstRun = false;
+            PastPaperHelper.Properties.Settings.Default.Save();
+
             UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\\PastPaperHelper\\PastPaperHelper";
             if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
 

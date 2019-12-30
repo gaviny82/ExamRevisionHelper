@@ -23,16 +23,16 @@ namespace PastPaperHelper.ViewModels
 
             Task.Factory.StartNew(() =>
             {
-                SubscriptionManager.UpdateAndInit(true, false);
+                //SubscriptionManager.UpdateAndInit(true, false);
             }).ContinueWith(t =>
             {
                 IGSubjects.Clear();
                 ALSubjects.Clear();
-                foreach (Subject item in SubscriptionManager.AllSubjects)
-                {
-                    if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(new SubjectSelection(item, false));
-                    else ALSubjects.Add(new SubjectSelection(item, false));
-                }
+                //foreach (Subject item in SubscriptionManager.AllSubjects)
+                //{
+                //    if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(new SubjectSelection(item, false));
+                //    else ALSubjects.Add(new SubjectSelection(item, false));
+                //}
                 IsLoading = Visibility.Hidden;
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }

@@ -39,25 +39,28 @@ namespace PastPaperHelper.Views
             else if (initResult == InitializationResult.Error)
             {
                 //TODO: Test needed
-                Application.Current.Resources["IsLoading"] = Visibility.Visible;
-                PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate { mainSnackbar.MessageQueue.Enqueue($"Fetching data from {PastPaperHelperCore.CurrentSource.Name}."); };
-                PastPaperHelperUpdateService.UpdateErrorEvent += UpdateMessageCallback;
-                PastPaperHelperUpdateService.UpdateTaskCompleteEvent += UpdateMessageCallback;
-                PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate { mainSnackbar.MessageQueue.Enqueue($"Updated from {PastPaperHelperCore.CurrentSource.Name}."); };
+                PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate 
+                { 
+                    SnackBar_EnqueueMessage($"Fetching data from {PastPaperHelperCore.CurrentSource.Name}...");
+                    Application.Current.Resources["IsLoading"] = Visibility.Visible;
+                };
+                PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { SnackBar_EnqueueMessage(msg); };
+                PastPaperHelperUpdateService.UpdateTaskCompleteEvent += (msg) => { SnackBar_EnqueueMessage(msg); };
+                PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate 
+                { 
+                    SnackBar_EnqueueMessage($"Updated from {PastPaperHelperCore.CurrentSource.Name}.");
+                    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                    //SettingsViewModel.RefreshSubjectLists();
+                    //SettingsViewModel.RefreshSubscription();
+                };
                 PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcripted);
             }
-
-            //OOBE Test
-            //Properties.Settings.Default.FirstRun = true;
-            //Properties.Settings.Default.Save();
         }
-        public void UpdateMessageCallback(string msg)
+        public static void SnackBar_EnqueueMessage(string msg)
         {
             Task.Factory.StartNew(() => MainSnackbar.MessageQueue.Enqueue(msg),
                 new CancellationTokenSource().Token,
                 TaskCreationOptions.None, SyncContextTaskScheduler);
-            //SettingsViewModel.RefreshSubjectLists();
-            //SettingsViewModel.RefreshSubscription();
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

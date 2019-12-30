@@ -12,7 +12,7 @@ namespace PastPaperHelper.Core.Tools
     public enum UpdatePolicy { Disable, Always, Daily, Weekly, Montly, Auto }
     public static class PastPaperHelperUpdateService
     {
-        public delegate void UpdateInitiatedEventHandler(string source);
+        public delegate void UpdateInitiatedEventHandler();
 
         public static event UpdateInitiatedEventHandler UpdateInitiatedEvent;
 
@@ -27,7 +27,7 @@ namespace PastPaperHelper.Core.Tools
         public static event UpdateErrorEventHandler UpdateErrorEvent;
 
 
-        public delegate void UpdateFinalizedEventHandler(string source);
+        public delegate void UpdateFinalizedEventHandler();
 
         public static event UpdateInitiatedEventHandler UpdateFinalizedEvent;
 
@@ -36,7 +36,7 @@ namespace PastPaperHelper.Core.Tools
         {
             Task.Run(() =>
             {
-                UpdateInitiatedEvent?.Invoke(PastPaperHelperCore.CurrentSource.Name);
+                UpdateInitiatedEvent?.Invoke();
 
                 XmlDocument dataDocument = new XmlDocument();
                 Dictionary<Subject, string> subjects = null;
@@ -52,7 +52,7 @@ namespace PastPaperHelper.Core.Tools
                     UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.CurrentSource.Name}, please check your Internet connection.");
                     return;
                 }
-                UpdateTaskCompleteEvent?.Invoke($"Subject list updated from {PastPaperHelperCore.CurrentSource.Name}");
+                UpdateTaskCompleteEvent?.Invoke($"Subject list updated from {PastPaperHelperCore.CurrentSource.Name}.");
                 //TODO: in oobe
 
                 //Download from web servers
@@ -72,10 +72,9 @@ namespace PastPaperHelper.Core.Tools
                             failed.Add(subject);
                             continue;
                         }
-                        UpdateTaskCompleteEvent?.Invoke($"{subject.Name} updated from {PastPaperHelperCore.CurrentSource.Name}");
+                        UpdateTaskCompleteEvent?.Invoke($"{subject.Name} updated from {PastPaperHelperCore.CurrentSource.Name}.");
                     }
                 }
-
 
                 //Update finished
                 PastPaperHelperCore.CurrentSource.Save(subjects, repos, dataDocument);
@@ -93,7 +92,7 @@ namespace PastPaperHelper.Core.Tools
                 }
                 else
                 {
-                    UpdateFinalizedEvent?.Invoke(PastPaperHelperCore.CurrentSource.Name);
+                    UpdateFinalizedEvent?.Invoke();
                 }
             });
         }

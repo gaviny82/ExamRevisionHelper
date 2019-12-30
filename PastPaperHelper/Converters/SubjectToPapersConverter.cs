@@ -1,4 +1,5 @@
-﻿using PastPaperHelper.Models;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using System;
 using System.Globalization;
@@ -12,7 +13,7 @@ namespace PastPaperHelper.Converters
         {
             if (value is Subject subject)
             {
-                return SubscriptionManager.Subscription[subject];
+                return PastPaperHelperCore.Subscription[subject];
             }
             else return null;
         }
