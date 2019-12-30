@@ -15,11 +15,13 @@ namespace PastPaperHelper.Core.Tools
     {
         public static DateTime LastUpdated { get; private set; }
         public static Subject[] SubjectsLoaded { get; set; }
+
+        public static Dictionary<Subject, string> SubjectUrlMap { get; set; }
         public static Dictionary<Subject, PaperRepository> Subscription { get; set; }
-        private static PaperSource CurrentSource { get; set; }
+        public static PaperSource CurrentSource { get; set; }
 
         private static XmlDocument userData;
-        private static string userDataPath;
+        public static string UserDataPath;
 
         /// <summary>
         /// This function should be called when the PastPaperHelper application starts.
@@ -34,7 +36,7 @@ namespace PastPaperHelper.Core.Tools
         public static InitializationResult Initialize(PaperSource source, string userDataPath, UpdatePolicy updatePolicy, string[] subscription)
         {
             CurrentSource = source;
-            PastPaperHelperCore.userDataPath = userDataPath;
+            PastPaperHelperCore.UserDataPath = userDataPath;
             userData = new XmlDocument();
 
             if (File.Exists(userDataPath))
@@ -49,7 +51,7 @@ namespace PastPaperHelper.Core.Tools
                     LastUpdated = lastUpdate;
                     if ((DateTime.Now - lastUpdate).TotalDays > 100) return InitializationResult.SuccessUpdateNeeded;//TODO: set update frequency
 
-                    XmlNodeList nodes = userData.SelectNodes("/SubjectList/Subject");
+                    XmlNodeList nodes = userData.SelectNodes("/Data/SubjectList/Subject");
                     if (nodes == null) return InitializationResult.Error;
 
                     SubjectsLoaded = new Subject[nodes.Count];
@@ -67,8 +69,10 @@ namespace PastPaperHelper.Core.Tools
                     }
 
                     //Load cached repositories of subscribed subjects
+
+                    //TODO: Check if the paper source supports all subscribed subjects
                     if (subscription == null) return InitializationResult.SuccessNoUpdate;
-                    foreach (XmlNode subjectNode in userData.SelectNodes("/Subscription/Repository"))
+                    foreach (XmlNode subjectNode in userData.SelectNodes("/Data/Subscription/Repository"))
                     {
                         PaperRepository repo = new PaperRepository(subjectNode.Attributes["SyllabusCode"].Value);
                         if (!subscription.Contains(repo.Subject.SyllabusCode)) continue;

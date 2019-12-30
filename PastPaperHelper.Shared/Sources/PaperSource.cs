@@ -87,6 +87,67 @@ namespace PastPaperHelper.Sources
             }
             doc.Save(Environment.CurrentDirectory + "\\data\\subscription.xml");
         }
+
+        public void Save(Dictionary<Subject, string> map, Dictionary<Subject, PaperRepository> list, XmlDocument doc)
+        {
+            doc.RemoveAll();
+            doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+
+            //Write update info
+            XmlElement data = doc.CreateElement("Data");
+            data.SetAttribute("LastUpdate", DateTime.Now.ToString());
+            data.SetAttribute("Source", Name);
+            doc.AppendChild(data);
+
+            XmlElement subjListNode = doc.CreateElement("SubjectList");
+            data.AppendChild(subjListNode);
+
+            XmlElement IG = doc.CreateElement("IGCSE");
+            XmlElement AL = doc.CreateElement("ALevel");
+            foreach (KeyValuePair<Subject, string> item in map)
+            {
+                XmlElement element = doc.CreateElement("Subject");
+                element.SetAttribute("Name", item.Key.Name);
+                element.SetAttribute("SyllabusCode", item.Key.SyllabusCode);
+                element.SetAttribute("Url", item.Value);
+                switch (item.Key.Curriculum)
+                {
+                    default: break;
+                    case Curriculums.IGCSE: IG.AppendChild(element); break;
+                    case Curriculums.ALevel: AL.AppendChild(element); break;
+                }
+            }
+            subjListNode.AppendChild(IG);
+            subjListNode.AppendChild(AL);
+
+            //Write subscription data
+            XmlElement subscriptionNode = doc.CreateElement("Subscription");
+            data.AppendChild(subscriptionNode);
+
+            foreach (KeyValuePair<Subject, PaperRepository> item in list)
+            {
+                Subject subject = item.Key;
+                PaperRepository repo = item.Value;
+
+                XmlElement subjNode = doc.CreateElement("Subject");
+                subjNode.SetAttribute("Name", subject.Name);
+                subjNode.SetAttribute("SyllabusCode", subject.SyllabusCode);
+                subscriptionNode.AppendChild(subjNode);
+
+                foreach (ExamYear year in repo)
+                {
+                    XmlElement yearNode = doc.CreateElement("ExamYear");
+                    yearNode.SetAttribute("Year", year.Year);
+                    if (year.Syllabus != null) yearNode.SetAttribute("Syllabus", year.Syllabus.Url);
+                    if (year.Specimen != null) yearNode.AppendChild(year.Specimen.GetXmlNode(doc));
+                    if (year.Spring != null) yearNode.AppendChild(year.Spring.GetXmlNode(doc));
+                    if (year.Summer != null) yearNode.AppendChild(year.Summer.GetXmlNode(doc));
+                    if (year.Winter != null) yearNode.AppendChild(year.Winter.GetXmlNode(doc));
+                    subjNode.AppendChild(yearNode);
+                }
+            }
+
+        }
     }
 
     public static class PaperSources

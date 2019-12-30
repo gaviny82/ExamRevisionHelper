@@ -38,7 +38,7 @@ namespace PastPaperHelper
 
             //TODO: Read update policy from user preferences
             //TODO: Read subscription from user preferences
-            InitResult = PastPaperHelperCore.Initialize(source, UserDataFolderPath + "\\user_data.xml", UpdatePolicy.Always, null);
+            InitResult = PastPaperHelperCore.Initialize(source, $"{UserDataFolderPath}\\data.xml", UpdatePolicy.Always, null);
         }
 
     }

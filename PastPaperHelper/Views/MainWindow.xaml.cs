@@ -4,6 +4,7 @@ using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using PastPaperHelper.ViewModels;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -28,24 +29,35 @@ namespace PastPaperHelper.Views
             InitializationResult initResult = (Application.Current as App).InitResult;
             if (initResult == InitializationResult.SuccessUpdateNeeded)
             {
-                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.LastUpdated.ToLongDateString()}", "Update", () => {
-                    //TODO: call the update service
+                //TODO: Test needed
+                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.LastUpdated.ToLongDateString()}", "Update", () =>
+                {
+                    Application.Current.Resources["IsLoading"] = Visibility.Visible;
+                    PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcripted);
                 });
             }
             else if (initResult == InitializationResult.Error)
             {
-                //TODO: try update
-                Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                //TODO: Test needed
+                Application.Current.Resources["IsLoading"] = Visibility.Visible;
+                PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate { mainSnackbar.MessageQueue.Enqueue($"Fetching data from {PastPaperHelperCore.CurrentSource.Name}."); };
+                PastPaperHelperUpdateService.UpdateErrorEvent += UpdateMessageCallback;
+                PastPaperHelperUpdateService.UpdateTaskCompleteEvent += UpdateMessageCallback;
+                PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate { mainSnackbar.MessageQueue.Enqueue($"Updated from {PastPaperHelperCore.CurrentSource.Name}."); };
+                PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcripted);
             }
 
             //OOBE Test
             //Properties.Settings.Default.FirstRun = true;
             //Properties.Settings.Default.Save();
         }
-        public async void Init()
+        public void UpdateMessageCallback(string msg)
         {
-            SettingsViewModel.RefreshSubjectLists();
-            SettingsViewModel.RefreshSubscription();
+            Task.Factory.StartNew(() => MainSnackbar.MessageQueue.Enqueue(msg),
+                new CancellationTokenSource().Token,
+                TaskCreationOptions.None, SyncContextTaskScheduler);
+            //SettingsViewModel.RefreshSubjectLists();
+            //SettingsViewModel.RefreshSubscription();
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
