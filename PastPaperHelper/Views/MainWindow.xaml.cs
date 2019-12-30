@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using PastPaperHelper.ViewModels;
@@ -23,7 +24,19 @@ namespace PastPaperHelper.Views
         {
             InitializeComponent();
             MainSnackbar = mainSnackbar;
-            Init();
+
+            InitializationResult initResult = (Application.Current as App).InitResult;
+            if (initResult == InitializationResult.SuccessUpdateNeeded)
+            {
+                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.LastUpdated.ToLongDateString()}", "Update", () => {
+                    //TODO: call the update service
+                });
+            }
+            else if (initResult == InitializationResult.Error)
+            {
+                //TODO: try update
+                Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+            }
 
             //OOBE Test
             //Properties.Settings.Default.FirstRun = true;
@@ -31,17 +44,8 @@ namespace PastPaperHelper.Views
         }
         public async void Init()
         {
-            bool updateSubjectList = false, updateSubscription = false;
-            await Task.Run(() => SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription));
-            if (updateSubjectList || updateSubscription)
-            {
-                Application.Current.Resources["IsLoading"] = Visibility.Visible;
-            }
-            await Task.Run(() => SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription));
-
             SettingsViewModel.RefreshSubjectLists();
             SettingsViewModel.RefreshSubscription();
-            Application.Current.Resources["IsLoading"] = Visibility.Hidden;
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

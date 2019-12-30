@@ -17,6 +17,7 @@ namespace PastPaperHelper
     /// </summary>
     public partial class App : Application
     {
+        public InitializationResult InitResult { get; private set; }
         public string UserDataFolderPath { get; private set; }
         private void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -37,8 +38,8 @@ namespace PastPaperHelper
 
             //TODO: Read update policy from user preferences
             //TODO: Read subscription from user preferences
-            InitializationResult initialization = PastPaperHelperCore.Initialize(source, UserDataFolderPath + "\\user_data.xml", UpdatePolicy.Always, null);
-            var v = Resources;
+            InitResult = PastPaperHelperCore.Initialize(source, UserDataFolderPath + "\\user_data.xml", UpdatePolicy.Always, null);
         }
+
     }
 }

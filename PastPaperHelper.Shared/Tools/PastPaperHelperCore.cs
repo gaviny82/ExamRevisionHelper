@@ -13,6 +13,7 @@ namespace PastPaperHelper.Core.Tools
     public enum InitializationResult { SuccessNoUpdate, SuccessUpdateNeeded, Error }
     public static class PastPaperHelperCore
     {
+        public static DateTime LastUpdated { get; private set; }
         public static Subject[] SubjectsLoaded { get; set; }
         public static Dictionary<Subject, PaperRepository> Subscription { get; set; }
         private static PaperSource CurrentSource { get; set; }
@@ -45,6 +46,7 @@ namespace PastPaperHelper.Core.Tools
                 {
                     //Load subject list
                     DateTime.TryParse(updateInfo.Attributes["LastUpdate"].Value, out DateTime lastUpdate);
+                    LastUpdated = lastUpdate;
                     if ((DateTime.Now - lastUpdate).TotalDays > 100) return InitializationResult.SuccessUpdateNeeded;//TODO: set update frequency
 
                     XmlNodeList nodes = userData.SelectNodes("/SubjectList/Subject");
