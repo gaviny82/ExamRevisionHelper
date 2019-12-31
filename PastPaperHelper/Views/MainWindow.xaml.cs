@@ -35,10 +35,10 @@ namespace PastPaperHelper.Views
                     Application.Current.Resources["IsLoading"] = Visibility.Visible;
                     PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcripted);
                 });
+                //Refresh view models
             }
             else if (initResult == InitializationResult.Error)
             {
-                //TODO: Test needed
                 PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate 
                 { 
                     SnackBar_EnqueueMessage($"Fetching data from {PastPaperHelperCore.CurrentSource.Name}...");
@@ -54,6 +54,10 @@ namespace PastPaperHelper.Views
                     //SettingsViewModel.RefreshSubscription();
                 };
                 PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcripted);
+            }
+            else
+            {
+                //Refresh view models
             }
         }
         public static void SnackBar_EnqueueMessage(string msg)
