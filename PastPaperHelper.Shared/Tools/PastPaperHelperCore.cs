@@ -114,17 +114,8 @@ namespace PastPaperHelper.Core.Tools
             else return InitializationResult.Error;
         }
 
-        public static async Task Update(Subject[] subscription)
-        {
-            //Dictionary<Subject,string> subjUrlMap = CurrentSource.GetSubjectUrlMap();
-            //SubjectsLoaded = subjUrlMap.Keys.ToArray();
-            //foreach (Subject subj in subscription)
-            //{
-            //    Subscription.Add(subj, CurrentSource.GetPapers(subj));
-            //}
-        }
 
-        public static void Subscribe(Subject subject)
+        public static async void Subscribe(Subject subject)
         {
 
         }

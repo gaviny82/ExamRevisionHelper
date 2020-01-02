@@ -99,7 +99,12 @@ namespace PastPaperHelper.Core.Tools
 
         public static async Task UpdateSubject(Subject subj)
         {
-
+            var downloadThread = Task.Run(() =>
+            {
+                return PastPaperHelperCore.CurrentSource.GetPapers(subj, PastPaperHelperCore.SubjectUrlMap[subj]);
+            });
+            //Save to XML
+            PastPaperHelperCore.Subscription.Add(subj, await downloadThread);
         }
 
         public static bool TryFindSubject(string syllabusCode, out Subject result)
