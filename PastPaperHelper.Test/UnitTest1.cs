@@ -19,8 +19,8 @@ namespace PastPaperHelper.Test
         [TestMethod]
         public void LoadRepoTest()
         {
-            SubscriptionManager.CheckUpdate(out bool a, out bool b);
-            SubscriptionManager.UpdateAndInit(false, false);
+            //SubscriptionManager.CheckUpdate(out bool a, out bool b);
+            //SubscriptionManager.UpdateAndInit(false, false);
         }
 
         [TestMethod]
@@ -47,7 +47,7 @@ namespace PastPaperHelper.Test
                 SyllabusCode = "0455"
             };
             //Download all papers of the sample subject
-            var result = PaperSource.CurrentPaperSource.GetPapers(subj, SubscriptionManager.SubjectUrlMap[subj]);
+            var result = PaperSource.CurrentPaperSource.GetPapers(subj, PastPaperHelper.Core.Tools.PastPaperHelperCore.SubjectUrlMap[subj]);
             Assert.IsNotNull(result);
 
             //Create a test repo

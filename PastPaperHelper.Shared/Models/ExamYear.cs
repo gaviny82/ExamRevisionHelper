@@ -12,7 +12,7 @@ namespace PastPaperHelper.Models
         public Exam Winter { get; set; }
         public Exam Specimen { get; set; }
 
-        public int CompareTo([AllowNull] ExamYear other)
+        public int CompareTo(ExamYear other)
         {
             int.TryParse(Year, out int year);
             int.TryParse(other.Year, out int year2);

@@ -27,7 +27,7 @@ namespace PastPaperHelper.Sources
             for (int i = 0; i < nodes.Count; i++)
             {
                 string fileName = nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
-                string[] split = fileName[0..^4].Split('_');
+                string[] split = fileName.Substring(0, fileName.Length-4).Split('_');
 
                 if (split.Length > 4 || split.Length < 3 || fileName.Substring(0, 4) != subject.SyllabusCode) continue;
 
@@ -144,7 +144,7 @@ namespace PastPaperHelper.Sources
                 result.Add(new Subject
                 {
                     Curriculum = curriculum,
-                    Name = entry.InnerText[0..^7],
+                    Name = entry.InnerText.Substring(0,entry.InnerText.Length-7),
                     SyllabusCode = code.Substring(1, 4)
                 }, url + herf.Value);
             }

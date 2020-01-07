@@ -88,7 +88,7 @@ namespace PastPaperHelper.Core.Tools
                     {
                         failure += item.Name + ",";
                     }
-                    UpdateErrorEvent?.Invoke($"Failed to update {failed.Count} subject{(failed.Count > 1 ? "s" : "")} ({failure[0..^1]}) from {PastPaperHelperCore.CurrentSource.Name}, please check your Internet connection.");
+                    UpdateErrorEvent?.Invoke($"Failed to update {failed.Count} subject{(failed.Count > 1 ? "s" : "")} ({failure.Substring(0,failure.Length-1)}) from {PastPaperHelperCore.CurrentSource.Name}, please check your Internet connection.");
                 }
                 else
                 {

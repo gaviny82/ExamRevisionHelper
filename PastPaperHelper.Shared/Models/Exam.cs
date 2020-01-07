@@ -27,12 +27,12 @@ namespace PastPaperHelper.Models
         public Exam(XmlNode node, Subject subject)
         {
             Subject = subject;
-            Series = node.Attributes["Series"].Value switch
+            switch(node.Attributes["Series"].Value)
             {
-                "Spring" => ExamSeries.Spring,
-                "Summer" => ExamSeries.Summer,
-                "Winter" => ExamSeries.Winter,
-                _ => ExamSeries.Specimen,
+                case "Spring": Series = ExamSeries.Spring; break;
+                case "Summer": Series = ExamSeries.Summer; break;
+                case "Winter": Series = ExamSeries.Winter; break;
+                default: Series= ExamSeries.Specimen; break;
             };
             Year = node.ParentNode.Attributes["Year"].Value;
 
