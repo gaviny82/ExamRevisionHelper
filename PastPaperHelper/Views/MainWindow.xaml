@@ -71,6 +71,4 @@
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>
-    
-    
 </Window>

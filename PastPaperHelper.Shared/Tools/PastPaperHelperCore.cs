@@ -17,7 +17,8 @@ namespace PastPaperHelper.Core.Tools
         public static Subject[] SubjectsLoaded { get; set; }
 
         public static Dictionary<Subject, string> SubjectUrlMap { get; set; }
-        public static Dictionary<Subject, PaperRepository> Subscription { get; set; }
+        public static Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
+        public static Subject[] SubscribedSubjects { get => Subscription.Keys.ToArray(); }
         public static PaperSource CurrentSource { get; set; }
 
         private static XmlDocument userData;

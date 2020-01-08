@@ -31,10 +31,6 @@ namespace PastPaperHelper.PrismTest
             UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
             if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
 
-            StartupUri = PastPaperHelper.PrismTest.Properties.Settings.Default.FirstRun ?
-                new Uri("pack://application:; break;; break;; break;/PastPaperHelper;component/Views/OobeWindow.xaml") :
-                new Uri("pack://application:; break;; break;; break;/PastPaperHelper;component/Views/MainWindow.xaml");
-
             PaperSource source;
             switch (PastPaperHelper.PrismTest.Properties.Settings.Default.PaperSource)
             {
@@ -51,12 +47,17 @@ namespace PastPaperHelper.PrismTest
 
         protected override Window CreateShell()
         {
-            return Container.Resolve<MainWindow>();
+            return PastPaperHelper.PrismTest.Properties.Settings.Default.FirstRun ?
+                Container.Resolve<MainWindow>() :
+                Container.Resolve<MainWindow>();
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterForNavigation<FilesView>("Files");
+            containerRegistry.RegisterForNavigation<FilesView>("Search");
+            containerRegistry.RegisterForNavigation<FilesView>("LocalStorage");
+            containerRegistry.RegisterForNavigation<SettingsView>("Settings");
         }
     }
 }
