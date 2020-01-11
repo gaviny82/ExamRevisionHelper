@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PastPaperHelper.Test", "PastPaperHelper.Test\PastPaperHelper.Test.csproj", "{022321D5-3328-4F83-9124-E37065DAB097}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastPaperHelper.PrismTest", "PastPaperHelper.PrismTest\PastPaperHelper.PrismTest.csproj", "{8D4D46D6-735A-4D7F-8D3F-00BE13295E9C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastPaperHelper", "PastPaperHelper\PastPaperHelper.csproj", "{8D4D46D6-735A-4D7F-8D3F-00BE13295E9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

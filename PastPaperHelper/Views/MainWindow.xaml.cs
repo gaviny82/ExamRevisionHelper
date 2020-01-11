@@ -1,12 +1,13 @@
 ﻿using MaterialDesignThemes.Wpf;
 using PastPaperHelper.Core.Tools;
-using PastPaperHelper.Models;
-using PastPaperHelper.Sources;
+using PastPaperHelper.Events;
 using PastPaperHelper.ViewModels;
-using System.Linq;
+using Prism.Events;
+using Prism.Regions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -14,17 +15,21 @@ using System.Windows.Media;
 namespace PastPaperHelper.Views
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static Snackbar MainSnackbar;
-        public static readonly TaskScheduler SyncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        public static Snackbar MainSnackbar { get; internal set; }
+        public static TaskScheduler SyncContextTaskScheduler { get; internal set; }
 
-        public MainWindow()
+        private readonly IRegionManager _regionManager;
+        public MainWindow(IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             InitializeComponent();
             MainSnackbar = mainSnackbar;
+            SyncContextTaskScheduler = TaskScheduler.Current;
+            _regionManager = regionManager;
+
 
             InitializationResult initResult = (Application.Current as App).InitResult;
             if (initResult == InitializationResult.SuccessUpdateNeeded)
@@ -33,38 +38,32 @@ namespace PastPaperHelper.Views
                 mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.LastUpdated.ToLongDateString()}", "Update", () =>
                 {
                     Application.Current.Resources["IsLoading"] = Visibility.Visible;
-                    PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcripted);
+                    PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcription);
                 });
                 //Refresh view models
             }
             else if (initResult == InitializationResult.Error)
             {
-                PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate 
-                { 
-                    SnackBar_EnqueueMessage($"Fetching data from {PastPaperHelperCore.CurrentSource.Name}...");
+                PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate
+                {
+                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Fetching data from {PastPaperHelperCore.CurrentSource.Name}...");
                     Application.Current.Resources["IsLoading"] = Visibility.Visible;
                 };
-                PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { SnackBar_EnqueueMessage(msg); };
-                PastPaperHelperUpdateService.UpdateTaskCompleteEvent += (msg) => { SnackBar_EnqueueMessage(msg); };
-                PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate 
-                { 
-                    SnackBar_EnqueueMessage($"Updated from {PastPaperHelperCore.CurrentSource.Name}.");
+                PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
+                PastPaperHelperUpdateService.UpdateTaskCompleteEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
+                PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate
+                {
+                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Updated from {PastPaperHelperCore.CurrentSource.Name}.");
                     Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                     //SettingsViewModel.RefreshSubjectLists();
                     //SettingsViewModel.RefreshSubscription();
                 };
-                PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcripted);
+                PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcription);
             }
             else
             {
                 //Refresh view models
             }
-        }
-        public static void SnackBar_EnqueueMessage(string msg)
-        {
-            Task.Factory.StartNew(() => MainSnackbar.MessageQueue.Enqueue(msg),
-                new CancellationTokenSource().Token,
-                TaskCreationOptions.None, SyncContextTaskScheduler);
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -79,21 +78,28 @@ namespace PastPaperHelper.Views
             MenuToggleButton.IsChecked = false;
         }
 
-
         private void RootDlg_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double newWidth = e.NewSize.Width, newHeight = e.NewSize.Height;
-            dlgGrid.Width = newWidth - 350;
-            dlgGrid.Height = newHeight - 150;
+            double width = e.NewSize.Width, height = e.NewSize.Height;
+            dlg.Width = width - 350;
+            dlg.Height = height - 150;
         }
 
-        private void AddSubject_Click(object sender, RoutedEventArgs e)
+        private void HamburgerMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(selectionTreeView.SelectedItem is Subject)) return;
-            Subject item = (Subject)selectionTreeView.SelectedItem;
-            SettingsViewModel vm = ((DataContext as MainWindowViewModel).ListItems.Last().Content as SettingsView).DataContext as SettingsViewModel;
-            vm.AddSubjectCommand.Execute(item);
+            string uri = HamburgerMenu.SelectedItem?.ToString();
+            if (uri != null) (DataContext as MainWindowViewModel).NavigateCommand.Execute(uri);
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _regionManager.RequestNavigate("ContentRegion", HamburgerMenu.SelectedItem.ToString().Replace(" ", ""));
+        }
+
+        private void Reference_Click(object sender, RoutedEventArgs e)
+        {
+            HamburgerMenu.SelectedItem = null;
+            MenuToggleButton.IsChecked = false;
+        }
     }
 }

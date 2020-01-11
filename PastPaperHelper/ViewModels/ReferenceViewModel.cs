@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace PastPaperHelper.ViewModels
 {
-    public class LocalStorageViewModel : BindableBase
+    public class ReferenceViewModel : BindableBase
     {
-        public LocalStorageViewModel()
+        public ReferenceViewModel()
         {
 
         }

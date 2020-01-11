@@ -1,17 +1,15 @@
-﻿using PastPaperHelper.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 
 namespace PastPaperHelper.Views
 {
     /// <summary>
-    /// OobeView.xaml 的交互逻辑
+    /// Interaction logic for OobeWindow.xaml
     /// </summary>
     public partial class OobeWindow : Window
     {
         public OobeWindow()
         {
             InitializeComponent();
-            DataContext = new OobeViewModel();
         }
 
         private void Next_Click(object sender, RoutedEventArgs e)

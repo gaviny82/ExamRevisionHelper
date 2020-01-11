@@ -1,36 +1,43 @@
 ﻿using PastPaperHelper.Models;
+using Prism.Commands;
+using Prism.Mvvm;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace PastPaperHelper.ViewModels
 {
-    public class FilesViewModel : NotificationObject
+    public class FilesViewModel : BindableBase
     {
         public FilesViewModel()
         {
-            OpenExamSeriesCommand = new DelegateCommand(OpenExamSeries);
-            OpenOnlineResourceCommand = new DelegateCommand(OpenOnlineResource);
             SelectedExamSeries = new Exam();
         }
-
 
         private Exam _selectedExamSeries;
         public Exam SelectedExamSeries
         {
             get { return _selectedExamSeries; }
-            set { _selectedExamSeries = value; RaisePropertyChangedEvent("SelectedExamSeries"); }
+            set { SetProperty(ref _selectedExamSeries, value); }
         }
 
-        public DelegateCommand OpenExamSeriesCommand { get; set; }
-        private void OpenExamSeries(object param)
+        private DelegateCommand<Exam> _openExamSeriesCommand;
+        public DelegateCommand<Exam> OpenExamSeriesCommand =>
+            _openExamSeriesCommand ?? (_openExamSeriesCommand = new DelegateCommand<Exam>(ExecuteCommandName));
+
+        void ExecuteCommandName(Exam exam)
         {
-            SelectedExamSeries = param as Exam;
+            SelectedExamSeries = exam;
         }
 
+        private DelegateCommand<PastPaperResource> _openOnlineResourceCommand;
+        public DelegateCommand<PastPaperResource> OpenOnlineResourcesCommand =>
+            _openOnlineResourceCommand ?? (_openOnlineResourceCommand = new DelegateCommand<PastPaperResource>(OpenOnlineResource));
 
-        public DelegateCommand OpenOnlineResourceCommand { get; set; }
-        private void OpenOnlineResource(object param)
+        private void OpenOnlineResource(PastPaperResource resource)
         {
-            if (param is PastPaperResource res) Process.Start(res.Url);
+            Process.Start(resource.Url);
         }
     }
 }

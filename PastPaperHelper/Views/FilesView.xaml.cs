@@ -7,28 +7,18 @@ using System.Windows.Input;
 namespace PastPaperHelper.Views
 {
     /// <summary>
-    /// FilesView.xaml 的交互逻辑
+    /// Interaction logic for FilesView
     /// </summary>
-    public partial class FilesView : Grid
+    public partial class FilesView : UserControl
     {
         public FilesView()
         {
             InitializeComponent();
-            DataContext = new FilesViewModel();
         }
 
         private void SubjectSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             (DataContext as FilesViewModel).SelectedExamSeries = new Exam();
-        }
-
-        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ListBox view = sender as ListBox;
-            if (view.SelectedItem != null)
-            {
-                (DataContext as FilesViewModel).OpenOnlineResourceCommand.Execute(view.SelectedItem);
-            }
         }
 
         private void ViewPaper_Click(object sender, System.Windows.RoutedEventArgs e)

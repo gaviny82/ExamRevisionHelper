@@ -1,20 +1,23 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
-using PastPaperHelper.Sources;
 using PastPaperHelper.Views;
+using PastPaperHelper.Sources;
+using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace PastPaperHelper.ViewModels
 {
-    class SettingsViewModel : NotificationObject
+    public class SettingsViewModel : BindableBase
     {
         public static ObservableCollection<Subject> IGSubjects { get; set; } = new ObservableCollection<Subject>();
         public static ObservableCollection<Subject> ALSubjects { get; set; } = new ObservableCollection<Subject>();
@@ -40,14 +43,8 @@ namespace PastPaperHelper.ViewModels
             }
         }
 
-
         public SettingsViewModel()
         {
-            RemoveSelectedSubjectsCommand = new DelegateCommand(RemoveSelectedSubjects);
-            RemoveSubjectCommand = new DelegateCommand(RemoveSubjectAsync);
-            AddSubjectCommand = new DelegateCommand(AddSubject);
-            BrowseCommand = new DelegateCommand(Browse);
-
             Path = Properties.Settings.Default.Path;
             PaperSource = PaperSource.CurrentPaperSource;
 
@@ -60,10 +57,9 @@ namespace PastPaperHelper.ViewModels
         public string Path
         {
             get { return _path; }
-            set
-            {
-                _path = value;
-                RaisePropertyChangedEvent("Path");
+            set 
+            { 
+                SetProperty(ref _path, value);
                 if (Directory.Exists(value))
                 {
                     Properties.Settings.Default.Path = value;
@@ -76,14 +72,15 @@ namespace PastPaperHelper.ViewModels
         public PaperSource PaperSource
         {
             get { return _paperSource; }
-            set
-            {
-                _paperSource = value;
-                RaisePropertyChangedEvent("PaperSource");
-                if (value == null) return;
-                PaperSource.CurrentPaperSource = value;
-                Properties.Settings.Default.PaperSource = value.Name;
-                Properties.Settings.Default.Save();
+            set 
+            { 
+                SetProperty(ref _paperSource, value);
+                if (value != null)
+                {
+                    PaperSource.CurrentPaperSource = value;
+                    Properties.Settings.Default.PaperSource = value.Name;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
@@ -93,8 +90,7 @@ namespace PastPaperHelper.ViewModels
             get { return _autoUpdateFiles; }
             set
             {
-                _autoUpdateFiles = value;
-                RaisePropertyChangedEvent("AutoUpdateFiles");
+                SetProperty(ref _autoUpdateFiles, value);
                 Properties.Settings.Default.AutoUpdateFiles = value;
                 Properties.Settings.Default.Save();
             }
@@ -106,8 +102,7 @@ namespace PastPaperHelper.ViewModels
             get { return _autoUpdateProgram; }
             set
             {
-                _autoUpdateProgram = value;
-                RaisePropertyChangedEvent("AutoUpdateProgram");
+                SetProperty(ref _autoUpdateProgram, value);
                 Properties.Settings.Default.AutoUpdateProgram = value;
                 Properties.Settings.Default.Save();
             }
@@ -122,10 +117,12 @@ namespace PastPaperHelper.ViewModels
             SubjectSubscribed.Remove(subject);
         }
 
-        public DelegateCommand RemoveSelectedSubjectsCommand { get; set; }
-        private void RemoveSelectedSubjects(object param)
+        private DelegateCommand<IList> _removeSelectedSubjectsCommand;
+        public DelegateCommand<IList> RemoveSelectedSubjectsCommand =>
+            _removeSelectedSubjectsCommand ?? (_removeSelectedSubjectsCommand = new DelegateCommand<IList>(ExecuteRemoveSelectedSubjectsCommand));
+
+        void ExecuteRemoveSelectedSubjectsCommand(IList list)
         {
-            IList list = (IList)param;
             while (list.Count > 0)
             {
                 Subject subject = (Subject)list[0];
@@ -134,10 +131,12 @@ namespace PastPaperHelper.ViewModels
             }
         }
 
-        public DelegateCommand AddSubjectCommand { get; set; }
-        private async void AddSubject(object param)
+        private DelegateCommand<Subject> _addSubjectCommand;
+        public DelegateCommand<Subject> AddSubjectCommand =>
+            _addSubjectCommand ?? (_addSubjectCommand = new DelegateCommand<Subject>(ExecuteAddSubjectCommand));
+
+        private async void ExecuteAddSubjectCommand(Subject subject)
         {
-            Subject subject = (Subject)param;
             pending.Add(subject);
             await CheckSubscription();
         }
@@ -170,19 +169,22 @@ namespace PastPaperHelper.ViewModels
             Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
         }
 
-        public DelegateCommand BrowseCommand { get; set; }
-        private void Browse(object param)
+        private DelegateCommand _browseCommand;
+        public DelegateCommand BrowseCommand =>
+            _browseCommand ?? (_browseCommand = new DelegateCommand(ExecuteCommandName));
+
+        void ExecuteCommandName()
         {
-            using(CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true })
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true })
             {
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     Path = dialog.FileName;
                 }
                 else return;
-                SearchViewModel model = ((Application.Current.MainWindow.DataContext as MainWindowViewModel).ListItems[1].Content as SearchView).DataContext as SearchViewModel;
-                model.SearchPath = Path;//TODO: Use binding instead
+                //TODO: Invoke Change Path Event
             }
         }
+
     }
 }

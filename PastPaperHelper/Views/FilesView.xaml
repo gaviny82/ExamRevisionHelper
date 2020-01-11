@@ -1,176 +1,181 @@
-﻿<Grid
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:PastPaperHelper.Views"
-      xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
-      xmlns:models="clr-namespace:PastPaperHelper.Models;assembly=PastPaperHelper.Shared"
-      xmlns:base="clr-namespace:PastPaperHelper"
-      xmlns:Converters="clr-namespace:PastPaperHelper.Converters" 
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="PastPaperHelper.Views.FilesView"
-      mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="800">
-    <Grid.Resources>
-        <Converters:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
-        <Converters:IsNullToIsEnabledConverter x:Key="IsNullToIsEnabledConverter"/>
-        <Converters:IsSyllabusUpdatedToVisibilityConverter x:Key="IsSyllabusUpdatedToVisibilityConverter"/>
-        <Converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"/>
-        <Converters:SubjectToRepositoryConverter x:Key="SubjectToRepositoryConverter"/>
-        <Converters:UrlToDisplayNameConverter x:Key="UrlToDisplayNameConverter"/>
-        <Converters:PaperTypeToIconConverter x:Key="PaperTypeToIconConverter"/>
+﻿<UserControl x:Class="PastPaperHelper.Views.FilesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:models="clr-namespace:PastPaperHelper.Models"
+             xmlns:Converters="clr-namespace:PastPaperHelper.Converters" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             prism:ViewModelLocator.AutoWireViewModel="True" 
+             xmlns:local="clr-namespace:PastPaperHelper.Views"
+             xmlns:core="clr-namespace:PastPaperHelper.Core.Tools"
+             xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
+             
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800" >
+    <Grid>
+        <Grid.Resources>
+            <Converters:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter"/>
+            <Converters:IsNullToIsEnabledConverter x:Key="IsNullToIsEnabledConverter"/>
+            <Converters:IsSyllabusUpdatedToVisibilityConverter x:Key="IsSyllabusUpdatedToVisibilityConverter"/>
+            <Converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter"/>
+            <Converters:SubjectToRepositoryConverter x:Key="SubjectToRepositoryConverter"/>
+            <Converters:UrlToDisplayNameConverter x:Key="UrlToDisplayNameConverter"/>
+            <Converters:PaperTypeToIconConverter x:Key="PaperTypeToIconConverter"/>
 
-        <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
-            <Border Margin="-8" Padding="8,8,9,8" Background="White">
-                <materialDesign:Card Padding="16">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Year, StringFormat=Year \{0\}}" VerticalAlignment="Center" FontWeight="Bold" FontSize="22" HorizontalAlignment="Left"/>
-                        
-                        <Button Content="March" ToolTip="Spring examination series" Width="120" Margin="0,8,16,0" Grid.Row="1" Grid.Column="0"
+            <DataTemplate DataType="{x:Type models:ExamYear}" x:Key="ExamYearTemplate">
+                <Border Margin="-8" Padding="8,8,9,8" Background="White">
+                    <materialDesign:Card Padding="16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Year, StringFormat=Year \{0\}}" VerticalAlignment="Center" FontWeight="Bold" FontSize="22" HorizontalAlignment="Left"/>
+
+                            <Button Content="March" ToolTip="Spring examination series" Width="120" Margin="0,8,16,0" Grid.Row="1" Grid.Column="0"
                                         IsEnabled="{Binding Spring, Converter={StaticResource IsNullToIsEnabledConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Spring}"/>
 
-                        <Button Content="May/June" ToolTip="Spring examination series" Width="120" Margin="0,8,16,0" Grid.Row="1" Grid.Column="1"
+                            <Button Content="May/June" ToolTip="Spring examination series" Width="120" Margin="0,8,16,0" Grid.Row="1" Grid.Column="1"
                                         IsEnabled="{Binding Summer, Converter={StaticResource IsNullToIsEnabledConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Summer}"/>
 
-                        <Button Content="Oct/Nov" ToolTip="Spring examination series" Width="120" Margin="0,8,8,0" Grid.Row="1" Grid.Column="2"
+                            <Button Content="Oct/Nov" ToolTip="Spring examination series" Width="120" Margin="0,8,8,0" Grid.Row="1" Grid.Column="2"
                                         IsEnabled="{Binding Winter, Converter={StaticResource IsNullToIsEnabledConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Winter}"/>
 
-                        <Button Grid.Row="0" Grid.Column="2" Content="Specimen" Margin="0,0,8,0" ToolTip="View specimen papers" 
+                            <Button Grid.Row="0" Grid.Column="2" Content="Specimen" Margin="0,0,8,0" ToolTip="View specimen papers" 
                                         Visibility="{Binding Specimen, Converter={StaticResource IsNullToVisibilityConverter}}"
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Specimen}"/>
 
-                        <materialDesign:Chip Grid.Column="1" Grid.ColumnSpan="2" Content="New Syllabus" Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" CommandParameter="{Binding Syllabus}">
-                            <materialDesign:Chip.Visibility>
-                                <MultiBinding Converter="{StaticResource IsSyllabusUpdatedToVisibilityConverter}">
-                                    <Binding Path="Syllabus"/>
-                                    <Binding Path="Year"/>
-                                </MultiBinding>
-                            </materialDesign:Chip.Visibility>
-                            <materialDesign:Chip.Icon>
-                                <materialDesign:PackIcon Kind="FileDocument"/>
-                            </materialDesign:Chip.Icon>
-                        </materialDesign:Chip>
-                        <Button Style="{DynamicResource MaterialDesignFlatButton}" Grid.Column="1" HorizontalAlignment="Left" Visibility="Collapsed">
-                            <StackPanel Orientation="Horizontal" Margin="-8,0">
-                                <materialDesign:PackIcon Kind="GithubCircle"/>
-                                <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Github"/>
-                            </StackPanel>
-                        </Button>
-                    </Grid>
-                </materialDesign:Card>
-            </Border>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type models:Variant}" x:Key="VariantTemplate">
-            <StackPanel Orientation="Horizontal" Margin="4,8,4,4">
-                <TextBlock Text="{Binding VariantCode, StringFormat=Variant {0}}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
-                <ItemsControl ItemsSource="{Binding Papers}" Margin="10,0,0,0">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="{x:Type models:Paper}">
-                            <Button Content="{Binding Type, Converter={StaticResource PaperTypeToIconConverter}}" Style="{StaticResource MaterialDesignOutlinedButton}" ToolTip="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}" Margin="6,0,0,0" Click="ViewPaper_Click"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </DataTemplate>
-    </Grid.Resources>
-    <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="494"/>
-        <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
-    <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectedIndex="0" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}" SelectionChanged="SubjectSelector_SelectionChanged">
-        <ComboBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type models:Subject}">
-                <Border x:Name="border1" Margin="0,-8" Padding="2,3,0,4" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}" Background="Transparent">
-                    <Grid>
-                        <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
-                        <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                        <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
-                        <TextBlock Margin="40,0,0,0" VerticalAlignment="Top" FontWeight="Bold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Mode=Self}}">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0} {1}">
-                                    <Binding Path="Curriculum"/>
-                                    <Binding Path="Name"/>
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
+                            <materialDesign:Chip Grid.Column="1" Grid.ColumnSpan="2" Content="New Syllabus" Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" CommandParameter="{Binding Syllabus}">
+                                <materialDesign:Chip.Visibility>
+                                    <MultiBinding Converter="{StaticResource IsSyllabusUpdatedToVisibilityConverter}">
+                                        <Binding Path="Syllabus"/>
+                                        <Binding Path="Year"/>
+                                    </MultiBinding>
+                                </materialDesign:Chip.Visibility>
+                                <materialDesign:Chip.Icon>
+                                    <materialDesign:PackIcon Kind="FileDocument"/>
+                                </materialDesign:Chip.Icon>
+                            </materialDesign:Chip>
+                            <Button Style="{DynamicResource MaterialDesignFlatButton}" Grid.Column="1" HorizontalAlignment="Left" Visibility="Collapsed">
+                                <StackPanel Orientation="Horizontal" Margin="-8,0">
+                                    <materialDesign:PackIcon Kind="GithubCircle"/>
+                                    <TextBlock Margin="8 0 0 0" VerticalAlignment="Center" Text="Github"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </materialDesign:Card>
                 </Border>
             </DataTemplate>
-        </ComboBox.ItemTemplate>
-    </ComboBox>
-    
-    <ListView Margin="4,54,4,4"
+            <DataTemplate DataType="{x:Type models:Variant}" x:Key="VariantTemplate">
+                <StackPanel Orientation="Horizontal" Margin="4,8,4,4">
+                    <TextBlock Text="{Binding VariantCode, StringFormat=Variant {0}}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <ItemsControl ItemsSource="{Binding Papers}" Margin="10,0,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type models:Paper}">
+                                <Button Content="{Binding Type, Converter={StaticResource PaperTypeToIconConverter}}" Style="{StaticResource MaterialDesignOutlinedButton}" ToolTip="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}" Margin="6,0,0,0" Click="ViewPaper_Click"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </DataTemplate>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="494"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" ItemsSource="{x:Static core:PastPaperHelperCore.SubscribedSubjects}" SelectedIndex="0" ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}" SelectionChanged="SubjectSelector_SelectionChanged">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:Subject}">
+                    <Border x:Name="border1" Margin="0,-8" Padding="2,3,0,4" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}" Background="Transparent">
+                        <Grid>
+                            <Ellipse Width="32" Height="32" HorizontalAlignment="Left" materialDesign:ShadowAssist.ShadowDepth="Depth2" Fill="{DynamicResource PrimaryHueLightBrush}"/>
+                            <TextBlock Text="{Binding Curriculum, Converter={StaticResource ShortCurriculumNameConverter}}" Margin="8,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <TextBlock Text="{Binding SyllabusCode, StringFormat=Syllabus Code: \{0\}}" FontStyle="Italic" Margin="40,16,0,0" VerticalAlignment="Top"/>
+                            <TextBlock Margin="40,0,0,0" VerticalAlignment="Top" FontWeight="Bold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Mode=Self}}">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} {1}">
+                                        <Binding Path="Curriculum"/>
+                                        <Binding Path="Name"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <ListView Margin="4,54,4,4"
                 ItemsSource="{Binding ElementName=subjectSelector, Path=SelectedItem, Mode=OneWay, Converter={StaticResource SubjectToRepositoryConverter}}" 
                 ItemTemplate="{StaticResource ExamYearTemplate}"
                 VirtualizingStackPanel.IsVirtualizing="True">
-    </ListView>
-    
-    <TextBlock Grid.Column="1" Margin="8,12" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" FontWeight="Bold" Visibility="{Binding SelectedExamSeries.Year, Converter={StaticResource IsNullToVisibilityConverter}}">
-        <TextBlock.Text>
-            <MultiBinding StringFormat="{}{0} {1}">
-                <Binding Path="SelectedExamSeries.Series"/>
-                <Binding Path="SelectedExamSeries.Year"/>
-            </MultiBinding>
-        </TextBlock.Text>
-    </TextBlock>
-    <Button Content="{materialDesign:PackIcon FileDocumentBoxCheck}" Style="{StaticResource MaterialDesignOutlinedButton}"
+        </ListView>
+
+        <TextBlock Grid.Column="1" Margin="8,12" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" FontWeight="Bold" Visibility="{Binding SelectedExamSeries.Year, Converter={StaticResource IsNullToVisibilityConverter}}">
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0} {1}">
+                    <Binding Path="SelectedExamSeries.Series"/>
+                    <Binding Path="SelectedExamSeries.Year"/>
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
+        <Button Content="{materialDesign:PackIcon FileDocumentBoxCheck}" Style="{StaticResource MaterialDesignOutlinedButton}"
              Visibility="{Binding SelectedExamSeries.ExaminersReport, Converter={StaticResource IsNullToVisibilityConverter}}"
              Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
              CommandParameter="{Binding SelectedExamSeries.ExaminersReport}"
              Grid.Column="1" ToolTip="Examiners Report" VerticalAlignment="Top" HorizontalAlignment="Right"  Margin="0,10,64,0"/>
-    <Button Content="{materialDesign:PackIcon ChartBar}" Style="{StaticResource MaterialDesignOutlinedButton}"
+        <Button Content="{materialDesign:PackIcon ChartBar}" Style="{StaticResource MaterialDesignOutlinedButton}"
              Visibility="{Binding SelectedExamSeries.GradeThreshold, Converter={StaticResource IsNullToVisibilityConverter}}"
              Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
              CommandParameter="{Binding SelectedExamSeries.GradeThreshold}"
              Grid.Column="1" ToolTip="Grade Threshold" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,8,0"/>
 
-    <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
-    <ScrollViewer Grid.Column="1" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-        <ItemsControl ItemsSource="{Binding SelectedExamSeries.Components}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:Component}">
-                    <Border Margin="-8" Background="White" Padding="8,8,9,8">
-                        <materialDesign:Card Margin="16">
-                            <Grid Margin="8">
-                                <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="22" FontWeight="Bold" TextAlignment="Center"/>
-                                <ItemsControl ItemsSource="{Binding Variants}" Margin="0,30,0,0" ItemTemplate="{StaticResource VariantTemplate}"/>
-                            </Grid>
-                        </materialDesign:Card>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-    </ScrollViewer>
-    <Border Grid.ColumnSpan="2" Background="#60000000" Visibility="{DynamicResource IsLoading}">
-        <StackPanel VerticalAlignment="Center">
-            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64" Visibility="{Binding IsLoading}"/>
-            <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
-        </StackPanel>
-    </Border>
-</Grid>
+        <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
+        <ScrollViewer Grid.Column="1" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding SelectedExamSeries.Components}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:Component}">
+                        <Border Margin="-8" Background="White" Padding="8,8,9,8">
+                            <materialDesign:Card Margin="16">
+                                <Grid Margin="8">
+                                    <TextBlock Text="{Binding Code, StringFormat=Component {0}}" FontSize="22" FontWeight="Bold" TextAlignment="Center"/>
+                                    <ItemsControl ItemsSource="{Binding Variants}" Margin="0,30,0,0" ItemTemplate="{StaticResource VariantTemplate}"/>
+                                </Grid>
+                            </materialDesign:Card>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
+        <Border Grid.ColumnSpan="2" Background="#60000000" Visibility="{DynamicResource IsLoading}">
+            <StackPanel VerticalAlignment="Center">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64" Visibility="{Binding IsLoading}"/>
+                <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+
+</UserControl>

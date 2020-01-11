@@ -1,21 +1,43 @@
-﻿using PastPaperHelper.Views;
-using System.Windows.Controls;
+﻿using PastPaperHelper.Models;
+using PastPaperHelper.Events;
+using PastPaperHelper.Views;
+using Prism.Commands;
+using Prism.Events;
+using Prism.Mvvm;
+using Prism.Regions;
+using System.Collections.ObjectModel;
 
 namespace PastPaperHelper.ViewModels
 {
-    class MainWindowViewModel : NotificationObject
+    public class MainWindowViewModel : BindableBase
     {
-        public HamburgerMenuItemViewModel[] ListItems { get; }
+        private readonly IRegionManager _regionManager;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
         {
-            ListItems = new HamburgerMenuItemViewModel[]
+            _regionManager = regionManager;
+            eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Subscribe((msg) =>
             {
-                new HamburgerMenuItemViewModel("Papers", new FilesView()),
-                new HamburgerMenuItemViewModel("Files", new LocalStorage()),
-                new HamburgerMenuItemViewModel("Search", new SearchView()),
-                new HamburgerMenuItemViewModel("Settings", new SettingsView()),
-            };
+                MainWindow.MainSnackbar.MessageQueue.Enqueue(msg);
+            }, ThreadOption.UIThread);
         }
+
+        private DelegateCommand<string> _navigateCommand;
+        public DelegateCommand<string> NavigateCommand =>
+            _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(Navigate));
+        private void Navigate(string uri)
+        {
+            Title = uri;
+            _regionManager.RequestNavigate("ContentRegion", uri.Replace(" ", ""));
+        }
+
+
+        private string _title = "PastPaperHelper";
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
+
     }
 }
