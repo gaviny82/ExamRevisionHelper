@@ -95,8 +95,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\ApplicationCommands.cs" />
-    <Compile Include="Commands\IApplicationCommands.cs" />
+    <Compile Include="Events\Events.cs" />
+    <Compile Include="Models\Component.cs" />
+    <Compile Include="Models\Exam.cs" />
+    <Compile Include="Models\ExamYear.cs" />
+    <Compile Include="Models\Paper.cs" />
+    <Compile Include="Models\PaperRepository.cs" />
+    <Compile Include="Models\Question.cs" />
+    <Compile Include="Models\Subject.cs" />
+    <Compile Include="Models\Variant.cs" />
+    <Compile Include="Sources\PaperSource.cs" />
+    <Compile Include="Sources\PaperSourceCIENotes.cs" />
+    <Compile Include="Sources\PaperSourceGCEGuide.cs" />
+    <Compile Include="Sources\PaperSourcePapaCambridge.cs" />
+    <Compile Include="Tools\PastPaperHelperCore.cs" />
+    <Compile Include="Tools\PastPaperHelperUpdateService.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\ReferenceViewViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -186,6 +199,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack">
+      <Version>1.11.17</Version>
+    </PackageReference>
     <PackageReference Include="MaterialDesignColors">
       <Version>1.2.2</Version>
     </PackageReference>
@@ -202,12 +218,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PastPaperHelper.Shared\PastPaperHelper.Shared.csproj">
-      <Project>{925d80f3-793f-4c11-bad8-7a0640c0d304}</Project>
-      <Name>PastPaperHelper.Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

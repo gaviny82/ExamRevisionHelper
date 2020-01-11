@@ -1,5 +1,7 @@
-﻿using PastPaperHelper.PrismTest.Commands;
+﻿using PastPaperHelper.PrismTest.Events;
+using PastPaperHelper.PrismTest.Views;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -9,11 +11,14 @@ namespace PastPaperHelper.PrismTest.ViewModels
     {
         private readonly IRegionManager _regionManager;
 
-        public MainWindowViewModel(IRegionManager regionManager)
+        public MainWindowViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _regionManager = regionManager;
+            eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Subscribe((msg) =>
+            {
+                MainWindow.MainSnackbar.MessageQueue.Enqueue(msg);
+            }, ThreadOption.UIThread);
         }
-
 
         private DelegateCommand<string> _navigateCommand;
         public DelegateCommand<string> NavigateCommand =>
@@ -21,7 +26,7 @@ namespace PastPaperHelper.PrismTest.ViewModels
         private void Navigate(string uri)
         {
             Title = uri;
-            _regionManager.RequestNavigate("ContentRegion", uri);
+            _regionManager.RequestNavigate("ContentRegion", uri.Replace(" ", ""));
         }
 
 

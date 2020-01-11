@@ -1,6 +1,5 @@
 ﻿using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
-using PastPaperHelper.PrismTest.Commands;
 using PastPaperHelper.PrismTest.Views;
 using PastPaperHelper.Sources;
 using Prism.Ioc;
@@ -20,10 +19,26 @@ namespace PastPaperHelper.PrismTest
         public InitializationResult InitResult { get; private set; }
         public string UserDataFolderPath { get; private set; }
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override Window CreateShell()
         {
-            base.OnStartup(e);
+            return PastPaperHelper.PrismTest.Properties.Settings.Default.FirstRun ?
+                Container.Resolve<MainWindow>() :
+                Container.Resolve<MainWindow>();
+        }
 
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            containerRegistry.RegisterForNavigation<FilesView>("Files");
+            containerRegistry.RegisterForNavigation<FilesView>("Search");
+            containerRegistry.RegisterForNavigation<FilesView>("LocalStorage");
+            containerRegistry.RegisterForNavigation<SettingsView>("Settings");
+            containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
+
+            containerRegistry.RegisterForNavigation<SubjectDialog>("SubjectDialog");
+        }
+
+        private void PrismApplication_Startup(object sender, StartupEventArgs e)
+        {
             //OOBE Test
             //PastPaperHelper.Properties.Settings.Default.FirstRun = true;
             PastPaperHelper.PrismTest.Properties.Settings.Default.FirstRun = false;
@@ -44,26 +59,6 @@ namespace PastPaperHelper.PrismTest
             //TODO: Read update policy from user preferences
             //TODO: Read subscription from user preferences
             InitResult = PastPaperHelperCore.Initialize(source, $"{UserDataFolderPath}\\data.xml", UpdatePolicy.Always, null);
-        }
-
-        protected override Window CreateShell()
-        {
-            return PastPaperHelper.PrismTest.Properties.Settings.Default.FirstRun ?
-                Container.Resolve<MainWindow>() :
-                Container.Resolve<MainWindow>();
-        }
-
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
-        {
-            containerRegistry.RegisterForNavigation<FilesView>("Files");
-            containerRegistry.RegisterForNavigation<FilesView>("Search");
-            containerRegistry.RegisterForNavigation<FilesView>("LocalStorage");
-            containerRegistry.RegisterForNavigation<SettingsView>("Settings");
-            containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
-
-            containerRegistry.RegisterForNavigation<SubjectDialog>("SubjectDialog");
-
-            containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
         }
     }
 }
