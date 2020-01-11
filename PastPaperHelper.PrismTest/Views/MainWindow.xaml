@@ -1,56 +1,38 @@
 ﻿<Window x:Class="PastPaperHelper.PrismTest.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
         xmlns:models="clr-namespace:PastPaperHelper.Models;assembly=PastPaperHelper.Shared"
-        xmlns:vm="clr-namespace:PastPaperHelper.PrismTest.ViewModels"
-        xmlns:prism="http://prismlibrary.com/"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        prism:ViewModelLocator.AutoWireViewModel="True"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        TextElement.FontWeight="Regular"
-        TextElement.FontSize="16"
-        TextOptions.TextFormattingMode="Ideal" 
-        TextOptions.TextRenderingMode="Auto"
+        xmlns:prism="http://prismlibrary.com/" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:views="clr-namespace:PastPaperHelper.PrismTest.Views"
+        xmlns:vm="clr-namespace:PastPaperHelper.PrismTest.ViewModels" Title="PastPaperHelper" Width="1024"
+        Height="576" MinWidth="800" MinHeight="450" prism:ViewModelLocator.AutoWireViewModel="True"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{StaticResource MaterialDesignFont}"
-        Loaded="Window_Loaded"
-        Title="PastPaperHelper" Height="576" Width="1024" MinWidth="800" MinHeight="450">
-    <Window.Resources>
-        <DataTemplate x:Key="DisplaySubject" DataType="{x:Type models:Subject}">
-            <TextBlock>
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} ({1})">
-                        <Binding Path="Name" />
-                        <Binding Path="SyllabusCode" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </DataTemplate>
-    </Window.Resources>
+        Loaded="Window_Loaded" TextElement.FontSize="16" TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Auto">
     <materialDesign:DialogHost x:Name="RootDialog" SnackbarMessageQueue="{Binding ElementName=mainSnackbar, Path=MessageQueue}">
         <materialDesign:DialogHost.DialogContent>
-            <Grid x:Name="dlgGrid" Margin="16" Width="600" Height="400">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TreeView Grid.ColumnSpan="2" x:Name="selectionTreeView" VirtualizingPanel.IsVirtualizing="True" Margin="0,0,0,40">
-                    <TreeViewItem Header="IGCSE" ItemsSource="{x:Static vm:SettingsViewModel.IGSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
-                    <TreeViewItem Header="A-Level" ItemsSource="{x:Static vm:SettingsViewModel.ALSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
-                </TreeView>
-                <Button Content="Done" Margin="0,0,8,0" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}" VerticalAlignment="Bottom" Grid.Column="0"/>
-                <Button Content="Add" Margin="8,0,0,0" VerticalAlignment="Bottom" Grid.Column="1" Click="AddSubject_Click"/>
-            </Grid>
+            <views:SubjectDialog x:Name="dlg" Width="600" Height="400" Margin="16" />
         </materialDesign:DialogHost.DialogContent>
         <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
             <materialDesign:DrawerHost.LeftDrawerContent>
                 <DockPanel MinWidth="212">
-                    <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}" DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="10" Width="32" Height="32" IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"/>
-                    <ListBox x:Name="HamburgerMenu"  Margin="0,16" SelectedIndex="0" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp" SelectionChanged="HamburgerMenu_SelectionChanged">
+                    <ToggleButton Width="32" Height="32" Margin="10" HorizontalAlignment="Right" DockPanel.Dock="Top"
+                                  IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
+                                  Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+                    <Button HorizontalContentAlignment="Left" Click="Reference_Click"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Reference" Content="Reference" DockPanel.Dock="Bottom" FontSize="16"
+                            FontWeight="Normal"
+                            Foreground="{DynamicResource MaterialDesignBody}"
+                            Style="{DynamicResource MaterialDesignFlatButton}" />
+                    <ListBox x:Name="HamburgerMenu" Margin="0,16" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
+                             SelectedIndex="0" SelectionChanged="HamburgerMenu_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type sys:String}">
-                                <TextBlock Text="{Binding}" Margin="10,0,0,0"/>
+                                <TextBlock Margin="10,0,0,0" Text="{Binding}" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                         <sys:String>Files</sys:String>
@@ -61,14 +43,17 @@
                 </DockPanel>
             </materialDesign:DrawerHost.LeftDrawerContent>
             <Grid>
-                <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Padding="10">
+                <materialDesign:ColorZone Padding="10" VerticalAlignment="Top" Mode="PrimaryMid">
                     <StackPanel Orientation="Horizontal">
-                        <ToggleButton x:Name="MenuToggleButton" Style="{DynamicResource MaterialDesignHamburgerToggleButton}" Width="32" Height="32"/>
-                        <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Title}" FontSize="18" Style="{StaticResource MaterialDesignSubtitle1TextBlock}"/>
+                        <ToggleButton x:Name="MenuToggleButton" Width="32" Height="32"
+                                      Style="{DynamicResource MaterialDesignHamburgerToggleButton}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="18"
+                                   Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                   Text="{Binding Title}" />
                     </StackPanel>
                 </materialDesign:ColorZone>
-                <ContentControl prism:RegionManager.RegionName="ContentRegion" Margin="0,52,0,0"/>
-                <materialDesign:Snackbar x:Name="mainSnackbar" MessageQueue="{materialDesign:MessageQueue}"/>
+                <ContentControl Margin="0,52,0,0" prism:RegionManager.RegionName="ContentRegion" />
+                <materialDesign:Snackbar x:Name="mainSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>

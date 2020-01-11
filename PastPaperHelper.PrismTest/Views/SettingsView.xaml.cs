@@ -18,7 +18,5 @@ namespace PastPaperHelper.PrismTest.Views
 
         private void OpenGithub_Click(object sender, RoutedEventArgs e) => Process.Start("https://github.com/GavinYou082/PastPaperHelper");
 
-        private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => Process.Start("https://www.e-iceblue.com/Introduce/free-pdf-component.html");
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using PastPaperHelper.PrismTest.ViewModels;
+using Prism.Regions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,11 +19,13 @@ namespace PastPaperHelper.PrismTest.Views
 
         public static TaskScheduler SyncContextTaskScheduler { get; internal set; }
 
-        public MainWindow()
+        private readonly IRegionManager _regionManager;
+        public MainWindow(IRegionManager regionManager)
         {
             InitializeComponent();
             MainSnackbar = mainSnackbar;
             SyncContextTaskScheduler = TaskScheduler.Current;
+            _regionManager = regionManager;
         }
 
 
@@ -40,27 +43,26 @@ namespace PastPaperHelper.PrismTest.Views
 
         private void RootDlg_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double newWidth = e.NewSize.Width, newHeight = e.NewSize.Height;
-            //dlgGrid.Width = newWidth - 350;
-            //dlgGrid.Height = newHeight - 150;
-        }
-
-        private void AddSubject_Click(object sender, RoutedEventArgs e)
-        {
-            //if (!(selectionTreeView.SelectedItem is Subject)) return;
-            //Subject item = (Subject)selectionTreeView.SelectedItem;
-            //SettingsViewModel vm = ((DataContext as MainWindowViewModel).ListItems.Last().Content as SettingsView).DataContext as SettingsViewModel;
-            //vm.AddSubjectCommand.Execute(item);
+            double width = e.NewSize.Width, height = e.NewSize.Height;
+            dlg.Width = width - 350;
+            dlg.Height = height - 150;
         }
 
         private void HamburgerMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            (DataContext as MainWindowViewModel).NavigateCommand.Execute(HamburgerMenu.SelectedItem.ToString().Replace(" ", ""));
+            string uri = HamburgerMenu.SelectedItem?.ToString().Replace(" ", "");
+            if (uri != null) (DataContext as MainWindowViewModel).NavigateCommand.Execute(uri);
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as MainWindowViewModel).NavigateCommand.Execute(HamburgerMenu.SelectedItem.ToString().Replace(" ", ""));
+            _regionManager.RequestNavigate("ContentRegion", HamburgerMenu.SelectedItem.ToString().Replace(" ", ""));
+        }
+
+        private void Reference_Click(object sender, RoutedEventArgs e)
+        {
+            HamburgerMenu.SelectedItem = null;
+            MenuToggleButton.IsChecked = false;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
+using PastPaperHelper.PrismTest.Commands;
 using PastPaperHelper.PrismTest.Views;
 using PastPaperHelper.Sources;
 using Prism.Ioc;
@@ -58,6 +59,11 @@ namespace PastPaperHelper.PrismTest
             containerRegistry.RegisterForNavigation<FilesView>("Search");
             containerRegistry.RegisterForNavigation<FilesView>("LocalStorage");
             containerRegistry.RegisterForNavigation<SettingsView>("Settings");
+            containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
+
+            containerRegistry.RegisterForNavigation<SubjectDialog>("SubjectDialog");
+
+            containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
         }
     }
 }
