@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace PastPaperHelper.PrismTest.ViewModels
 {
-    public class ReferenceViewViewModel : BindableBase
+    public class ReferenceViewModel : BindableBase
     {
-        public ReferenceViewViewModel()
+        public ReferenceViewModel()
         {
 
         }

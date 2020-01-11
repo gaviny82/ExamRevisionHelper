@@ -22,7 +22,7 @@
                     <ToggleButton Width="32" Height="32" Margin="10" HorizontalAlignment="Right" DockPanel.Dock="Top"
                                   IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}"
                                   Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-                    <Button HorizontalContentAlignment="Left" Click="Reference_Click"
+                    <Button HorizontalContentAlignment="Left" Click="Reference_Click" Height="36"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Reference" Content="Reference" DockPanel.Dock="Bottom" FontSize="16"
                             FontWeight="Normal"

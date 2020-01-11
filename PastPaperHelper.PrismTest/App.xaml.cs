@@ -22,8 +22,8 @@ namespace PastPaperHelper.PrismTest
         protected override Window CreateShell()
         {
             return PastPaperHelper.PrismTest.Properties.Settings.Default.FirstRun ?
-                Container.Resolve<MainWindow>() :
-                Container.Resolve<MainWindow>();
+                (Window)Container.Resolve<MainWindow>() :
+                (Window)Container.Resolve<OobeWindow>();
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)

@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PastPaperHelper\PastPaperHelper.csproj" />
+    <ProjectReference Include="..\PastPaperHelper.PrismTest\PastPaperHelper.PrismTest.csproj" />
   </ItemGroup>
 
 </Project>

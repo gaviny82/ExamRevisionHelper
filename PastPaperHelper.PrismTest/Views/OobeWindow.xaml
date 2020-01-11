@@ -1,0 +1,86 @@
+﻿<Window x:Class="PastPaperHelper.PrismTest.Views.OobeWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:ValidationRules="clr-namespace:PastPaperHelper.ValidationRules" 
+      xmlns:vm="clr-namespace:PastPaperHelper.PrismTest.ViewModels"
+      xmlns:models="clr-namespace:PastPaperHelper.Models"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="16"
+        TextOptions.TextFormattingMode="Ideal" 
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{StaticResource MaterialDesignFont}"
+        mc:Ignorable="d"
+        Title="Past Paper Helper" Height="500" Width="900" ResizeMode="NoResize">
+    <Window.Resources>
+        <DataTemplate x:Key="DisplaySubject" DataType="{x:Type vm:SubjectSelection}">
+            <CheckBox IsChecked="{Binding IsSelected}">
+                <CheckBox.Content>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} ({1})">
+                                <Binding Path="Subject.Name" />
+                                <Binding Path="Subject.SyllabusCode" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </CheckBox.Content>
+            </CheckBox>
+        </DataTemplate>
+    </Window.Resources>
+    <TabControl x:Name="tab" Style="{StaticResource WizardTabControlStyle}">
+        <TabItem Header="Select Path" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <Grid Margin="16,0,16,16">
+                <TextBox Margin="0,0,96,0" TextWrapping="NoWrap" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Path" Style="{StaticResource MaterialDesignFloatingHintTextBox}" ToolTip="All papers will be stored in this directory">
+                    <Binding Path="Path" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <ValidationRules:DirectoryExistValidationRule ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox>
+                <Button HorizontalAlignment="Right" Content="Browse" Margin="0,4,0,0" Width="80" Command="{Binding BrowseCommand}"/>
+                <TextBlock Text="Select a folder to store your Past Papers" Margin="0,40,0,0" TextAlignment="Center" FontSize="24" FontWeight="Bold" VerticalAlignment="Top"/>
+                <Button x:Name="next1" Content="Next" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Next_Click"/>
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="next2" Header="Select Subjects" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <Grid Margin="16,0,16,16">
+                <TextBlock VerticalAlignment="Bottom" Text="All papers © UCLES. Content provided solely for educational purpose." Margin="0,0,0,-0.8"/>
+                <TextBlock VerticalAlignment="Top" TextAlignment="Center" Text="Select the subjects you are learning" FontSize="24" FontWeight="Bold" Margin="0,40,0,0"/>
+                <TreeView x:Name="selectionTreeView" VirtualizingPanel.IsVirtualizing="True" Margin="0,80,0,37">
+                    <TreeViewItem Header="IGCSE" ItemsSource="{Binding IGSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
+                    <TreeViewItem Header="A-Level" ItemsSource="{Binding ALSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
+                </TreeView>
+                <Border Background="#60000000" Visibility="{Binding IsLoading}" Margin="0,80,0,0">
+                    <StackPanel VerticalAlignment="Center">
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64"/>
+                        <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Button Content="Next" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Next_Click"/>
+                <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Back_Click" Margin="0,0,100,0"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Update Settings" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <Grid Margin="16">
+                <Button x:Name="next3" Content="Next" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Next_Click" Margin="0,0,0,0"/>
+                <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Back_Click" Margin="0,0,100,0"/>
+                <TextBlock VerticalAlignment="Top" TextAlignment="Center" Text="Select a source to find your papers" FontSize="24" FontWeight="Bold" Margin="0,40,0,0"/>
+                <CheckBox Content="CheckBox" HorizontalAlignment="Left" Margin="51,215,0,0" VerticalAlignment="Top"/>
+                <ComboBox HorizontalAlignment="Left" Margin="51,157,0,0" VerticalAlignment="Top" Width="120"/>
+            </Grid>
+        </TabItem>
+        <TabItem x:Name="next4" Header="Done" Width="220" Style="{StaticResource WizardTabItemStyle}">
+            <Grid Margin="16">
+                <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Done" Width="80" Command="{Binding SaveCommand}"/>
+                <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Back_Click" Margin="0,0,100,0"/>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

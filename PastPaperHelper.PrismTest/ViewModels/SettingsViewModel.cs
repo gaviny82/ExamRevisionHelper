@@ -19,7 +19,6 @@ namespace PastPaperHelper.PrismTest.ViewModels
 {
     public class SettingsViewModel : BindableBase
     {
-
         public static ObservableCollection<Subject> IGSubjects { get; set; } = new ObservableCollection<Subject>();
         public static ObservableCollection<Subject> ALSubjects { get; set; } = new ObservableCollection<Subject>();
         public static ObservableCollection<Subject> SubjectSubscribed { get; set; } = new ObservableCollection<Subject>();

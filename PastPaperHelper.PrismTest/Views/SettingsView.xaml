@@ -124,7 +124,7 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <Grid>
-                    <ListBox x:Name="SubjectList" Margin="-4" ItemsSource="{x:Static vm:SettingsViewModel.SubjectSubscribed}" SelectionMode="Extended" VirtualizingPanel.IsVirtualizing="True">
+                    <ListBox x:Name="SubjectList" Margin="-4" ItemsSource="{Binding Subjects}" SelectionMode="Extended" VirtualizingPanel.IsVirtualizing="True">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Subject}">
                                 <Border x:Name="border1" Margin="-8" Background="Transparent" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,0,1">

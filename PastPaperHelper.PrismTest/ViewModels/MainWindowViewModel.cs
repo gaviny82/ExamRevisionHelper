@@ -1,9 +1,11 @@
-﻿using PastPaperHelper.PrismTest.Events;
+﻿using PastPaperHelper.Models;
+using PastPaperHelper.PrismTest.Events;
 using PastPaperHelper.PrismTest.Views;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.Collections.ObjectModel;
 
 namespace PastPaperHelper.PrismTest.ViewModels
 {
@@ -36,5 +38,6 @@ namespace PastPaperHelper.PrismTest.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
+
     }
 }
