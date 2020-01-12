@@ -57,7 +57,7 @@
                     <TreeViewItem Header="IGCSE" ItemsSource="{Binding IGSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
                     <TreeViewItem Header="A-Level" ItemsSource="{Binding ALSubjects}" ItemTemplate="{StaticResource DisplaySubject}"/>
                 </TreeView>
-                <Border Background="#60000000" Visibility="{Binding IsLoading}" Margin="0,80,0,0">
+                <Border Background="#60000000" Visibility="{DynamicResource IsLoading}" Margin="0,80,0,0">
                     <StackPanel VerticalAlignment="Center">
                         <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64"/>
                         <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>

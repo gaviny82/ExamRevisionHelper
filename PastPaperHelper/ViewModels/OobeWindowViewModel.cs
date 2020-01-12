@@ -1,6 +1,9 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Events;
 using PastPaperHelper.Models;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -18,22 +21,33 @@ namespace PastPaperHelper.ViewModels
         public ObservableCollection<SubjectSelection> IGSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
         public ObservableCollection<SubjectSelection> ALSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
 
-        public OobeWindowViewModel()
+        public OobeWindowViewModel(IEventAggregator eventAggregator)
         {
-            Task.Factory.StartNew(() =>
+            Init(eventAggregator);
+        }
+
+        public async void Init(IEventAggregator eventAggregator)
+        {
+            PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { eventAggregator.GetEvent<UpdateServiceErrorEvent>().Publish(); };
+            PastPaperHelperUpdateService.UpdateFinalizedEvent += () => { eventAggregator.GetEvent<SubjectListDownloadedEvent>().Publish(); };
+            Application.Current.Resources["IsLoading"] = Visibility.Visible;
+
+            eventAggregator.GetEvent<UpdateServiceErrorEvent>().Subscribe(() =>
             {
-                //SubscriptionManager.UpdateAndInit(true, false);
-            }).ContinueWith(t =>
+
+            }, ThreadOption.UIThread);
+
+            eventAggregator.GetEvent<SubjectListDownloadedEvent>().Subscribe(() =>
             {
-                IGSubjects.Clear();
-                ALSubjects.Clear();
-                //foreach (Subject item in SubscriptionManager.AllSubjects)
-                //{
-                //    if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(new SubjectSelection(item, false));
-                //    else ALSubjects.Add(new SubjectSelection(item, false));
-                //}
-                //IsLoading = Visibility.Hidden;
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+                Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                foreach (var item in PastPaperHelperCore.SubjectsLoaded)
+                {
+                    if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(new SubjectSelection(item, false));
+                    else IGSubjects.Add(new SubjectSelection(item, false));
+                }
+            }, ThreadOption.UIThread);
+
+            await PastPaperHelperUpdateService.UpdateSubjectList();
         }
 
         private string _path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\Past Papers";

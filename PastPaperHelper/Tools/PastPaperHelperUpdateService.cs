@@ -97,6 +97,27 @@ namespace PastPaperHelper.Core.Tools
             });
         }
 
+        public static async Task UpdateSubjectList()
+        {
+            await Task.Run(() =>
+            {
+                UpdateInitiatedEvent?.Invoke();
+                Dictionary<Subject, string> subjects = null;
+                try
+                {
+                    subjects = PastPaperHelperCore.CurrentSource.GetSubjectUrlMap();
+                    PastPaperHelperCore.SubjectsLoaded = subjects.Keys.ToArray();
+                    PastPaperHelperCore.SubjectUrlMap = subjects;
+                }
+                catch (Exception)
+                {
+                    UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.CurrentSource.Name}, please check your Internet connection.");
+                    return;
+                }
+                UpdateFinalizedEvent?.Invoke();
+            });
+        }
+
         public static async Task UpdateSubject(Subject subj)
         {
             var downloadThread = Task.Run(() =>
