@@ -4,7 +4,7 @@ namespace PastPaperHelper.Models
 {
     public enum Curriculums { IGCSE, ALevel }
 
-    public struct Subject
+    public class Subject
     {
         public Curriculums Curriculum { get; set; }
         public string Name { get; set; }

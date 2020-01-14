@@ -46,7 +46,7 @@ namespace PastPaperHelper.ViewModels
         public SettingsViewModel()
         {
             Path = Properties.Settings.Default.Path;
-            PaperSource = PaperSource.CurrentPaperSource;
+            PaperSource = PastPaperHelperCore.CurrentSource;
 
             AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
             AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
@@ -77,7 +77,7 @@ namespace PastPaperHelper.ViewModels
                 SetProperty(ref _paperSource, value);
                 if (value != null)
                 {
-                    PaperSource.CurrentPaperSource = value;
+                    PastPaperHelperCore.CurrentSource = value;
                     Properties.Settings.Default.PaperSource = value.Name;
                     Properties.Settings.Default.Save();
                 }
@@ -159,7 +159,7 @@ namespace PastPaperHelper.ViewModels
                 }
                 catch (Exception)
                 {
-                    await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PaperSource.CurrentPaperSource.Name + ", please check your Internet connection.\nYour subjects will be synced when connected to Internet"), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                    await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PastPaperHelperCore.CurrentSource.Name + ", please check your Internet connection.\nYour subjects will be synced when connected to Internet"), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
                     isLoading = false;
                     Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
                     return;

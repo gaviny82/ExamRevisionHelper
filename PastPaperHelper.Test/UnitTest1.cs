@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using System;
@@ -12,7 +13,7 @@ namespace PastPaperHelper.Test
     {
         public UnitTest1()
         {
-            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
+            PastPaperHelperCore.CurrentSource = PaperSources.GCE_Guide;
             LoadRepoTest();
         }
 
@@ -27,7 +28,7 @@ namespace PastPaperHelper.Test
         public void FetchSubjectListTest()
         {
             //Download test
-            var subjList = PaperSource.CurrentPaperSource.GetSubjectUrlMap();
+            var subjList = PastPaperHelperCore.CurrentSource.GetSubjectUrlMap();
             Assert.IsNotNull(subjList);
 
             //Write to XML
@@ -47,7 +48,7 @@ namespace PastPaperHelper.Test
                 SyllabusCode = "0455"
             };
             //Download all papers of the sample subject
-            var result = PaperSource.CurrentPaperSource.GetPapers(subj, PastPaperHelper.Core.Tools.PastPaperHelperCore.SubjectUrlMap[subj]);
+            var result = PastPaperHelperCore.CurrentSource.GetPapers(subj, PastPaperHelper.Core.Tools.PastPaperHelperCore.SubjectUrlMap[subj]);
             Assert.IsNotNull(result);
 
             //Create a test repo

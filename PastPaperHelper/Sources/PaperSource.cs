@@ -1,4 +1,5 @@
-﻿using PastPaperHelper.Models;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
 using System.Xml;
@@ -7,7 +8,6 @@ namespace PastPaperHelper.Sources
 {
     public abstract class PaperSource
     {
-        public static PaperSource CurrentPaperSource;
         public string Name { get; set; }
         public string Url { get; set; }
 
@@ -32,7 +32,7 @@ namespace PastPaperHelper.Sources
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
             XmlElement data = doc.CreateElement("Data");
             data.SetAttribute("Time", DateTime.Now.ToString());
-            data.SetAttribute("Source", PaperSource.CurrentPaperSource.Name);
+            data.SetAttribute("Source", PastPaperHelperCore.CurrentSource.Name);
             doc.AppendChild(data);
 
             XmlElement IG = doc.CreateElement("IGCSE");
@@ -60,7 +60,7 @@ namespace PastPaperHelper.Sources
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
             XmlElement data = doc.CreateElement("Data");
             data.SetAttribute("Time", DateTime.Now.ToString());
-            data.SetAttribute("Source", PaperSource.CurrentPaperSource.Name);
+            data.SetAttribute("Source", PastPaperHelperCore.CurrentSource.Name);
             doc.AppendChild(data);
 
             foreach(KeyValuePair<Subject, PaperRepository> item in list)
