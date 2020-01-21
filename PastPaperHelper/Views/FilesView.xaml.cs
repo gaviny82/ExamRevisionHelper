@@ -95,10 +95,11 @@ namespace PastPaperHelper.Views
                     }
                     catch (System.Exception)
                     {
-                        failedTasks.Add(downloadTasks[i]);
+                        var index = i;
+                        failedTasks.Add(downloadTasks[index]);
                         Task.Factory.StartNew(() =>
                         {
-                            error.Text += "\n" + downloadTasks[i].Item1;
+                            error.Text += "\n" + downloadTasks[index].Item1;
                         }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
                         continue;
                     }

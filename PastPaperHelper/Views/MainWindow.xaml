@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:PastPaperHelper"
         xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
         xmlns:models="clr-namespace:PastPaperHelper.Models"
+        xmlns:views="clr-namespace:PastPaperHelper.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -61,10 +62,20 @@
             </materialDesign:DrawerHost.LeftDrawerContent>
             <Grid>
                 <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Padding="10">
-                    <StackPanel Orientation="Horizontal">
-                        <ToggleButton x:Name="MenuToggleButton" Style="{DynamicResource MaterialDesignHamburgerToggleButton}" Width="32" Height="32"/>
-                        <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding ElementName=HamburgerMenu,Path=SelectedItem.Title}" FontSize="18" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
-                    </StackPanel>
+                    <DockPanel>
+                        <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" Margin="0,0,8,0" StaysOpen="True">
+                            <materialDesign:PopupBox.ToggleContent>
+                                <materialDesign:Badged Badge="" BadgePlacementMode="BottomRight" BadgeColorZoneMode="Accent">
+                                    <materialDesign:PackIcon Kind="Download"  Foreground="White" Width="24" Height="24"/>
+                                </materialDesign:Badged>
+                            </materialDesign:PopupBox.ToggleContent>
+                            <views:DownloadFlyout/>
+                        </materialDesign:PopupBox>
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleButton x:Name="MenuToggleButton" Style="{DynamicResource MaterialDesignHamburgerToggleButton}" Width="32" Height="32"/>
+                            <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding ElementName=HamburgerMenu,Path=SelectedItem.Title}" FontSize="18" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+                        </StackPanel>
+                    </DockPanel>
                 </materialDesign:ColorZone>
                 <ContentControl Content="{Binding ElementName=HamburgerMenu, Path=SelectedItem.Content}" Margin="0,52,0,0"/>
                 <materialDesign:Snackbar x:Name="mainSnackbar" MessageQueue="{materialDesign:MessageQueue}"/>

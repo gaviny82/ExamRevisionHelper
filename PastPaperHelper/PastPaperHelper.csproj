@@ -91,6 +91,7 @@
     <Compile Include="Converters\MessageVisibilityConverter.cs" />
     <Compile Include="Converters\PaperSourceConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
+    <Compile Include="ViewModels\DownloadFlyoutViewModel.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\Curriculums.cs" />
     <Compile Include="Models\Exam.cs" />
@@ -109,6 +110,9 @@
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\OobeViewModel.cs" />
     <Compile Include="ViewModels\SubjectViewModel.cs" />
+    <Compile Include="Views\DownloadFlyout.xaml.cs">
+      <DependentUpon>DownloadFlyout.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FilesView.xaml.cs">
       <DependentUpon>FilesView.xaml</DependentUpon>
     </Compile>
@@ -127,6 +131,10 @@
       <DependentUpon>SearchView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Page Include="Views\DownloadFlyout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FilesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
