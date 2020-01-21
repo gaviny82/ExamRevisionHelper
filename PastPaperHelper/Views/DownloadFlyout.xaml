@@ -4,9 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PastPaperHelper.Views"
-             mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Content="test" Style="{DynamicResource MaterialDesignFlatMidBgButton}"/>
+             xmlns:models="clr-namespace:PastPaperHelper.Models"
+             mc:Ignorable="d" Margin="8,0">
+    <Grid Width="300" Height="450">
+        <!--<Button Content="test" Style="{DynamicResource MaterialDesignFlatMidBgButton}"/>-->
+        <TextBlock VerticalAlignment="Top" Text="{Binding Message}" FontSize="14"/>
+        <ProgressBar VerticalAlignment="Top" Height="8" Value="{Binding TaskCompleted}" Maximum="{Binding TotalTasks}" Margin="0,20,0,0" IsIndeterminate="True"/>
+        <ListView Margin="0,33,0,155" ItemsSource="{Binding Tasks}">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:DownloadTask}">
+                    <Grid/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <TextBox AcceptsReturn="True" VerticalAlignment="Bottom" Height="150" IsReadOnly="True"/>
     </Grid>
 </UserControl>
