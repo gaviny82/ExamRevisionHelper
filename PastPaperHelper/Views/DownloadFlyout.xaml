@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PastPaperHelper.Views"
              xmlns:models="clr-namespace:PastPaperHelper.Models"
+             xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
+             xmlns:converters="clr-namespace:PastPaperHelper.Converters"
              mc:Ignorable="d" Margin="8,0">
     <Grid Width="300" Height="450">
         <!--<Button Content="test" Style="{DynamicResource MaterialDesignFlatMidBgButton}"/>-->
@@ -12,7 +14,7 @@
         <ProgressBar VerticalAlignment="Top" Height="8" Value="{Binding TaskCompleted}" Maximum="{Binding TotalTasks}" Margin="0,20,0,0" IsIndeterminate="True"/>
         <ListView Margin="0,33,0,155" ItemsSource="{Binding Tasks}">
             <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:DownloadTask}">
+                <DataTemplate DataType="{x:Type vm:DownloadTask}">
                     <Grid/>
                 </DataTemplate>
             </ListView.ItemTemplate>

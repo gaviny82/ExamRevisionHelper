@@ -91,7 +91,7 @@
     <Compile Include="Converters\MessageVisibilityConverter.cs" />
     <Compile Include="Converters\PaperSourceConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
-    <Compile Include="Models\DownloadTask.cs" />
+    <Compile Include="ViewModels\DownloadTask.cs" />
     <Compile Include="ViewModels\DownloadFlyoutViewModel.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\Curriculums.cs" />
