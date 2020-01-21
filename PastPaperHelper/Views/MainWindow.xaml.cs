@@ -18,6 +18,7 @@ namespace PastPaperHelper.Views
     {
         public static Snackbar MainSnackbar;
         public static readonly TaskScheduler SyncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+        public static DownloadFlyoutViewModel DownloadFlyoutViewModel;
 
         public MainWindow()
         {
