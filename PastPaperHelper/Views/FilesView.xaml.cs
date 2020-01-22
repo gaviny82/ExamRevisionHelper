@@ -47,6 +47,7 @@ namespace PastPaperHelper.Views
         private void Download_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             MainWindow.DownloadFlyoutViewModel.DownloadCommand.Execute((Subject)subjectSelector.SelectedItem);
+            (Application.Current.MainWindow as MainWindow).OpenDownloadPopup();
         }
     }
 }

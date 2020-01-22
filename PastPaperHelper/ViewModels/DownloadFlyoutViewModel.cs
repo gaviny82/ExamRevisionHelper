@@ -15,7 +15,7 @@ namespace PastPaperHelper.ViewModels
 {
     public class DownloadFlyoutViewModel : NotificationObject
     {
-        public ObservableCollection<DownloadTask> Tasks = new ObservableCollection<DownloadTask>();
+        public static ObservableCollection<DownloadTask> Tasks = new ObservableCollection<DownloadTask>();
 
         private DelegateCommand _downloadCommand;
         public DelegateCommand DownloadCommand =>
@@ -29,7 +29,7 @@ namespace PastPaperHelper.ViewModels
         {
             Task.Factory.StartNew(() =>
             {
-                Log += $"{DateTime.Now.ToShortTimeString()} {param.ToString()}";
+                Log += $"\n[{DateTime.Now.ToShortTimeString()}] {param.ToString()}";
             }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
         }
 
@@ -64,6 +64,7 @@ namespace PastPaperHelper.ViewModels
         public DownloadFlyoutViewModel()
         {
             MainWindow.DownloadFlyoutViewModel = this;
+            Log = $"[{DateTime.Now.ToShortTimeString()}] Download service initialized.";
         }
 
         void ExecuteDownloadCommand(object param)
@@ -74,77 +75,69 @@ namespace PastPaperHelper.ViewModels
             PaperRepository repo = SubscriptionManager.Subscription[subj];
             TotalTasks = 0;
             TaskCompleted = 0;
-            Log = "";
+            ExecuteLogCommand("Initializing download task...");
 
-            Task.Run(() =>
+            string path = Properties.Settings.Default.Path;
+            path += $"\\{repo.Subject.SyllabusCode} {(repo.Subject.Curriculum == Curriculums.ALevel ? "AL" : "GCSE")} {repo.Subject.Name}";
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+            foreach (ExamYear year in repo)
             {
-                if (failedTasks.Count != 0)
-                {
-                    downloadTasks.AddRange(failedTasks);
-                    failedTasks.Clear();
-                }
-                else
-                {
-                    string path = Properties.Settings.Default.Path;
-                    path += $"\\{repo.Subject.SyllabusCode} {(repo.Subject.Curriculum == Curriculums.ALevel ? "AL" : "GCSE")} {repo.Subject.Name}";
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-                    foreach (ExamYear year in repo)
-                    {
-                        if (year.Specimen != null) DownloadPaper(year.Specimen, path);
-                        if (year.Spring != null) DownloadPaper(year.Spring, path);
-                        if (year.Summer != null) DownloadPaper(year.Summer, path);
-                        if (year.Winter != null) DownloadPaper(year.Winter, path);
-                    }
-                }
-
-                int part = downloadTasks.Count / 5;
-                Task.Factory.StartNew(() =>
-                {
-                    TotalTasks = downloadTasks.Count;
-                }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                download(0, part, client1);
-                download(part, part * 2, client2);
-                download(part * 2, part * 3, client3);
-                download(part * 3, part * 4, client4);
-                download(part * 4, downloadTasks.Count, client5);
-            });
+                if (year.Specimen != null) DownloadPaper(year.Specimen, path);
+                if (year.Spring != null) DownloadPaper(year.Spring, path);
+                if (year.Summer != null) DownloadPaper(year.Summer, path);
+                if (year.Winter != null) DownloadPaper(year.Winter, path);
+            }
+            ExecuteLogCommand($"{Tasks.Count} task{(Tasks.Count>1?"s":"")} enqueued.");
+            ExecuteLogCommand($"Subject Downloading: {subj.SyllabusCode} {subj.Name}");
+            
+            //Task.Run(() =>
+            //{
+            //    int part = downloadTasks.Count / 5;
+            //    Task.Factory.StartNew(() =>
+            //    {
+            //        TotalTasks = downloadTasks.Count;
+            //    }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+            //    download(0, part, client1);
+            //    download(part, part * 2, client2);
+            //    download(part * 2, part * 3, client3);
+            //    download(part * 3, part * 4, client4);
+            //    download(part * 4, downloadTasks.Count, client5);
+            //});
         }
 
 
-        public void download(int start, int end, WebClient client)
-        {
-            Task.Run(() =>
-            {
-                for (int i = start; i < end; i++)
-                {
-                    try
-                    {
-                        client.DownloadFile(downloadTasks[i].Item1, downloadTasks[i].Item2);
-                    }
-                    catch (System.Exception)
-                    {
-                        var index = i;
-                        failedTasks.Add(downloadTasks[index]);
-                        Task.Factory.StartNew(() =>
-                        {
-                            Log += "\n" + downloadTasks[index].Item1;
-                        }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                        continue;
-                    }
-                    finally
-                    {
-                        Task.Factory.StartNew(() =>
-                        {
-                            TaskCompleted += 1;
-                        }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                    }
-                }
-            });
-        }
+        //private void download(int start, int end, WebClient client)
+        //{
+        //    Task.Run(() =>
+        //    {
+        //        for (int i = start; i < end; i++)
+        //        {
+        //            try
+        //            {
+        //                client.DownloadFile(downloadTasks[i].Item1, downloadTasks[i].Item2);
+        //            }
+        //            catch (System.Exception)
+        //            {
+        //                var index = i;
+        //                failedTasks.Add(downloadTasks[index]);
+        //                Task.Factory.StartNew(() =>
+        //                {
+        //                    Log += "\n" + downloadTasks[index].Item1;
+        //                }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+        //                continue;
+        //            }
+        //            finally
+        //            {
+        //                Task.Factory.StartNew(() =>
+        //                {
+        //                    TaskCompleted += 1;
+        //                }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+        //            }
+        //        }
+        //    });
+        //}
 
-        List<(string, string)> downloadTasks = new List<(string, string)>();
-        List<(string, string)> failedTasks = new List<(string, string)>();
         WebClient client1 = new WebClient();
         WebClient client2 = new WebClient();
         WebClient client3 = new WebClient();
@@ -179,7 +172,15 @@ namespace PastPaperHelper.ViewModels
                 {
                     foreach (Paper paper in item.Papers)
                     {
-                        downloadTasks.Add((paper.Url, dir + $"\\{paper.Url.Split('/').Last()}"));
+                        string file = paper.Url.Split('/').Last();
+                        Tasks.Add(new DownloadTask
+                        {
+                            FileName = file,
+                            State = DownloadTaskState.Pending,
+                            Progress = 0,
+                            ResourceUrl = paper.Url,
+                            LocalPath = $"{dir}\\{file}",
+                        });
                     }
                 }
             }

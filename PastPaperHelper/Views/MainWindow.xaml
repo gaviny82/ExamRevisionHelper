@@ -16,7 +16,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{StaticResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="Pastpaper Helper (Preview)" Height="576" Width="1024" MinWidth="800" MinHeight="450" Icon="pack://application:,,,/PastPaperHelper;component/icon.ico">
+        Title="Past Paper Helper (Preview)" Height="580" Width="1050" MinWidth="800" MinHeight="450" Icon="pack://application:,,,/PastPaperHelper;component/icon.ico">
     <Window.Resources>
         <DataTemplate x:Key="DisplaySubject" DataType="{x:Type models:Subject}">
             <TextBlock>
@@ -63,7 +63,7 @@
             <Grid>
                 <materialDesign:ColorZone Mode="PrimaryMid" VerticalAlignment="Top" Padding="10">
                     <DockPanel>
-                        <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" Margin="0,0,8,0" StaysOpen="True">
+                        <materialDesign:PopupBox x:Name="pop" DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" Margin="0,0,8,0" StaysOpen="True">
                             <materialDesign:PopupBox.ToggleContent>
                                 <materialDesign:Badged Badge="" BadgePlacementMode="BottomRight" BadgeColorZoneMode="Accent">
                                     <materialDesign:PackIcon Kind="Download"  Foreground="White" Width="24" Height="24"/>

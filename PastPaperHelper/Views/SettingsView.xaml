@@ -31,7 +31,7 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="10,10,10,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Orientation="Horizontal">
             <materialDesign:PackIcon Kind="FileDocument" HorizontalAlignment="Left" VerticalAlignment="Top" Width="64" Height="64"/>
-            <TextBlock Text="Pastpaper Helper" VerticalAlignment="Center" Style="{StaticResource MaterialDesignDisplay1TextBlock}"/>
+            <TextBlock Text="Past Paper Helper" VerticalAlignment="Center" Style="{StaticResource MaterialDesignDisplay1TextBlock}"/>
             <Button Style="{DynamicResource MaterialDesignFlatButton}" VerticalAlignment="Center" Margin="16,8,0,0" ToolTip="View changelog" Click="OpenReleases_Click">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="Tag"/>

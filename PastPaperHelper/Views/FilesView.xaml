@@ -165,11 +165,11 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
     </ScrollViewer>
+    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Download" Click="Download_Click" Margin="0,12,0,4"/>
     <Border Grid.ColumnSpan="2" Background="#60000000" Visibility="{DynamicResource IsLoading}">
         <StackPanel VerticalAlignment="Center">
             <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" Width="64" Height="64" Visibility="{Binding IsLoading}"/>
             <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
         </StackPanel>
     </Border>
-    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Content="Download" Click="Download_Click" Margin="0,12,0,4"/>
 </Grid>

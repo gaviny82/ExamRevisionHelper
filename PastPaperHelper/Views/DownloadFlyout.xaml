@@ -9,16 +9,17 @@
              xmlns:converters="clr-namespace:PastPaperHelper.Converters"
              mc:Ignorable="d" Margin="8,0">
     <Grid Width="300" Height="450">
-        <!--<Button Content="test" Style="{DynamicResource MaterialDesignFlatMidBgButton}"/>-->
         <TextBlock VerticalAlignment="Top" Text="{Binding Message}" FontSize="14"/>
         <ProgressBar VerticalAlignment="Top" Height="8" Value="{Binding TaskCompleted}" Maximum="{Binding TotalTasks}" Margin="0,20,0,0" IsIndeterminate="True"/>
-        <ListView Margin="0,33,0,155" ItemsSource="{Binding Tasks}">
-            <ListView.ItemTemplate>
+        <ListBox Margin="0,33,0,105" ItemsSource="{x:Static vm:DownloadFlyoutViewModel.Tasks}" VirtualizingPanel.IsVirtualizing="True">
+            <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:DownloadTask}">
-                    <Grid/>
+                    <Grid>
+                        <TextBlock Text="{Binding FileName}"/>
+                    </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <TextBox AcceptsReturn="True" VerticalAlignment="Bottom" Height="150" IsReadOnly="True"/>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBox AcceptsReturn="True" VerticalAlignment="Bottom" Height="100" IsReadOnly="True" Text="{Binding Log}" FontSize="12" BorderThickness="0,1,0,0" BorderBrush="DarkGray"/>
     </Grid>
 </UserControl>

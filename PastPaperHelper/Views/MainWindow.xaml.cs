@@ -45,6 +45,11 @@ namespace PastPaperHelper.Views
             Resources["IsLoading"] = Visibility.Hidden;
         }
 
+        public void OpenDownloadPopup()
+        {
+            pop.IsPopupOpen = true;
+        }
+
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //until we had a StaysOpen glag to Drawer, this will help with scroll bars
