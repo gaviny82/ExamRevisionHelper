@@ -1,4 +1,5 @@
 ﻿using PastPaperHelper.Models;
+using PastPaperHelper.ViewModels;
 using PastPaperHelper.Views;
 using System;
 using System.Collections.Generic;
@@ -199,6 +200,12 @@ namespace PastPaperHelper.Sources
                     repo.Sort();
                     Subscription.Add(subject, repo);
                 }
+            }
+
+            if (Directory.Exists(Properties.Settings.Default.Path))
+            {
+                var files = Directory.EnumerateFiles(Properties.Settings.Default.Path, "*.pdf", SearchOption.AllDirectories);
+                MainWindowViewModel.Files.AddRange(files);
             }
         }
 

@@ -41,7 +41,16 @@ namespace PastPaperHelper.Views
 
         private void ViewPaper_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            Process.Start(((sender as Button).DataContext as Paper).Url);
+            string path = ((sender as Button).DataContext as Paper).Url;
+            foreach (var file in MainWindowViewModel.Files)
+            {
+                if (file.Split('\\').Last() == path.Split('/').Last())
+                {
+                    path = file;
+                    break;
+                }
+            }
+            Process.Start(path);
         }
 
         private void Download_Click(object sender, System.Windows.RoutedEventArgs e)

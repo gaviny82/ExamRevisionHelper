@@ -1,9 +1,11 @@
 ﻿using PastPaperHelper.Views;
+using System.Collections.Generic;
 
 namespace PastPaperHelper.ViewModels
 {
     class MainWindowViewModel : NotificationObject
     {
+        public static List<string> Files = new List<string>();
         public HamburgerMenuItemViewModel[] ListItems { get; }
 
         public MainWindowViewModel()

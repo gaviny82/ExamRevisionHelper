@@ -1,5 +1,7 @@
 ﻿using PastPaperHelper.Models;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 
 namespace PastPaperHelper.ViewModels
 {
@@ -30,7 +32,18 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand OpenOnlineResourceCommand { get; set; }
         private void OpenOnlineResource(object param)
         {
-            if (param is PastPaperResource res) Process.Start(res.Url);
+            if (!(param is PastPaperResource res)) return;
+
+            string path = res.Url;
+            foreach (var file in MainWindowViewModel.Files)
+            {
+                if (file.Split('\\').Last() == res.Url.Split('\\').Last())
+                {
+                    path = file;
+                    break;
+                }
+            }
+            Process.Start(path);
         }
     }
 }
