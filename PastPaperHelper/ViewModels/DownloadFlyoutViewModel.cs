@@ -67,7 +67,7 @@ namespace PastPaperHelper.ViewModels
             Log = $"[{DateTime.Now.ToShortTimeString()}] Download service initialized.";
         }
 
-        void ExecuteDownloadCommand(object param)
+        async void ExecuteDownloadCommand(object param)
         {
             if (!(param is Subject)) return;
 
@@ -75,21 +75,24 @@ namespace PastPaperHelper.ViewModels
             PaperRepository repo = SubscriptionManager.Subscription[subj];
             TotalTasks = 0;
             TaskCompleted = 0;
+            duplicateCount = 0;
             ExecuteLogCommand("Initializing download task...");
 
             string path = Properties.Settings.Default.Path;
             path += $"\\{repo.Subject.SyllabusCode} {(repo.Subject.Curriculum == Curriculums.ALevel ? "AL" : "GCSE")} {repo.Subject.Name}";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-            foreach (ExamYear year in repo)
+            await Task.Run(() =>
             {
-                if (year.Specimen != null) DownloadPaper(year.Specimen, path);
-                if (year.Spring != null) DownloadPaper(year.Spring, path);
-                if (year.Summer != null) DownloadPaper(year.Summer, path);
-                if (year.Winter != null) DownloadPaper(year.Winter, path);
-            }
-            ExecuteLogCommand($"{Tasks.Count} task{(Tasks.Count>1?"s":"")} enqueued.");
-            ExecuteLogCommand($"Subject Downloading: {subj.SyllabusCode} {subj.Name}");
+                foreach (ExamYear year in repo)
+                {
+                    if (year.Specimen != null) DownloadPaper(year.Specimen, path);
+                    if (year.Spring != null) DownloadPaper(year.Spring, path);
+                    if (year.Summer != null) DownloadPaper(year.Summer, path);
+                    if (year.Winter != null) DownloadPaper(year.Winter, path);
+                }
+            });
+            ExecuteLogCommand($"{Tasks.Count} task{(Tasks.Count > 1 ? "s" : "")} enqueued{(duplicateCount == 0 ? "." : $", skipping {duplicateCount} duplicated file{(duplicateCount > 1 ? "s" : "")}.")}");
+            ExecuteLogCommand($"Start downloading {subj.SyllabusCode} {subj.Name}");
             
             //Task.Run(() =>
             //{
@@ -143,6 +146,8 @@ namespace PastPaperHelper.ViewModels
         WebClient client3 = new WebClient();
         WebClient client4 = new WebClient();
         WebClient client5 = new WebClient();
+
+        int duplicateCount = 0;//TODO: thread sync
         private void DownloadPaper(Exam exam, string dir)
         {
             string ser = "";
@@ -173,14 +178,38 @@ namespace PastPaperHelper.ViewModels
                     foreach (Paper paper in item.Papers)
                     {
                         string file = paper.Url.Split('/').Last();
-                        Tasks.Add(new DownloadTask
+                        bool duplicate = false;
+                        foreach (var f in MainWindowViewModel.Files)
                         {
-                            FileName = file,
-                            State = DownloadTaskState.Pending,
-                            Progress = 0,
-                            ResourceUrl = paper.Url,
-                            LocalPath = $"{dir}\\{file}",
-                        });
+                            if (file == f.Split('\\').Last())
+                            {
+                                duplicate = true;
+                                duplicateCount++;
+                                break;
+                            }
+                        }
+                        if (!duplicate)
+                        {
+                            bool flag = false;
+                            foreach (var task in Tasks)
+                            {
+                                if (task.LocalPath == $"{dir}\\{file}")
+                                {
+                                    duplicateCount++;
+                                    flag = true;
+                                }
+                            }
+                            if (flag) continue;
+
+                            Task.Factory.StartNew(() => Tasks.Add(new DownloadTask
+                            {
+                                FileName = file,
+                                State = DownloadTaskState.Pending,
+                                Progress = 0,
+                                ResourceUrl = paper.Url,
+                                LocalPath = $"{dir}\\{file}",
+                            }), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                        }
                     }
                 }
             }
