@@ -47,6 +47,13 @@ namespace PastPaperHelper.ViewModels
             set { _taskCompleted = value; RaisePropertyChangedEvent(nameof(TaskCompleted)); }
         }
 
+        private bool _isIndeterminate = true;
+        public bool IsIndeterminate
+        {
+            get { return _isIndeterminate; }
+            set { _isIndeterminate = value; RaisePropertyChangedEvent(nameof(IsIndeterminate)); }
+        }
+
         private string _log;
         public string Log
         {
@@ -93,53 +100,58 @@ namespace PastPaperHelper.ViewModels
             });
             ExecuteLogCommand($"{Tasks.Count} task{(Tasks.Count > 1 ? "s" : "")} enqueued{(duplicateCount == 0 ? "." : $", skipping {duplicateCount} duplicated file{(duplicateCount > 1 ? "s" : "")}.")}");
             ExecuteLogCommand($"Start downloading {subj.SyllabusCode} {subj.Name}");
-            
-            //Task.Run(() =>
-            //{
-            //    int part = downloadTasks.Count / 5;
-            //    Task.Factory.StartNew(() =>
-            //    {
-            //        TotalTasks = downloadTasks.Count;
-            //    }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-            //    download(0, part, client1);
-            //    download(part, part * 2, client2);
-            //    download(part * 2, part * 3, client3);
-            //    download(part * 3, part * 4, client4);
-            //    download(part * 4, downloadTasks.Count, client5);
-            //});
+            Message = "Downloading...";
+            IsIndeterminate = false;
+
+            await Task.Run(() =>
+            {
+                int part = Tasks.Count / 5;
+                Task.Factory.StartNew(() =>
+                {
+                    TotalTasks = Tasks.Count;
+                }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                download(0, part, client1);
+                download(part, part * 2, client2);
+                download(part * 2, part * 3, client3);
+                download(part * 3, part * 4, client4);
+                download(part * 4, Tasks.Count, client5);
+                while (TaskCompleted != Tasks.Count) { Thread.Sleep(500); }
+            });
+            ExecuteLogCommand($"Done. {Tasks.Count} items downloaded.");
+            Message = "Done.";
+            IsIndeterminate = true;
+            Tasks.Clear();
         }
 
-
-        //private void download(int start, int end, WebClient client)
-        //{
-        //    Task.Run(() =>
-        //    {
-        //        for (int i = start; i < end; i++)
-        //        {
-        //            try
-        //            {
-        //                client.DownloadFile(downloadTasks[i].Item1, downloadTasks[i].Item2);
-        //            }
-        //            catch (System.Exception)
-        //            {
-        //                var index = i;
-        //                failedTasks.Add(downloadTasks[index]);
-        //                Task.Factory.StartNew(() =>
-        //                {
-        //                    Log += "\n" + downloadTasks[index].Item1;
-        //                }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-        //                continue;
-        //            }
-        //            finally
-        //            {
-        //                Task.Factory.StartNew(() =>
-        //                {
-        //                    TaskCompleted += 1;
-        //                }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-        //            }
-        //        }
-        //    });
-        //}
+        private async void download(int start, int end, WebClient client)
+        {
+            await Task.Run(() =>
+            {
+                for (int i = start; i < end; i++)
+                {
+                    try
+                    {
+                        client.DownloadFile(Tasks[i].ResourceUrl, Tasks[i].LocalPath);
+                    }
+                    catch (Exception)
+                    {
+                        var index = i;
+                        Task.Factory.StartNew(() =>
+                        {
+                            ExecuteLogCommand($"[ERROR] Failed to download {Tasks[index].FileName}.");
+                        }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                        continue;
+                    }
+                    finally
+                    {
+                        Task.Factory.StartNew(() =>
+                        {
+                            TaskCompleted += 1;
+                        }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                    }
+                }
+            });
+        }
 
         WebClient client1 = new WebClient();
         WebClient client2 = new WebClient();
@@ -212,6 +224,29 @@ namespace PastPaperHelper.ViewModels
                         }
                     }
                 }
+            }
+
+            if (exam.GradeThreshold is GradeThreshold)
+            {
+                Task.Factory.StartNew(() => Tasks.Add(new DownloadTask
+                {
+                    FileName = exam.GradeThreshold.Url.Split('/').Last(),
+                    State = DownloadTaskState.Pending,
+                    Progress = 0,
+                    ResourceUrl = exam.GradeThreshold.Url,
+                    LocalPath = $"{dir}\\{exam.GradeThreshold.Url.Split('/').Last()}",
+                }), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+            }
+            if (exam.ExaminersReport is ExaminersReport)
+            {
+                Task.Factory.StartNew(() => Tasks.Add(new DownloadTask
+                {
+                    FileName = exam.ExaminersReport.Url.Split('/').Last(),
+                    State = DownloadTaskState.Pending,
+                    Progress = 0,
+                    ResourceUrl = exam.ExaminersReport.Url,
+                    LocalPath = $"{dir}\\{exam.ExaminersReport.Url.Split('/').Last()}",
+                }), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
             }
         }
     }
