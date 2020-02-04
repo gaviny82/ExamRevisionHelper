@@ -12,6 +12,10 @@ namespace PastPaperHelper.Models
 
         public override bool Equals(object obj)
         {
+            if(obj is Subject subj)
+            {
+                return subj.SyllabusCode == SyllabusCode;
+            }
             return base.Equals(obj);
         }
 

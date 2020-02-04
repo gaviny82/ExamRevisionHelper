@@ -41,24 +41,17 @@ namespace PastPaperHelper
         {
             //OOBE Test
             //PastPaperHelper.Properties.Settings.Default.FirstRun = true;
-            PastPaperHelper.Properties.Settings.Default.FirstRun = false;
-            PastPaperHelper.Properties.Settings.Default.Save();
-
             UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
             if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
 
-            PaperSource source;
-            switch (PastPaperHelper.Properties.Settings.Default.PaperSource)
-            {
-                case "GCE Guide": source = PaperSources.GCE_Guide; break;
-                case "PapaCambridge": source = PaperSources.PapaCambridge; break;
-                case "CIE Notes": source = PaperSources.CIE_Notes; break;
-                default: source = PaperSources.GCE_Guide; break;
-            };
+            UpdatePolicy updatePolicy = (UpdatePolicy)PastPaperHelper.Properties.Settings.Default.UpdatePolicy;
+            string dataFile = $"{UserDataFolderPath}\\{PastPaperHelper.Properties.Settings.Default.PaperSource}.xml";
+            if (!File.Exists(dataFile)) dataFile = null;
+            var subs = PastPaperHelper.Properties.Settings.Default.SubjectsSubcription;
+            string[] subsArr = new string[subs.Count];
+            subs.CopyTo(subsArr, 0);
 
-            //TODO: Read update policy from user preferences
-            //TODO: Read subscription from user preferences
-            InitResult = PastPaperHelperCore.Initialize(source, $"{UserDataFolderPath}\\data.xml", UpdatePolicy.Always, null);
+            InitResult = PastPaperHelperCore.Initialize(dataFile, updatePolicy, subsArr);
         }
     }
 }

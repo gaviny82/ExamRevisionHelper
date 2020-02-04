@@ -3,22 +3,24 @@ using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace PastPaperHelper.Sources
 {
     class PaperSourcePapaCambridge : PaperSource
     {
-        public PaperSourcePapaCambridge()
+        public PaperSourcePapaCambridge(XmlDocument data) : base(data)
         {
             Name = "PapaCambridge";
-            Url = "https://papacambridge.com/";
+            UrlBase = "https://papacambridge.com/";
         }
 
-        public override PaperRepository GetPapers(Subject subject, string url)
+        public override async Task<PaperRepository> GetPapers(Subject subject)
         {
             PaperRepository repo = new PaperRepository(subject);
             HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load(url);
+            HtmlDocument doc = web.Load(SubjectUrlMap[subject]);
             HtmlNodeCollection examNodes = doc.DocumentNode.SelectSingleNode("//table").SelectNodes("//td[@data-name and @data-href]");
 
             string resUrl1 = "", resUrl2 = ""; //specimen papers and syllabuses
@@ -111,9 +113,9 @@ namespace PastPaperHelper.Sources
             return repo;
         }
 
-        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
+        public override async Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum)
         {
-            string url = Url;
+            string url = UrlBase;
             switch (curriculum)
             {
                 case Curriculums.IGCSE: url += "igcse-subjects/"; break;

@@ -37,7 +37,7 @@ namespace PastPaperHelper.ViewModels
         public static void RefreshSubscription()
         {
             SubjectSubscribed.Clear();
-            foreach (KeyValuePair<Subject, PaperRepository> item in PastPaperHelperCore.Subscription)
+            foreach (KeyValuePair<Subject, PaperRepository> item in PastPaperHelperCore.Source.Subscription)
             {
                 SubjectSubscribed.Add(item.Key);
             }
@@ -46,10 +46,10 @@ namespace PastPaperHelper.ViewModels
         public SettingsViewModel()
         {
             Path = Properties.Settings.Default.Path;
-            PaperSource = PastPaperHelperCore.CurrentSource;
+            PaperSource = PastPaperHelperCore.Source;
 
-            AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
-            AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
+            //AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
+            //AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
         }
 
 
@@ -77,7 +77,7 @@ namespace PastPaperHelper.ViewModels
                 SetProperty(ref _paperSource, value);
                 if (value != null)
                 {
-                    PastPaperHelperCore.CurrentSource = value;
+                    PastPaperHelperCore.Source = value;
                     Properties.Settings.Default.PaperSource = value.Name;
                     Properties.Settings.Default.Save();
                 }
@@ -91,7 +91,7 @@ namespace PastPaperHelper.ViewModels
             set
             {
                 SetProperty(ref _autoUpdateFiles, value);
-                Properties.Settings.Default.AutoUpdateFiles = value;
+                //Properties.Settings.Default.AutoUpdateFiles = value;
                 Properties.Settings.Default.Save();
             }
         }
@@ -103,7 +103,7 @@ namespace PastPaperHelper.ViewModels
             set
             {
                 SetProperty(ref _autoUpdateProgram, value);
-                Properties.Settings.Default.AutoUpdateProgram = value;
+                //Properties.Settings.Default.AutoUpdateProgram = value;
                 Properties.Settings.Default.Save();
             }
         }
@@ -159,7 +159,7 @@ namespace PastPaperHelper.ViewModels
                 }
                 catch (Exception)
                 {
-                    await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PastPaperHelperCore.CurrentSource.Name + ", please check your Internet connection.\nYour subjects will be synced when connected to Internet"), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
+                    await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PastPaperHelperCore.Source.Name + ", please check your Internet connection.\nYour subjects will be synced when connected to Internet"), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
                     isLoading = false;
                     Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
                     return;

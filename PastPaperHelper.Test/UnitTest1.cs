@@ -13,8 +13,7 @@ namespace PastPaperHelper.Test
     {
         public UnitTest1()
         {
-            PastPaperHelperCore.CurrentSource = PaperSources.GCE_Guide;
-            LoadRepoTest();
+            PastPaperHelperCore.Source = new PaperSourceGCEGuide();
         }
 
         [TestMethod]
@@ -28,18 +27,20 @@ namespace PastPaperHelper.Test
         public void FetchSubjectListTest()
         {
             //Download test
-            var subjList = PastPaperHelperCore.CurrentSource.GetSubjectUrlMap();
-            Assert.IsNotNull(subjList);
+            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
 
             //Write to XML
-            XmlDocument doc = new XmlDocument();
-            PaperSource.SaveSubjectList(subjList, doc);
-            doc.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
+            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml(null);
+            doc.Save(Environment.CurrentDirectory + "\\subjects_test.xml");
         }
 
         [TestMethod]
         public void DownloadPapersTest()
         {
+            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
+
             //Sample subject
             var subj = new Subject
             {
@@ -48,7 +49,7 @@ namespace PastPaperHelper.Test
                 SyllabusCode = "0455"
             };
             //Download all papers of the sample subject
-            var result = PastPaperHelperCore.CurrentSource.GetPapers(subj, PastPaperHelper.Core.Tools.PastPaperHelperCore.SubjectUrlMap[subj]);
+            var result = PastPaperHelperCore.Source.GetPapers(subj).GetAwaiter().GetResult();
             Assert.IsNotNull(result);
 
             //Create a test repo
@@ -57,9 +58,8 @@ namespace PastPaperHelper.Test
                 { subj, result }
             };
             //Write to XML
-            XmlDocument doc = new XmlDocument();
-            PaperSource.SaveSubscription(repo, doc);
-            doc.Save(Environment.CurrentDirectory + "\\data\\subject.xml");
+            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml(repo);
+            doc.Save(Environment.CurrentDirectory + "\\subscription_test.xml");
         }
     }
 }

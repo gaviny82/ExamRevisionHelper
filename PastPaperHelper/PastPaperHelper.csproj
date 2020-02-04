@@ -56,7 +56,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>CC1AA1F08DCAA565DC580229DAB9DD3704989E9B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>6A4434247654892AC251BC72DAC87079DFED6392</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestKeyFile>PastPaperHelper_TemporaryKey.pfx</ManifestKeyFile>

@@ -35,7 +35,7 @@ namespace PastPaperHelper.Views
             if (initResult == InitializationResult.SuccessUpdateNeeded)
             {
                 //TODO: Test needed
-                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.LastUpdated.ToLongDateString()}", "Update", () =>
+                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.Source.LastUpdated.ToLongDateString()}", "Update", () =>
                 {
                     Application.Current.Resources["IsLoading"] = Visibility.Visible;
                     PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcription);
@@ -46,14 +46,14 @@ namespace PastPaperHelper.Views
             {
                 PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate
                 {
-                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Fetching data from {PastPaperHelperCore.CurrentSource.Name}...");
+                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Fetching data from {PastPaperHelperCore.Source.Name}...");
                     Application.Current.Resources["IsLoading"] = Visibility.Visible;
                 };
                 PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
                 PastPaperHelperUpdateService.UpdateTaskCompleteEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
                 PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate
                 {
-                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Updated from {PastPaperHelperCore.CurrentSource.Name}.");
+                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Updated from {PastPaperHelperCore.Source.Name}.");
                     Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                     //SettingsViewModel.RefreshSubjectLists();
                     //SettingsViewModel.RefreshSubscription();

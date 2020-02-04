@@ -32,27 +32,26 @@ namespace PastPaperHelper.Core.Tools
         public static event UpdateInitiatedEventHandler UpdateFinalizedEvent;
 
 
-        public static void UpdateAll(StringCollection subscription)
+        public static async void UpdateAll(StringCollection subscription)
         {
-            Task.Run(() =>
+            await Task.Run(async() =>
             {
                 UpdateInitiatedEvent?.Invoke();
 
-                XmlDocument dataDocument = new XmlDocument();
                 Dictionary<Subject, string> subjects = null;
                 //Download from web servers
                 try
                 {
-                    subjects = PastPaperHelperCore.CurrentSource.GetSubjectUrlMap();
-                    PastPaperHelperCore.SubjectsLoaded = subjects.Keys.ToArray();
-                    PastPaperHelperCore.SubjectUrlMap = subjects;
+                    await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
+                    subjects = PastPaperHelperCore.Source.SubjectUrlMap;
+                    //PastPaperHelperCore.SubjectsLoaded = subjects.Keys.ToArray();
                 }
                 catch (Exception)
                 {
-                    UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.CurrentSource.Name}, please check your Internet connection.");
+                    UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
                     return;
                 }
-                UpdateTaskCompleteEvent?.Invoke($"Subject list updated from {PastPaperHelperCore.CurrentSource.Name}.");
+                UpdateTaskCompleteEvent?.Invoke($"Subject list updated from {PastPaperHelperCore.Source.Name}.");
                 //TODO: in oobe
 
                 //Download from web servers
@@ -64,7 +63,7 @@ namespace PastPaperHelper.Core.Tools
                     {
                         try
                         {
-                            PaperRepository papers = PastPaperHelperCore.CurrentSource.GetPapers(subject, PastPaperHelperCore.SubjectUrlMap[subject]);
+                            PaperRepository papers = await PastPaperHelperCore.Source.GetPapers(subject);
                             repos.Add(subject, papers);
                         }
                         catch (Exception)
@@ -72,12 +71,13 @@ namespace PastPaperHelper.Core.Tools
                             failed.Add(subject);
                             continue;
                         }
-                        UpdateTaskCompleteEvent?.Invoke($"{subject.Name} updated from {PastPaperHelperCore.CurrentSource.Name}.");
+                        UpdateTaskCompleteEvent?.Invoke($"{subject.Name} updated from {PastPaperHelperCore.Source.Name}.");
                     }
                 }
 
                 //Update finished
-                PastPaperHelperCore.CurrentSource.Save(subjects, repos, dataDocument);
+
+                XmlDocument dataDocument = PastPaperHelperCore.Source.SaveDataToXml(repos);
                 dataDocument.Save(PastPaperHelperCore.UserDataPath);
 
                 //error message
@@ -88,7 +88,7 @@ namespace PastPaperHelper.Core.Tools
                     {
                         failure += item.Name + ",";
                     }
-                    UpdateErrorEvent?.Invoke($"Failed to update {failed.Count} subject{(failed.Count > 1 ? "s" : "")} ({failure.Substring(0,failure.Length-1)}) from {PastPaperHelperCore.CurrentSource.Name}, please check your Internet connection.");
+                    UpdateErrorEvent?.Invoke($"Failed to update {failed.Count} subject{(failed.Count > 1 ? "s" : "")} ({failure.Substring(0,failure.Length-1)}) from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
                 }
                 else
                 {
@@ -99,19 +99,18 @@ namespace PastPaperHelper.Core.Tools
 
         public static async Task UpdateSubjectList()
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 UpdateInitiatedEvent?.Invoke();
-                Dictionary<Subject, string> subjects = null;
+
                 try
                 {
-                    subjects = PastPaperHelperCore.CurrentSource.GetSubjectUrlMap();
-                    PastPaperHelperCore.SubjectsLoaded = subjects.Keys.ToArray();
-                    PastPaperHelperCore.SubjectUrlMap = subjects;
+                    await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
+                    //PastPaperHelperCore.SubjectsLoaded = PastPaperHelperCore.Source.SubjectUrlMap.Keys.ToArray();
                 }
                 catch (Exception)
                 {
-                    UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.CurrentSource.Name}, please check your Internet connection.");
+                    UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
                     return;
                 }
                 UpdateFinalizedEvent?.Invoke();
@@ -122,10 +121,10 @@ namespace PastPaperHelper.Core.Tools
         {
             var downloadThread = Task.Run(() =>
             {
-                return PastPaperHelperCore.CurrentSource.GetPapers(subj, PastPaperHelperCore.SubjectUrlMap[subj]);
+                return PastPaperHelperCore.Source.GetPapers(subj);
             });
             //Save to XML
-            PastPaperHelperCore.Subscription.Add(subj, await downloadThread);
+            PastPaperHelperCore.Source.Subscription.Add(subj, await downloadThread);
         }
 
         public static bool TryFindSubject(string syllabusCode, out Subject result)

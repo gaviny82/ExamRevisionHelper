@@ -2,21 +2,23 @@
 using PastPaperHelper.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace PastPaperHelper.Sources
 {
-    class PaperSourceGCEGuide : PaperSource
+    public class PaperSourceGCEGuide : PaperSource
     {
-        public PaperSourceGCEGuide()
+        public PaperSourceGCEGuide(XmlDocument data) : base(data)
         {
             Name = "GCE Guide";
-            Url = "https://papers.gceguide.com/";
+            UrlBase = "https://papers.gceguide.com/";
         }
 
         //TODO: scan all papers, then sort
-        public override PaperRepository GetPapers(Subject subject, string url)
+        public override async Task<PaperRepository> GetPapers(Subject subject) => await Task.Run(() =>
         {
+            string url = SubjectUrlMap[subject];
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url + "/");
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"ggTable\"]/tbody/tr[@class='file']");
@@ -27,7 +29,7 @@ namespace PastPaperHelper.Sources
             for (int i = 0; i < nodes.Count; i++)
             {
                 string fileName = nodes[i].ChildNodes[1].ChildNodes[0].Attributes["href"].Value;
-                string[] split = fileName.Substring(0, fileName.Length-4).Split('_');
+                string[] split = fileName.Substring(0, fileName.Length - 4).Split('_');
 
                 if (split.Length > 4 || split.Length < 3 || fileName.Substring(0, 4) != subject.SyllabusCode) continue;
 
@@ -116,16 +118,16 @@ namespace PastPaperHelper.Sources
                                  orderby component.Key ascending
                                  select new Component(component.Key, component.ToArray());
 
-                item.Key.Components=components.ToArray();
+                item.Key.Components = components.ToArray();
             }
 
             repository.Sort();
             return repository;
-        }
+        });
 
-        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
+        public override async Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum) => await Task.Run(() =>
         {
-            string url = Url;
+            string url = UrlBase;
             switch (curriculum)
             {
                 case Curriculums.IGCSE: url += "IGCSE/"; break;
@@ -144,11 +146,11 @@ namespace PastPaperHelper.Sources
                 result.Add(new Subject
                 {
                     Curriculum = curriculum,
-                    Name = entry.InnerText.Substring(0,entry.InnerText.Length-7),
+                    Name = entry.InnerText.Substring(0, entry.InnerText.Length - 7),
                     SyllabusCode = code.Substring(1, 4)
                 }, url + herf.Value);
             }
             return result;
-        }
+        });
     }
 }

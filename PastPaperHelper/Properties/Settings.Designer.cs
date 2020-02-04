@@ -37,30 +37,6 @@ namespace PastPaperHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AutoUpdateFiles {
-            get {
-                return ((bool)(this["AutoUpdateFiles"]));
-            }
-            set {
-                this["AutoUpdateFiles"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AutoUpdateProgram {
-            get {
-                return ((bool)(this["AutoUpdateProgram"]));
-            }
-            set {
-                this["AutoUpdateProgram"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool FirstRun {
             get {
@@ -73,7 +49,7 @@ namespace PastPaperHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("GCE Guide")]
+        [global::System.Configuration.DefaultSettingValueAttribute("gce_guide")]
         public string PaperSource {
             get {
                 return ((string)(this["PaperSource"]));
@@ -98,13 +74,13 @@ namespace PastPaperHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("7")]
-        public int UpdateFrequency {
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int UpdatePolicy {
             get {
-                return ((int)(this["UpdateFrequency"]));
+                return ((int)(this["UpdatePolicy"]));
             }
             set {
-                this["UpdateFrequency"] = value;
+                this["UpdatePolicy"] = value;
             }
         }
     }
