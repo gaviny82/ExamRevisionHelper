@@ -12,12 +12,21 @@ namespace PastPaperHelper.Sources
         public string Name { get; set; }
         public string UrlBase { get; set; }
         public Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
-        public Dictionary<Subject, PaperRepository> Subscription { get; set; } = new Dictionary<Subject, PaperRepository>();
+        public Dictionary<Subject, PaperRepository> Subscription { get; private set; } = new Dictionary<Subject, PaperRepository>();
         public DateTime LastUpdated { get; private set; }
 
-        public PaperSource(XmlDocument data)
+        public PaperSource()
         {
 
+        }
+        public PaperSource(XmlDocument data)
+        {
+            XmlNode dataNode = data.SelectSingleNode("/Data");
+            if (dataNode == null || dataNode.Attributes["LastUpdate"] == null) throw new Exception("Failed to load source data.");
+
+            //Load time of last update
+            DateTime.TryParse(dataNode.Attributes["LastUpdate"].Value, out DateTime lastUpdate);
+            LastUpdated = lastUpdate;
         }
 
         public async virtual Task UpdateSubjectUrlMapAsync()
@@ -32,6 +41,11 @@ namespace PastPaperHelper.Sources
             SubjectUrlMap = tmp;
         }
 
+        public async virtual Task AddOrUpdateSubject(Subject subj)
+        {
+
+        }
+
         public abstract Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum);
 
         public abstract Task<PaperRepository> GetPapers(Subject subject);
@@ -43,8 +57,8 @@ namespace PastPaperHelper.Sources
 
             //Write source info
             XmlElement dataNode = doc.CreateElement("Data");
-            dataNode.SetAttribute("Time", DateTime.Now.ToString());
-            dataNode.SetAttribute("Source", PastPaperHelperCore.Source.Name);
+            dataNode.SetAttribute("LastUpdate", DateTime.Now.ToString());
+            dataNode.SetAttribute("Source", PastPaperHelperCore.Source.Name.ToLower().Replace(' ', '_'));
             doc.AppendChild(dataNode);
 
             //Write subject and url pairs

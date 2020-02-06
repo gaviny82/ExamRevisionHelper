@@ -1,4 +1,5 @@
 ﻿using PastPaperHelper.Core.Tools;
+using System;
 using System.Collections.Generic;
 
 namespace PastPaperHelper.Models
@@ -21,6 +22,7 @@ namespace PastPaperHelper.Models
                     return;
                 }
             }
+            throw new Exception($"Subject {syllabusCode} not found.");
         }
 
         public ExamYear this[string year] { get => GetExamYear(year); }

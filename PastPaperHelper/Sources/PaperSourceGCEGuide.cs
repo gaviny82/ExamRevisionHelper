@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using PastPaperHelper.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,10 +10,73 @@ namespace PastPaperHelper.Sources
 {
     public class PaperSourceGCEGuide : PaperSource
     {
+        public PaperSourceGCEGuide()
+        {
+            Name = "GCE Guide";
+            UrlBase = "https://papers.gceguide.com/";
+        }
         public PaperSourceGCEGuide(XmlDocument data) : base(data)
         {
             Name = "GCE Guide";
             UrlBase = "https://papers.gceguide.com/";
+
+            XmlNode subjListNode = data.SelectSingleNode("/Data/SubjectList");
+            if (subjListNode == null) throw new Exception("Failed to load subject list.");
+
+            XmlNodeList nodes = subjListNode.SelectNodes("/Subject");
+            if (nodes != null)
+            {
+                foreach (XmlNode node in nodes)
+                {
+                    Subject subj = new Subject
+                    {
+                        Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
+                        Name = node.Attributes["Name"].Value,
+                        SyllabusCode = node.Attributes["SyllabusCode"].Value,
+                    };
+                    SubjectUrlMap.Add(subj, node.Attributes["Url"].Value);
+                }
+            }
+
+            //Load cached repositories of subscribed subjects
+            XmlNode subsNode = data.SelectSingleNode("/Data/Subscription");
+            if (subsNode == null) throw new Exception("Failed to load subscription.");
+
+            XmlNodeList subjNodes = subsNode.SelectNodes("/Subject");
+            foreach (XmlNode subjectNode in subjNodes)
+            {
+                PaperRepository repo = new PaperRepository(subjectNode.Attributes["SyllabusCode"].Value);
+                foreach (XmlNode yearNode in subjectNode.ChildNodes)
+                {
+                    ExamYear year = new ExamYear { Year = yearNode.Attributes["Year"].Value };
+                    if (yearNode.Attributes["Syllabus"] != null) year.Syllabus = new Syllabus { Year = year.Year, Url = yearNode.Attributes["Syllabus"].Value };
+
+                    foreach (XmlNode examNode in yearNode.ChildNodes)
+                    {
+                        Exam exam = new Exam(examNode, repo.Subject);
+                        switch (exam.Series)
+                        {
+                            case ExamSeries.Spring:
+                                year.Spring = exam;
+                                break;
+                            case ExamSeries.Summer:
+                                year.Summer = exam;
+                                break;
+                            case ExamSeries.Winter:
+                                year.Winter = exam;
+                                break;
+                            default:
+                                year.Specimen = exam;
+                                break;
+                        }
+                    }
+                    repo.Add(year);
+                }
+
+                repo.Sort();
+                Subscription.Add(repo.Subject, repo);
+            }
+
         }
 
         //TODO: scan all papers, then sort

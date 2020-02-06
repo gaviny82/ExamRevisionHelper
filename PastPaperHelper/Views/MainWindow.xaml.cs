@@ -38,7 +38,7 @@ namespace PastPaperHelper.Views
                 mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.Source.LastUpdated.ToLongDateString()}", "Update", () =>
                 {
                     Application.Current.Resources["IsLoading"] = Visibility.Visible;
-                    PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcription);
+                    PastPaperHelperUpdateService.UpdateAll();
                 });
                 //Refresh view models
             }
@@ -58,7 +58,7 @@ namespace PastPaperHelper.Views
                     //SettingsViewModel.RefreshSubjectLists();
                     //SettingsViewModel.RefreshSubscription();
                 };
-                PastPaperHelperUpdateService.UpdateAll(Properties.Settings.Default.SubjectsSubcription);
+                PastPaperHelperUpdateService.UpdateAll();
             }
             else
             {

@@ -9,7 +9,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="PaperSource" Type="System.String" Scope="User">
-      <Value Profile="(Default)">gce_guide</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SubjectsSubcription" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;

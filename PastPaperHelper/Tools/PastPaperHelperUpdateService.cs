@@ -32,114 +32,80 @@ namespace PastPaperHelper.Core.Tools
         public static event UpdateInitiatedEventHandler UpdateFinalizedEvent;
 
 
-        public static async void UpdateAll(StringCollection subscription)
+        public static async void UpdateAll()
         {
-            await Task.Run(async() =>
+            UpdateInitiatedEvent?.Invoke();
+
+            //Download subject list from web server
+            try
             {
-                UpdateInitiatedEvent?.Invoke();
+                await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
+                PastPaperHelperCore.UpdateSubjectLoaded();
+            }
+            catch (Exception)
+            {
+                UpdateErrorEvent?.Invoke($"Failed to download subject list from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
+                return;
+            }
+            UpdateTaskCompleteEvent?.Invoke($"Subject list updated from {PastPaperHelperCore.Source.Name}.");
 
-                Dictionary<Subject, string> subjects = null;
-                //Download from web servers
-                try
-                {
-                    await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
-                    subjects = PastPaperHelperCore.Source.SubjectUrlMap;
-                    //PastPaperHelperCore.SubjectsLoaded = subjects.Keys.ToArray();
-                }
-                catch (Exception)
-                {
-                    UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
-                    return;
-                }
-                UpdateTaskCompleteEvent?.Invoke($"Subject list updated from {PastPaperHelperCore.Source.Name}.");
-                //TODO: in oobe
-
-                //Download from web servers
-                Dictionary<Subject, PaperRepository> repos = new Dictionary<Subject, PaperRepository>();
-                List<Subject> failed = new List<Subject>();
-                foreach (string item in subscription)
-                {
-                    if (TryFindSubject(item, out Subject subject))
+            //Download papers from web server
+            List<Subject> failed = new List<Subject>();
+            foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
+            {
+                    try
                     {
-                        try
-                        {
-                            PaperRepository papers = await PastPaperHelperCore.Source.GetPapers(subject);
-                            repos.Add(subject, papers);
-                        }
-                        catch (Exception)
-                        {
-                            failed.Add(subject);
-                            continue;
-                        }
-                        UpdateTaskCompleteEvent?.Invoke($"{subject.Name} updated from {PastPaperHelperCore.Source.Name}.");
+                        await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
                     }
-                }
+                    catch (Exception)
+                    {
+                        failed.Add(subj);
+                        UpdateErrorEvent?.Invoke($"Failed to update {subj.Name} from {PastPaperHelperCore.Source.Name}.");
+                        continue;
+                    }
+                    UpdateTaskCompleteEvent?.Invoke($"{subj.Name} updated from {PastPaperHelperCore.Source.Name}.");
+            }
 
+            try
+            {
                 //Update finished
-
-                XmlDocument dataDocument = PastPaperHelperCore.Source.SaveDataToXml(repos);
+                XmlDocument dataDocument = PastPaperHelperCore.Source.SaveDataToXml(PastPaperHelperCore.Source.Subscription);
                 dataDocument.Save(PastPaperHelperCore.UserDataPath);
 
-                //error message
-                if (failed.Count != 0)
-                {
-                    string failure = "";
-                    foreach (var item in failed)
-                    {
-                        failure += item.Name + ",";
-                    }
-                    UpdateErrorEvent?.Invoke($"Failed to update {failed.Count} subject{(failed.Count > 1 ? "s" : "")} ({failure.Substring(0,failure.Length-1)}) from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
-                }
-                else
-                {
-                    UpdateFinalizedEvent?.Invoke();
-                }
-            });
+                if (failed.Count == 0) UpdateFinalizedEvent?.Invoke();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Failed to save data to {PastPaperHelperCore.UserDataPath}", e);
+            }
         }
 
         public static async Task UpdateSubjectList()
         {
-            await Task.Run(async () =>
+            UpdateInitiatedEvent?.Invoke();
+            try
             {
-                UpdateInitiatedEvent?.Invoke();
-
-                try
-                {
-                    await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
-                    //PastPaperHelperCore.SubjectsLoaded = PastPaperHelperCore.Source.SubjectUrlMap.Keys.ToArray();
-                }
-                catch (Exception)
-                {
-                    UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
-                    return;
-                }
-                UpdateFinalizedEvent?.Invoke();
-            });
-        }
-
-        public static async Task UpdateSubject(Subject subj)
-        {
-            var downloadThread = Task.Run(() =>
-            {
-                return PastPaperHelperCore.Source.GetPapers(subj);
-            });
-            //Save to XML
-            PastPaperHelperCore.Source.Subscription.Add(subj, await downloadThread);
-        }
-
-        public static bool TryFindSubject(string syllabusCode, out Subject result)
-        {
-            foreach (Subject item in PastPaperHelperCore.SubjectsLoaded)
-            {
-                if (item.SyllabusCode == syllabusCode)
-                {
-                    result = item;
-                    return true;
-                }
+                await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
+                PastPaperHelperCore.UpdateSubjectLoaded();
             }
-            result = new Subject();
-            return false;
+            catch (Exception)
+            {
+                UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
+                return;
+            }
+            UpdateFinalizedEvent?.Invoke();
         }
+
+        //TODO: Hot reload on update
+        //public static async Task UpdateSubject(Subject subj)
+        //{
+        //    var downloadThread = Task.Run(() =>
+        //    {
+        //        return PastPaperHelperCore.Source.GetPapers(subj);
+        //    });
+        //    //Save to XML
+        //    PastPaperHelperCore.Source.Subscription.Add(subj, await downloadThread);
+        //}
 
     }
 }
