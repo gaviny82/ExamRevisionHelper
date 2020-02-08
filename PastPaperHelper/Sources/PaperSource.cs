@@ -31,13 +31,21 @@ namespace PastPaperHelper.Sources
 
         public async virtual Task UpdateSubjectUrlMapAsync()
         {
-            var repoIG = GetSubjectUrlMapAsync(Curriculums.IGCSE);
-            var repoAL = GetSubjectUrlMapAsync(Curriculums.ALevel);
-            
+            Task<Dictionary<Subject, string>> repoIG = null;
+            Task<Dictionary<Subject, string>> repoAL = null;
+            try
+            {
+                repoIG = GetSubjectUrlMapAsync(Curriculums.IGCSE);
+                repoAL = GetSubjectUrlMapAsync(Curriculums.ALevel);
+            }
+            catch (Exception e)
+            {
+                //Once exception arised, stop updating
+                throw e;
+            }
             Dictionary<Subject, string> tmp = new Dictionary<Subject, string>();
             foreach (var item in await repoIG) tmp.Add(item.Key, item.Value);
             foreach (var item in await repoAL) tmp.Add(item.Key, item.Value);
-
             SubjectUrlMap = tmp;
         }
 

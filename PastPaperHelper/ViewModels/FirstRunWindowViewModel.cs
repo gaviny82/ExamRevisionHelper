@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -29,6 +30,7 @@ namespace PastPaperHelper.ViewModels
                 {
                     if (args.NotificationType == NotificationType.Initializing)
                     {
+                        IsRetryEnabled = false;
                         Application.Current.Resources["IsLoading"] = Visibility.Visible;
                     }
                     if (args.NotificationType == NotificationType.Finished)
@@ -45,9 +47,11 @@ namespace PastPaperHelper.ViewModels
 
             PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
             {
+                if(args.Exception is WebException)
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    //TODO: Show retry button
+                    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                    IsRetryEnabled = true;
                 });
             };
 
@@ -59,6 +63,13 @@ namespace PastPaperHelper.ViewModels
         {
             get { return _path; }
             set { SetProperty(ref _path, value); }
+        }
+
+        private bool _isRetryEnabled = false;
+        public bool IsRetryEnabled
+        {
+            get { return _isRetryEnabled; }
+            set { SetProperty(ref _isRetryEnabled, value); }
         }
 
         //private Visibility _isLoading;
@@ -116,6 +127,15 @@ namespace PastPaperHelper.ViewModels
         }
         #endregion
 
+        private DelegateCommand _retryCommand;
+        public DelegateCommand RetryCommand =>
+            _retryCommand ?? (_retryCommand = new DelegateCommand(ExecuteRetryCommand));
+
+        void ExecuteRetryCommand()
+        {
+            var task = PastPaperHelperUpdateService.UpdateSubjectList();
+
+        }
     }
     public class SubjectSelection
     {

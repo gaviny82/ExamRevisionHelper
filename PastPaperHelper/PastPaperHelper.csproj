@@ -112,7 +112,7 @@
     <Compile Include="Tools\PastPaperHelperUpdateService.cs" />
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\LocalStorageViewModel.cs" />
-    <Compile Include="ViewModels\OobeWindowViewModel.cs" />
+    <Compile Include="ViewModels\FirstRunWindowViewModel.cs" />
     <Compile Include="ViewModels\ReferenceViewModel.cs" />
     <Compile Include="ViewModels\SearchViewViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />

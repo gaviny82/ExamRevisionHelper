@@ -38,10 +38,10 @@
     <TabControl x:Name="tab" Style="{StaticResource WizardTabControlStyle}">
         <TabItem Header="Welcome" Width="178" Style="{StaticResource WizardTabItemStyle}">
             <Grid Margin="16">
-                <TextBlock Text="Welcome to use Past Paper Helper" Margin="0,-70,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Text="Welcome to use Past Paper Helper" Margin="0,-75,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
                 <TextBlock Text="This program helps you manage your CAIE past papers in a more efficient way and provides powerful tools to make your revision process easier." 
                            TextWrapping="Wrap" TextAlignment="Center"
-                           HorizontalAlignment="Center" Margin="80,20,80,0" VerticalAlignment="Center"/>
+                           HorizontalAlignment="Center" Margin="80,35,80,0" VerticalAlignment="Center"/>
                 <Button Content="Next" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Next_Click"/>
             </Grid>
         </TabItem>
@@ -70,7 +70,7 @@
 
                 <ComboBox HorizontalAlignment="Center" Margin="0,195,0,0" VerticalAlignment="Top" SelectedIndex="3" Width="600" materialDesign:HintAssist.Hint="Update Frequency" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                     <ComboBoxItem Content="Disable"/>
-                    <ComboBoxItem Content="Every time"/>
+                    <ComboBoxItem Content="Every time on startup"/>
                     <ComboBoxItem Content="Everyday"/>
                     <ComboBoxItem Content="Weekly"/>
                     <ComboBoxItem Content="Monthly"/>
@@ -99,16 +99,28 @@
                         <TextBlock Text="Loading..." FontSize="18" Margin="0,8,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
                     </StackPanel>
                 </Border>
+                <Border Background="#60000000" Visibility="{Binding IsRetryEnabled, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,80,0,0">
+                    <StackPanel VerticalAlignment="Center">
+                        <Button Background="#FFD50000" BorderBrush="#FFD50000" Style="{StaticResource MaterialDesignFloatingActionMiniButton}" HorizontalAlignment="Center" ToolTip="Retry" Command="{Binding RetryCommand}">
+                            <materialDesign:PackIcon Kind="ReloadAlert" Height="24" Width="24" />
+                        </Button>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="Error" Margin="0,2,4,0" Foreground="#FFD50000"/>
+                            <TextBlock Text="Network issue, please check your Internet connection and retry." FontSize="18" FontWeight="Bold"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
                 <Button Content="Next" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Next_Click"/>
                 <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Back_Click" Margin="0,0,100,0"/>
             </Grid>
         </TabItem>
         <TabItem Header="Done" Width="178" Style="{StaticResource WizardTabItemStyle}">
             <Grid Margin="16">
-                <TextBlock Text="//TODO: Initialization" Margin="0,-70,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Text="//TODO: Initialization" Margin="0,-75,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
                 <TextBlock Text="Description here." 
                            TextWrapping="Wrap" TextAlignment="Center"
-                           HorizontalAlignment="Center" Margin="80,20,80,0" VerticalAlignment="Center"/>
+                           HorizontalAlignment="Center" Margin="80,35,80,0" VerticalAlignment="Center"/>
                 <Button VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Done" Width="80" Command="{Binding SaveCommand}"/>
                 <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Back_Click" Margin="0,0,100,0"/>
             </Grid>
