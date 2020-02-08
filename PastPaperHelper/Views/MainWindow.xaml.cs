@@ -35,7 +35,7 @@ namespace PastPaperHelper.Views
             if (initResult == InitializationResult.SuccessUpdateNeeded)
             {
                 //TODO: Test needed
-                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.Source.LastUpdated.ToLongDateString()}", "Update", () =>
+                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()}", "Update", () =>
                 {
                     Application.Current.Resources["IsLoading"] = Visibility.Visible;
                     PastPaperHelperUpdateService.UpdateAll();
@@ -44,20 +44,20 @@ namespace PastPaperHelper.Views
             }
             else if (initResult == InitializationResult.Error)
             {
-                PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate
-                {
-                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Fetching data from {PastPaperHelperCore.Source.Name}...");
-                    Application.Current.Resources["IsLoading"] = Visibility.Visible;
-                };
-                PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
-                PastPaperHelperUpdateService.UpdateTaskCompleteEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
-                PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate
-                {
-                    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Updated from {PastPaperHelperCore.Source.Name}.");
-                    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                    //SettingsViewModel.RefreshSubjectLists();
-                    //SettingsViewModel.RefreshSubscription();
-                };
+                //PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate
+                //{
+                //    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Fetching data from {PastPaperHelperCore.Source.Name}...");
+                //    Application.Current.Resources["IsLoading"] = Visibility.Visible;
+                //};
+                //PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
+                //PastPaperHelperUpdateService.UpdateTaskCompleteEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
+                //PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate
+                //{
+                //    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Updated from {PastPaperHelperCore.Source.Name}.");
+                //    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                //    //SettingsViewModel.RefreshSubjectLists();
+                //    //SettingsViewModel.RefreshSubscription();
+                //};
                 PastPaperHelperUpdateService.UpdateAll();
             }
             else

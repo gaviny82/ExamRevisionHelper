@@ -21,33 +21,37 @@ namespace PastPaperHelper.ViewModels
         public ObservableCollection<SubjectSelection> IGSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
         public ObservableCollection<SubjectSelection> ALSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
 
-        public OobeWindowViewModel(IEventAggregator eventAggregator)
+        public OobeWindowViewModel()
         {
-            Init(eventAggregator);
-        }
-
-        public async void Init(IEventAggregator eventAggregator)
-        {
-            PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { eventAggregator.GetEvent<UpdateServiceErrorEvent>().Publish(); };
-            PastPaperHelperUpdateService.UpdateFinalizedEvent += () => { eventAggregator.GetEvent<SubjectListDownloadedEvent>().Publish(); };
-            Application.Current.Resources["IsLoading"] = Visibility.Visible;
-
-            eventAggregator.GetEvent<UpdateServiceErrorEvent>().Subscribe(() =>
+            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
             {
-
-            }, ThreadOption.UIThread);
-
-            eventAggregator.GetEvent<SubjectListDownloadedEvent>().Subscribe(() =>
-            {
-                Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                foreach (var item in PastPaperHelperCore.SubjectsLoaded)
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(new SubjectSelection(item, false));
-                    else IGSubjects.Add(new SubjectSelection(item, false));
-                }
-            }, ThreadOption.UIThread);
+                    if (args.NotificationType == NotificationType.Initializing)
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Visible;
+                    }
+                    if (args.NotificationType == NotificationType.Finished)
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                        foreach (var item in PastPaperHelperCore.SubjectsLoaded)
+                        {
+                            if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(new SubjectSelection(item, false));
+                            else IGSubjects.Add(new SubjectSelection(item, false));
+                        }
+                    }
+                });
+            };
 
-            await PastPaperHelperUpdateService.UpdateSubjectList();
+            PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    //TODO: Show retry button
+                });
+            };
+
+            var task = PastPaperHelperUpdateService.UpdateSubjectList();
         }
 
         private string _path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\Past Papers";
@@ -57,21 +61,6 @@ namespace PastPaperHelper.ViewModels
             set { SetProperty(ref _path, value); }
         }
 
-        //public string Path
-        //{
-        //    get { return _path; }
-        //    set
-        //    {
-        //        _path = value;
-        //        RaisePropertyChangedEvent("Path");
-        //        if (Directory.Exists(value))
-        //        {
-        //            Properties.Settings.Default.Path = value;
-        //            Properties.Settings.Default.Save();
-        //        }
-        //    }
-        //}
-
         //private Visibility _isLoading;
         //public Visibility IsLoading
         //{
@@ -79,6 +68,7 @@ namespace PastPaperHelper.ViewModels
         //    set { _isLoading = value; RaisePropertyChangedEvent("IsLoading"); }
         //}
 
+        #region BrowseCommand
         private DelegateCommand _browseCommand;
         public DelegateCommand BrowseCommand =>
             _browseCommand ?? (_browseCommand = new DelegateCommand(ExecuteBrowseCommand));
@@ -89,11 +79,15 @@ namespace PastPaperHelper.ViewModels
             {
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    Path = dialog.FileName + "\\Past Papers";
+                    var path = dialog.FileName;
+                    if (!path.EndsWith("Past Papers")) path += "\\Past Papers";
+                    Path = path;
                 }
             }
         }
+        #endregion
 
+        #region SaveCommand
         private DelegateCommand _saveCommand;
         public DelegateCommand SaveCommand =>
             _saveCommand ?? (_saveCommand = new DelegateCommand(ExecuteSaveCommand));
@@ -120,6 +114,7 @@ namespace PastPaperHelper.ViewModels
             Application.Current.Shutdown();
             Process.Start(Environment.CurrentDirectory + "\\PastPaperHelper.exe");
         }
+        #endregion
 
     }
     public class SubjectSelection

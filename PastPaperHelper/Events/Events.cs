@@ -1,4 +1,5 @@
-﻿using Prism.Events;
+﻿using PastPaperHelper.Core.Tools;
+using Prism.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace PastPaperHelper.Events
 {
-    public class MessageBarEnqueuedEvent : PubSubEvent<string> { }
-    public class SubjectListDownloadedEvent : PubSubEvent { }
-    public class UpdateServiceErrorEvent : PubSubEvent { }
+    public class UpdateServiceNotifiedEvent : PubSubEvent<UpdateServiceNotifiedEventArgs> { }
+    public class UpdateServiceErrorEvent : PubSubEvent<UpdateServiceErrorEventArgs> { }
 }

@@ -70,6 +70,7 @@
                                 <ComboBoxItem Content="GCE Guide (https://papers.gceguide.com/)" />
                                 <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)" IsEnabled="False" />
                                 <ComboBoxItem Content="CIEnotes (https://www.cienotes.com/)" IsEnabled="False" />
+                                <ComboBoxItem Content="Mixed sources" IsEnabled="False"/>
                             </ComboBox>
                         </Grid>
                     </GroupBox>

@@ -82,6 +82,7 @@ namespace PastPaperHelper.Sources
         //TODO: scan all papers, then sort
         public override async Task<PaperRepository> GetPapers(Subject subject) => await Task.Run(() =>
         {
+            if (!SubjectUrlMap.ContainsKey(subject)) throw new Exception("Subject not supported, try reloading SubjectUrlMap.");
             string url = SubjectUrlMap[subject];
             HtmlWeb web = new HtmlWeb();
             HtmlDocument doc = web.Load(url + "/");

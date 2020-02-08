@@ -9,32 +9,41 @@ using System.Collections.Specialized;
 
 namespace PastPaperHelper.Core.Tools
 {
-    public enum UpdatePolicy { Disable, Always, Daily, Weekly, Montly, Auto }
+    public enum ErrorType { SubjectListUpdateFailed, SubjectRepoUpdateFailed, Other }
+    public enum NotificationType { Initializing, IntermediateTaskState, Finished }
+
+    public class UpdateServiceNotifiedEventArgs : EventArgs
+    {
+        public NotificationType NotificationType { get; set; }
+        public string Message { get; set; }
+    }
+    public class UpdateServiceErrorEventArgs : EventArgs
+    {
+        public Exception Exception { get; set; }
+        public ErrorType ErrorType { get; set; }
+        public string ErrorMessage { get; set; }
+    }
+
+
     public static class PastPaperHelperUpdateService
     {
-        public delegate void UpdateInitiatedEventHandler();
+        public delegate void UpdateServiceNotifiedEventHandler(UpdateServiceNotifiedEventArgs args);
 
-        public static event UpdateInitiatedEventHandler UpdateInitiatedEvent;
-
-
-        public delegate void UpdateTaskCompleteEventHandler(string status);
-
-        public static event UpdateTaskCompleteEventHandler UpdateTaskCompleteEvent;
+        public static event UpdateServiceNotifiedEventHandler UpdateServiceNotifiedEvent;
 
 
-        public delegate void UpdateErrorEventHandler(string status);
+        public delegate void UpdateServiceErrorEventHandler(UpdateServiceErrorEventArgs args);
 
-        public static event UpdateErrorEventHandler UpdateErrorEvent;
-
-
-        public delegate void UpdateFinalizedEventHandler();
-
-        public static event UpdateInitiatedEventHandler UpdateFinalizedEvent;
+        public static event UpdateServiceErrorEventHandler UpdateServiceErrorEvent;
 
 
         public static async void UpdateAll()
         {
-            UpdateInitiatedEvent?.Invoke();
+            UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs 
+            { 
+                NotificationType = NotificationType.Initializing, 
+                Message = $"Loading from {PastPaperHelperCore.Source.Name}.../" 
+            });
 
             //Download subject list from web server
             try
@@ -42,37 +51,62 @@ namespace PastPaperHelper.Core.Tools
                 await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
                 PastPaperHelperCore.UpdateSubjectLoaded();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                UpdateErrorEvent?.Invoke($"Failed to download subject list from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
+                UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
+                {
+                    ErrorMessage = $"Failed to download subject list from {PastPaperHelperCore.Source.Name}, please check your Internet connection.",
+                    ErrorType = ErrorType.SubjectListUpdateFailed,
+                    Exception= e
+                });
                 return;
             }
-            UpdateTaskCompleteEvent?.Invoke($"Subject list updated from {PastPaperHelperCore.Source.Name}.");
+
+            UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
+            {
+                Message = $"Subject list updated from {PastPaperHelperCore.Source.Name}.",
+                NotificationType = NotificationType.IntermediateTaskState
+            });
 
             //Download papers from web server
             List<Subject> failed = new List<Subject>();
             foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
             {
-                    try
+                try
+                {
+                    await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
+                }
+                catch (Exception e)
+                {
+                    failed.Add(subj);
+                    UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
                     {
-                        await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
-                    }
-                    catch (Exception)
-                    {
-                        failed.Add(subj);
-                        UpdateErrorEvent?.Invoke($"Failed to update {subj.Name} from {PastPaperHelperCore.Source.Name}.");
-                        continue;
-                    }
-                    UpdateTaskCompleteEvent?.Invoke($"{subj.Name} updated from {PastPaperHelperCore.Source.Name}.");
+                        ErrorMessage = $"Failed to update {subj.Name} from {PastPaperHelperCore.Source.Name}.",
+                        ErrorType = ErrorType.SubjectRepoUpdateFailed,
+                        Exception = e
+                    });
+                    continue;
+                }
+
+                UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
+                {
+                    Message = $"{subj.Name} updated from {PastPaperHelperCore.Source.Name}.",
+                    NotificationType = NotificationType.IntermediateTaskState
+                });
             }
 
+            if (failed.Count != 0) return;
             try
             {
                 //Update finished
                 XmlDocument dataDocument = PastPaperHelperCore.Source.SaveDataToXml(PastPaperHelperCore.Source.Subscription);
                 dataDocument.Save(PastPaperHelperCore.UserDataPath);
 
-                if (failed.Count == 0) UpdateFinalizedEvent?.Invoke();
+                UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
+                {
+                    Message = $"All subjects updated from {PastPaperHelperCore.Source.Name} successfully.",
+                    NotificationType = NotificationType.Finished
+                });
             }
             catch (Exception e)
             {
@@ -82,30 +116,44 @@ namespace PastPaperHelper.Core.Tools
 
         public static async Task UpdateSubjectList()
         {
-            UpdateInitiatedEvent?.Invoke();
+            UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
+            {
+                NotificationType = NotificationType.Initializing,
+                Message = $"Loading subject list from {PastPaperHelperCore.Source.Name}.../"
+            });
             try
             {
                 await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
                 PastPaperHelperCore.UpdateSubjectLoaded();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                UpdateErrorEvent?.Invoke($"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.");
+                UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
+                {
+                    ErrorMessage = $"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.",
+                    ErrorType = ErrorType.SubjectListUpdateFailed,
+                    Exception = e
+                });
                 return;
             }
-            UpdateFinalizedEvent?.Invoke();
+            UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
+            {
+                Message = $"Subject list updated from {PastPaperHelperCore.Source.Name} successfully.",
+                NotificationType = NotificationType.Finished
+            });
         }
 
-        //TODO: Hot reload on update
-        //public static async Task UpdateSubject(Subject subj)
-        //{
-        //    var downloadThread = Task.Run(() =>
-        //    {
-        //        return PastPaperHelperCore.Source.GetPapers(subj);
-        //    });
-        //    //Save to XML
-        //    PastPaperHelperCore.Source.Subscription.Add(subj, await downloadThread);
-        //}
+        /* TODO: Hot reload on update
+        public static async Task UpdateSubject(Subject subj)
+        {
+            var downloadThread = Task.Run(() =>
+            {
+                return PastPaperHelperCore.Source.GetPapers(subj);
+            });
+            //Save to XML
+            PastPaperHelperCore.Source.Subscription.Add(subj, await downloadThread);
+        }
+        */
 
     }
 }

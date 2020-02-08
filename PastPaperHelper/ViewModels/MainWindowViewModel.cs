@@ -16,10 +16,10 @@ namespace PastPaperHelper.ViewModels
         public MainWindowViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _regionManager = regionManager;
-            eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Subscribe((msg) =>
-            {
-                MainWindow.MainSnackbar.MessageQueue.Enqueue(msg);
-            }, ThreadOption.UIThread);
+            //eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Subscribe((msg) =>
+            //{
+            //    MainWindow.MainSnackbar.MessageQueue.Enqueue(msg);
+            //}, ThreadOption.UIThread);
         }
 
         private DelegateCommand<string> _navigateCommand;

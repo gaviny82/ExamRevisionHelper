@@ -43,7 +43,9 @@ namespace PastPaperHelper.Sources
 
         public async virtual Task AddOrUpdateSubject(Subject subj)
         {
-
+            var repo = await GetPapers(subj);
+            if (Subscription.ContainsKey(subj)) Subscription[subj] = repo;
+            else Subscription.Add(subj, repo);
         }
 
         public abstract Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum);

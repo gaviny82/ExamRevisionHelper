@@ -171,9 +171,9 @@ namespace PastPaperHelper.ViewModels
 
         private DelegateCommand _browseCommand;
         public DelegateCommand BrowseCommand =>
-            _browseCommand ?? (_browseCommand = new DelegateCommand(ExecuteCommandName));
+            _browseCommand ?? (_browseCommand = new DelegateCommand(ExecuteBrowseCommand));
 
-        void ExecuteCommandName()
+        void ExecuteBrowseCommand()
         {
             using (CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true })
             {

@@ -11,6 +11,7 @@ using System.Xml;
 
 namespace PastPaperHelper.Core.Tools
 {
+    public enum UpdatePolicy { Disable, Always, Daily, Weekly, Montly, Auto }
     public enum InitializationResult { SuccessNoUpdate, SuccessUpdateNeeded, Error }
     public static class PastPaperHelperCore
     {
