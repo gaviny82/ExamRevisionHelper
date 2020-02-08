@@ -3,11 +3,11 @@
 namespace PastPaperHelper.Views
 {
     /// <summary>
-    /// Interaction logic for OobeWindow.xaml
+    /// Interaction logic for FirstRunWindow.xaml
     /// </summary>
-    public partial class OobeWindow : Window
+    public partial class FirstRunWindow : Window
     {
-        public OobeWindow()
+        public FirstRunWindow()
         {
             InitializeComponent();
         }

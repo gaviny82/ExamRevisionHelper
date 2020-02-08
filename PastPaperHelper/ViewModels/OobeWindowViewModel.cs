@@ -16,12 +16,12 @@ using System.Windows;
 
 namespace PastPaperHelper.ViewModels
 {
-    public class OobeWindowViewModel : BindableBase
+    public class FirstRunWindowViewModel : BindableBase
     {
         public ObservableCollection<SubjectSelection> IGSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
         public ObservableCollection<SubjectSelection> ALSubjects { get; set; } = new ObservableCollection<SubjectSelection>();
 
-        public OobeWindowViewModel()
+        public FirstRunWindowViewModel()
         {
             PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
             {

@@ -11,7 +11,7 @@ using System.Xml;
 
 namespace PastPaperHelper.Core.Tools
 {
-    public enum UpdatePolicy { Disable, Always, Daily, Weekly, Montly, Auto }
+    public enum UpdateFrequency { Disable, Always, Daily, Weekly, Montly, Auto }
     public enum InitializationResult { SuccessNoUpdate, SuccessUpdateNeeded, Error }
     public static class PastPaperHelperCore
     {
@@ -32,7 +32,7 @@ namespace PastPaperHelper.Core.Tools
         /// <param name="subscription">Syllabus codes of subjects subscribed by the user</param>
         /// <returns>Returns true when the local data needs update OR error is detected when loading user_data.xml.
         /// Returns null: error </returns>
-        public static InitializationResult Initialize(string userDataFilePath, UpdatePolicy updatePolicy, string[] subscription)
+        public static InitializationResult Initialize(string userDataFilePath, UpdateFrequency updatePolicy, string[] subscription)
         {
             try
             {
@@ -65,17 +65,17 @@ namespace PastPaperHelper.Core.Tools
                 double days = (DateTime.Now - lastUpdate).Days;
                 switch (updatePolicy)
                 {
-                    case UpdatePolicy.Disable:
+                    case UpdateFrequency.Disable:
                         return InitializationResult.SuccessNoUpdate;
-                    case UpdatePolicy.Always:
+                    case UpdateFrequency.Always:
                         return InitializationResult.SuccessUpdateNeeded;
-                    case UpdatePolicy.Daily:
+                    case UpdateFrequency.Daily:
                         return days < 1 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
-                    case UpdatePolicy.Weekly:
+                    case UpdateFrequency.Weekly:
                         return days < 7 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
-                    case UpdatePolicy.Montly:
+                    case UpdateFrequency.Montly:
                         return days < 30 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
-                    case UpdatePolicy.Auto:
+                    case UpdateFrequency.Auto:
                         //TODO: auto update strategy
                         break;
                 }

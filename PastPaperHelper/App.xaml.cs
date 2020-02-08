@@ -23,7 +23,7 @@ namespace PastPaperHelper
         {
             return PastPaperHelper.Properties.Settings.Default.FirstRun ?
                 (Window)Container.Resolve<MainWindow>() :
-                (Window)Container.Resolve<OobeWindow>();
+                (Window)Container.Resolve<FirstRunWindow>();
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -44,7 +44,7 @@ namespace PastPaperHelper
             UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
             if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
 
-            UpdatePolicy updatePolicy = (UpdatePolicy)PastPaperHelper.Properties.Settings.Default.UpdatePolicy;
+            UpdateFrequency updatePolicy = (UpdateFrequency)PastPaperHelper.Properties.Settings.Default.UpdatePolicy;
             string dataFile = $"{UserDataFolderPath}\\{PastPaperHelper.Properties.Settings.Default.PaperSource}.xml";
             if (!File.Exists(dataFile)) dataFile = null;
             var subs = PastPaperHelper.Properties.Settings.Default.SubjectsSubcription;
