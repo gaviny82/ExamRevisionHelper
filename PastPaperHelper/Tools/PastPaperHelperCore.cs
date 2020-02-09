@@ -32,29 +32,25 @@ namespace PastPaperHelper.Core.Tools
         /// <param name="subscription">Syllabus codes of subjects subscribed by the user</param>
         /// <returns>Returns true when the local data needs update OR error is detected when loading user_data.xml.
         /// Returns null: error </returns>
-        public static InitializationResult Initialize(string userDataFilePath, UpdateFrequency updatePolicy, string[] subscription)
+        public static InitializationResult Initialize(string userDataFilePath, string sourceName, UpdateFrequency updatePolicy, string[] subscription)
         {
             try
             {
-                if (!File.Exists(userDataFilePath))
-                {
-                    Source = new PaperSourceGCEGuide();
-                    return InitializationResult.Error;
-                }
-
                 UserDataPath = userDataFilePath;
                 XmlDocument userData = new XmlDocument();
                 userData.Load(userDataFilePath);
 
                 XmlNode dataNode = userData.SelectSingleNode("/Data");
-                if (dataNode == null) return InitializationResult.Error;
                 switch (dataNode.Attributes["Source"].Value)
                 {
-                    default:
-                        Source = new PaperSourceGCEGuide();
-                        return InitializationResult.Error;
                     case "gce_guide":
                         Source = new PaperSourceGCEGuide(userData);
+                        break;
+                    case "papacambridge":
+                        Source = new PaperSourcePapaCambridge(userData);
+                        break;
+                    case "cie_notes":
+                        Source = new PaperSourceCIENotes(userData);
                         break;
                 }
 
@@ -82,8 +78,23 @@ namespace PastPaperHelper.Core.Tools
 
                 return InitializationResult.SuccessNoUpdate;
             }
-            catch (Exception e)
+            catch (Exception)
             {
+                switch (sourceName)
+                {
+                    default:
+                        Source = new PaperSourceGCEGuide();
+                        break;
+                    case "gce_guide":
+                        Source = new PaperSourceGCEGuide();
+                        break;
+                    case "papacambridge":
+                        Source = new PaperSourcePapaCambridge();
+                        break;
+                    case "cie_notes":
+                        Source = new PaperSourceCIENotes();
+                        break;
+                }
                 return InitializationResult.Error;
             }
         }

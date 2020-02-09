@@ -10,6 +10,11 @@ namespace PastPaperHelper.Sources
 {
     class PaperSourcePapaCambridge : PaperSource
     {
+        public PaperSourcePapaCambridge()
+        {
+            Name = "PapaCambridge";
+            UrlBase = "https://papacambridge.com/";
+        }
         public PaperSourcePapaCambridge(XmlDocument data) : base(data)
         {
             Name = "PapaCambridge";

@@ -22,8 +22,8 @@ namespace PastPaperHelper
         protected override Window CreateShell()
         {
             return PastPaperHelper.Properties.Settings.Default.FirstRun ?
-                (Window)Container.Resolve<MainWindow>() :
-                (Window)Container.Resolve<FirstRunWindow>();
+                (Window)Container.Resolve<FirstRunWindow>() :
+                (Window)Container.Resolve<MainWindow>();
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -39,10 +39,13 @@ namespace PastPaperHelper
 
         private void PrismApplication_Startup(object sender, StartupEventArgs e)
         {
-            //OOBE Test
-            //PastPaperHelper.Properties.Settings.Default.FirstRun = true;
+
             UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
             if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
+
+            //OOBE Test
+            PastPaperHelper.Properties.Settings.Default.FirstRun = true;
+            if (PastPaperHelper.Properties.Settings.Default.FirstRun) return;
 
             UpdateFrequency updatePolicy = (UpdateFrequency)PastPaperHelper.Properties.Settings.Default.UpdatePolicy;
             string dataFile = $"{UserDataFolderPath}\\{PastPaperHelper.Properties.Settings.Default.PaperSource}.xml";
@@ -51,7 +54,7 @@ namespace PastPaperHelper
             string[] subsArr = new string[subs.Count];
             subs.CopyTo(subsArr, 0);
 
-            InitResult = PastPaperHelperCore.Initialize(dataFile, updatePolicy, subsArr);
+            InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
         }
     }
 }

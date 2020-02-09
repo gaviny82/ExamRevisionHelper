@@ -9,7 +9,9 @@ namespace PastPaperHelper.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //if (value == PaperSources.GCE_Guide) return 0;
+            if (!(value is string name)) return null;
+
+            //if (name.StartsWith(PaperSources.GCE_Guide)) return 0;
             //else if (value == PaperSources.PapaCambridge) return 1;
             //else return 2;
             return null;

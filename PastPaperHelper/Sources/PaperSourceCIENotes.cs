@@ -8,6 +8,12 @@ namespace PastPaperHelper.Sources
 {
     class PaperSourceCIENotes : PaperSource
     {
+        public PaperSourceCIENotes()
+        {
+            throw new NotImplementedException();
+            Name = "CIE Notes";
+            UrlBase = "https://papers.gceguide.com/";
+        }
         public PaperSourceCIENotes(XmlDocument data) : base(data)
         {
             throw new NotImplementedException();

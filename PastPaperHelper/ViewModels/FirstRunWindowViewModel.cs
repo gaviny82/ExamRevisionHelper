@@ -2,6 +2,7 @@
 using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Events;
 using PastPaperHelper.Models;
+using PastPaperHelper.Sources;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -24,6 +25,7 @@ namespace PastPaperHelper.ViewModels
 
         public FirstRunWindowViewModel()
         {
+            //Add notification handler
             PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
@@ -45,6 +47,7 @@ namespace PastPaperHelper.ViewModels
                 });
             };
 
+            //Add error handler
             PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
             {
                 if(args.Exception is WebException)
@@ -54,8 +57,6 @@ namespace PastPaperHelper.ViewModels
                     IsRetryEnabled = true;
                 });
             };
-
-            var task = PastPaperHelperUpdateService.UpdateSubjectList();
         }
 
         private string _path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\Past Papers";
@@ -71,13 +72,6 @@ namespace PastPaperHelper.ViewModels
             get { return _isRetryEnabled; }
             set { SetProperty(ref _isRetryEnabled, value); }
         }
-
-        //private Visibility _isLoading;
-        //public Visibility IsLoading
-        //{
-        //    get { return _isLoading; }
-        //    set { _isLoading = value; RaisePropertyChangedEvent("IsLoading"); }
-        //}
 
         #region BrowseCommand
         private DelegateCommand _browseCommand;
@@ -121,12 +115,40 @@ namespace PastPaperHelper.ViewModels
                 if (item.IsSelected == true) Properties.Settings.Default.SubjectsSubcription.Add(item.Subject.SyllabusCode);
             }
             Properties.Settings.Default.FirstRun = false;
+            Properties.Settings.Default.PaperSource = "";//TODO:
+            Properties.Settings.Default.UpdatePolicy = 0;//TODO:
+
             Properties.Settings.Default.Save();
             Application.Current.Shutdown();
-            Process.Start(Environment.CurrentDirectory + "\\PastPaperHelper.exe");
+            Process.Start(Process.GetCurrentProcess().MainModule.FileName);
         }
         #endregion
 
+        private DelegateCommand<string> _loadSubjectsCommand;
+        public DelegateCommand<string> LoadSubjectsCommand =>
+            _loadSubjectsCommand ?? (_loadSubjectsCommand = new DelegateCommand<string>(ExecuteLoadSubjectsCommand));
+
+        async void ExecuteLoadSubjectsCommand(string source)
+        {
+            switch (source)
+            {
+                default:
+                    PastPaperHelperCore.Source = new PaperSourceGCEGuide();
+                    break;
+                case "gce_guide":
+                    PastPaperHelperCore.Source = new PaperSourceGCEGuide();
+                    break;
+                case "papacambridge":
+                    PastPaperHelperCore.Source = new PaperSourcePapaCambridge();
+                    break;
+                case "cie_notes":
+                    PastPaperHelperCore.Source = new PaperSourceCIENotes();
+                    break;
+            }
+            await PastPaperHelperUpdateService.UpdateSubjectList();
+        }
+
+        #region RetryCommand
         private DelegateCommand _retryCommand;
         public DelegateCommand RetryCommand =>
             _retryCommand ?? (_retryCommand = new DelegateCommand(ExecuteRetryCommand));
@@ -136,6 +158,7 @@ namespace PastPaperHelper.ViewModels
             var task = PastPaperHelperUpdateService.UpdateSubjectList();
 
         }
+        #endregion
     }
     public class SubjectSelection
     {
