@@ -68,7 +68,7 @@
                 <Button Content="Back" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Back_Click" Margin="0,0,100,0"/>
                 <TextBlock VerticalAlignment="Top" TextAlignment="Center" Text="Select a source to get your papers and configure update settings" FontSize="24" FontWeight="Bold" Margin="0,32,0,0"/>
 
-                <ComboBox HorizontalAlignment="Center" Margin="0,195,0,0" VerticalAlignment="Top" SelectedIndex="3" Width="600" materialDesign:HintAssist.Hint="Update Frequency" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                <ComboBox x:Name="updateFreqSelector" HorizontalAlignment="Center" Margin="0,195,0,0" VerticalAlignment="Top" SelectedIndex="3" Width="600" materialDesign:HintAssist.Hint="Update Frequency" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                     <ComboBoxItem Content="Disable"/>
                     <ComboBoxItem Content="Every time on startup"/>
                     <ComboBoxItem Content="Everyday"/>

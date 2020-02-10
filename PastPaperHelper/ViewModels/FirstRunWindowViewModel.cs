@@ -38,6 +38,8 @@ namespace PastPaperHelper.ViewModels
                     if (args.NotificationType == NotificationType.Finished)
                     {
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                        IGSubjects.Clear();
+                        ALSubjects.Clear();
                         foreach (var item in PastPaperHelperCore.SubjectsLoaded)
                         {
                             if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(new SubjectSelection(item, false));
@@ -73,6 +75,8 @@ namespace PastPaperHelper.ViewModels
             set { SetProperty(ref _isRetryEnabled, value); }
         }
 
+        private UpdateFrequency _updateFrequency;
+
         #region BrowseCommand
         private DelegateCommand _browseCommand;
         public DelegateCommand BrowseCommand =>
@@ -101,22 +105,18 @@ namespace PastPaperHelper.ViewModels
         {
             string[] split = Path.Split('\\');
             if (!Directory.Exists(Path.Substring(0, Path.Length - split.Last().Length - 1))) return;
-
             if (!Directory.Exists(Path)) Directory.CreateDirectory(Path);
 
             Properties.Settings.Default.Path = Path;
-            Properties.Settings.Default.SubjectsSubcription.Clear();
-            foreach (SubjectSelection item in IGSubjects)
-            {
-                if (item.IsSelected == true) Properties.Settings.Default.SubjectsSubcription.Add(item.Subject.SyllabusCode);
-            }
-            foreach (SubjectSelection item in ALSubjects)
-            {
-                if (item.IsSelected == true) Properties.Settings.Default.SubjectsSubcription.Add(item.Subject.SyllabusCode);
-            }
+            Properties.Settings.Default.UpdatePolicy = Convert.ToInt32(_updateFrequency);
+            Properties.Settings.Default.PaperSource = PastPaperHelperCore.Source.Name.ToLower().Replace(' ', '_');
             Properties.Settings.Default.FirstRun = false;
-            Properties.Settings.Default.PaperSource = "";//TODO:
-            Properties.Settings.Default.UpdatePolicy = 0;//TODO:
+
+            Properties.Settings.Default.SubjectsSubcription.Clear();
+            foreach (Subject subj in PastPaperHelperCore.SubjectsLoaded)
+            {
+                Properties.Settings.Default.SubjectsSubcription.Add(subj.SyllabusCode);
+            }
 
             Properties.Settings.Default.Save();
             Application.Current.Shutdown();
@@ -124,12 +124,17 @@ namespace PastPaperHelper.ViewModels
         }
         #endregion
 
-        private DelegateCommand<string> _loadSubjectsCommand;
-        public DelegateCommand<string> LoadSubjectsCommand =>
-            _loadSubjectsCommand ?? (_loadSubjectsCommand = new DelegateCommand<string>(ExecuteLoadSubjectsCommand));
+        #region LoadSubjectsCommand
+        private DelegateCommand<(string, UpdateFrequency)> _loadSubjectsCommand;
+        public DelegateCommand<(string, UpdateFrequency)> LoadSubjectsCommand =>
+            _loadSubjectsCommand ?? (_loadSubjectsCommand = new DelegateCommand<(string, UpdateFrequency)>(ExecuteLoadSubjectsCommand));
 
-        async void ExecuteLoadSubjectsCommand(string source)
+        async void ExecuteLoadSubjectsCommand((string, UpdateFrequency) param)
         {
+            UpdateFrequency updateFrequency = param.Item2;
+            _updateFrequency = updateFrequency;
+
+            string source = param.Item1;
             switch (source)
             {
                 default:
@@ -147,6 +152,25 @@ namespace PastPaperHelper.ViewModels
             }
             await PastPaperHelperUpdateService.UpdateSubjectList();
         }
+        #endregion
+
+        #region InitializeRepoCommand
+        private DelegateCommand _initializeRepoCommand;
+        public DelegateCommand InitializeRepoCommand =>
+            _initializeRepoCommand ?? (_initializeRepoCommand = new DelegateCommand(ExecuteInitializeRepoCommand));
+
+        void ExecuteInitializeRepoCommand()
+        {
+            var lst1 = from item in IGSubjects where item.IsSelected == true select item.Subject;
+            var lst2 = from item in ALSubjects where item.IsSelected == true select item.Subject;
+            
+            foreach (Subject subj in lst1.Union(lst2))
+            {
+                PastPaperHelperCore.SubscribedSubjects.Add(subj);
+            }
+            //TODO: Download papers of each subject selected in FirstRunWindow
+        }
+        #endregion
 
         #region RetryCommand
         private DelegateCommand _retryCommand;

@@ -1,4 +1,5 @@
-﻿using PastPaperHelper.ViewModels;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.ViewModels;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,13 +18,18 @@ namespace PastPaperHelper.Views
 
         private void Next_Click(object sender, RoutedEventArgs e)
         {
-            tab.SelectedIndex++;
-            if (tab.SelectedIndex == 3)
+            if (tab.SelectedIndex == 2)
             {
                 var selection = (source.SelectedItem as ComboBoxItem).Content as string;
                 var split = selection.Split('(');
-                (DataContext as FirstRunWindowViewModel).LoadSubjectsCommand.Execute(split.First().Trim());
+                var param = (split.First().Trim(), (UpdateFrequency)updateFreqSelector.SelectedIndex);
+                (DataContext as FirstRunWindowViewModel).LoadSubjectsCommand.Execute(param);
             }
+            else if (tab.SelectedIndex == 3)
+            {
+                (DataContext as FirstRunWindowViewModel).InitializeRepoCommand.Execute();
+            }
+            tab.SelectedIndex++;
         }
         private void Back_Click(object sender, RoutedEventArgs e)
         {

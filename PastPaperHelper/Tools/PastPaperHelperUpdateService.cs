@@ -49,7 +49,7 @@ namespace PastPaperHelper.Core.Tools
             try
             {
                 await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
-                PastPaperHelperCore.UpdateSubjectLoaded();
+                PastPaperHelperCore.SubjectsLoaded = PastPaperHelperCore.Source.SubjectUrlMap.Keys.ToArray();
             }
             catch (Exception e)
             {
@@ -124,7 +124,7 @@ namespace PastPaperHelper.Core.Tools
             try
             {
                 await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
-                PastPaperHelperCore.UpdateSubjectLoaded();
+                PastPaperHelperCore.SubjectsLoaded = PastPaperHelperCore.Source.SubjectUrlMap.Keys.ToArray();
             }
             catch (Exception e)
             {

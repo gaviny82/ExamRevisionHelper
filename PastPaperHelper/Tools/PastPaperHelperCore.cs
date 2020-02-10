@@ -17,7 +17,7 @@ namespace PastPaperHelper.Core.Tools
     {
         public static Subject[] SubjectsLoaded { get; set; }
 
-        public static ObservableCollection<Subject> SubscribedSubjects = new ObservableCollection<Subject>();
+        public static ObservableCollection<Subject> SubscribedSubjects { get; private set; } = new ObservableCollection<Subject>();
         public static PaperSource Source { get; set; }
 
         public static string UserDataPath;
@@ -122,11 +122,6 @@ namespace PastPaperHelper.Core.Tools
             }
             result = new Subject();
             return false;
-        }
-
-        public static void UpdateSubjectLoaded()
-        {
-            SubjectsLoaded = Source.SubjectUrlMap.Keys.ToArray();
         }
 
     }
