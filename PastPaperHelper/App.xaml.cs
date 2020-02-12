@@ -39,13 +39,12 @@ namespace PastPaperHelper
 
         private void PrismApplication_Startup(object sender, StartupEventArgs e)
         {
-
             UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
             if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
 
             //OOBE Test
-            PastPaperHelper.Properties.Settings.Default.FirstRun = true;
-            if (PastPaperHelper.Properties.Settings.Default.FirstRun) return;
+            //PastPaperHelper.Properties.Settings.Default.FirstRun = true;
+            //if (PastPaperHelper.Properties.Settings.Default.FirstRun) return;
 
             UpdateFrequency updatePolicy = (UpdateFrequency)PastPaperHelper.Properties.Settings.Default.UpdatePolicy;
             string dataFile = $"{UserDataFolderPath}\\{PastPaperHelper.Properties.Settings.Default.PaperSource}.xml";

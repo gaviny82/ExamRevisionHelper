@@ -60,7 +60,7 @@ namespace PastPaperHelper.Sources
 
         public abstract Task<PaperRepository> GetPapers(Subject subject);
 
-        public XmlDocument SaveDataToXml(Dictionary<Subject, PaperRepository> subscription)
+        public XmlDocument SaveDataToXml(Dictionary<Subject, PaperRepository> subscription = null)
         {
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -97,7 +97,7 @@ namespace PastPaperHelper.Sources
             XmlElement subsNode = doc.CreateElement("Subscription");
             dataNode.AppendChild(subsNode);
 
-            if (subscription == null) return doc;
+            if (subscription == null) subscription = Subscription;
             foreach (KeyValuePair<Subject, PaperRepository> item in subscription)
             {
                 Subject subject = item.Key;

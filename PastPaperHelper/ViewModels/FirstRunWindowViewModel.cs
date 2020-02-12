@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml;
 
 namespace PastPaperHelper.ViewModels
 {
@@ -33,10 +34,14 @@ namespace PastPaperHelper.ViewModels
                     if (args.NotificationType == NotificationType.Initializing)
                     {
                         IsRetryEnabled = false;
+                        IsProceedAllowed = false;
+                        IsRevertAllowed = false;
                         Application.Current.Resources["IsLoading"] = Visibility.Visible;
                     }
                     if (args.NotificationType == NotificationType.Finished)
                     {
+                        IsRevertAllowed = true;
+                        IsProceedAllowed = true;
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                         IGSubjects.Clear();
                         ALSubjects.Clear();
@@ -57,11 +62,13 @@ namespace PastPaperHelper.ViewModels
                 {
                     Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                     IsRetryEnabled = true;
+                    IsRevertAllowed = true;
+                    IsProceedAllowed = false;
                 });
             };
         }
 
-        private string _path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory) + "\\Past Papers";
+        private string _path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Past Papers";
         public string Path
         {
             get { return _path; }
@@ -75,7 +82,54 @@ namespace PastPaperHelper.ViewModels
             set { SetProperty(ref _isRetryEnabled, value); }
         }
 
-        private UpdateFrequency _updateFrequency;
+        private bool _isRetryEnabled2 = false;
+        public bool IsRetryEnabled2
+        {
+            get { return _isRetryEnabled2; }
+            set { SetProperty(ref _isRetryEnabled2, value); }
+        }
+
+        private string _updateMessage = "Updating subjects...";
+        public string UpdateMessage
+        {
+            get { return _updateMessage; }
+            set { SetProperty(ref _updateMessage, value); }
+        }
+
+        private string _updateTitle = "Almost done";
+        public string UpdateTitle
+        {
+            get { return _updateTitle; }
+            set { SetProperty(ref _updateTitle, value); }
+        }
+
+        private int _updateCount;
+        public int UpdateCount
+        {
+            get { return _updateCount; }
+            set { SetProperty(ref _updateCount, value); }
+        }
+
+        private int _totalSubscribed;
+        public int TotalSubscribed
+        {
+            get { return _totalSubscribed; }
+            set { SetProperty(ref _totalSubscribed, value); }
+        }
+
+        private bool _isRevertAllowed = true;
+        public bool IsRevertAllowed
+        {
+            get { return _isRevertAllowed; }
+            set { SetProperty(ref _isRevertAllowed, value); }
+        }
+
+        private bool _isProceedAllowed = true;
+        public bool IsProceedAllowed
+        {
+            get { return _isProceedAllowed; }
+            set { SetProperty(ref _isProceedAllowed, value); }
+        }
 
         #region BrowseCommand
         private DelegateCommand _browseCommand;
@@ -101,16 +155,15 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand SaveCommand =>
             _saveCommand ?? (_saveCommand = new DelegateCommand(ExecuteSaveCommand));
 
-        void ExecuteSaveCommand()
+        async void ExecuteSaveCommand()
         {
             string[] split = Path.Split('\\');
             if (!Directory.Exists(Path.Substring(0, Path.Length - split.Last().Length - 1))) return;
             if (!Directory.Exists(Path)) Directory.CreateDirectory(Path);
 
             Properties.Settings.Default.Path = Path;
-            Properties.Settings.Default.UpdatePolicy = Convert.ToInt32(_updateFrequency);
-            Properties.Settings.Default.PaperSource = PastPaperHelperCore.Source.Name.ToLower().Replace(' ', '_');
-            Properties.Settings.Default.FirstRun = false;
+            string source = PastPaperHelperCore.Source.Name.ToLower().Replace(' ', '_');
+            Properties.Settings.Default.PaperSource = source;
 
             Properties.Settings.Default.SubjectsSubcription.Clear();
             foreach (Subject subj in PastPaperHelperCore.SubjectsLoaded)
@@ -118,6 +171,15 @@ namespace PastPaperHelper.ViewModels
                 Properties.Settings.Default.SubjectsSubcription.Add(subj.SyllabusCode);
             }
 
+            await Task.Run(() =>
+            {
+                string userDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
+                if (!Directory.Exists(userDataFolderPath)) Directory.CreateDirectory(userDataFolderPath);
+
+                XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml();
+                doc.Save($"{userDataFolderPath}\\{source}.xml");
+            });
+            Properties.Settings.Default.FirstRun = false;
             Properties.Settings.Default.Save();
             Application.Current.Shutdown();
             Process.Start(Process.GetCurrentProcess().MainModule.FileName);
@@ -125,16 +187,14 @@ namespace PastPaperHelper.ViewModels
         #endregion
 
         #region LoadSubjectsCommand
-        private DelegateCommand<(string, UpdateFrequency)> _loadSubjectsCommand;
-        public DelegateCommand<(string, UpdateFrequency)> LoadSubjectsCommand =>
-            _loadSubjectsCommand ?? (_loadSubjectsCommand = new DelegateCommand<(string, UpdateFrequency)>(ExecuteLoadSubjectsCommand));
+        private DelegateCommand<string> _loadSubjectsCommand;
+        public DelegateCommand<string> LoadSubjectsCommand =>
+            _loadSubjectsCommand ?? (_loadSubjectsCommand = new DelegateCommand<string>(ExecuteLoadSubjectsCommand));
 
-        async void ExecuteLoadSubjectsCommand((string, UpdateFrequency) param)
+        async void ExecuteLoadSubjectsCommand(string source)
         {
-            UpdateFrequency updateFrequency = param.Item2;
-            _updateFrequency = updateFrequency;
-
-            string source = param.Item1;
+            IGSubjects.Clear();
+            ALSubjects.Clear();
             switch (source)
             {
                 default:
@@ -159,16 +219,43 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand InitializeRepoCommand =>
             _initializeRepoCommand ?? (_initializeRepoCommand = new DelegateCommand(ExecuteInitializeRepoCommand));
 
-        void ExecuteInitializeRepoCommand()
+        async void ExecuteInitializeRepoCommand()
         {
             var lst1 = from item in IGSubjects where item.IsSelected == true select item.Subject;
             var lst2 = from item in ALSubjects where item.IsSelected == true select item.Subject;
-            
-            foreach (Subject subj in lst1.Union(lst2))
+            var lst = lst1.Union(lst2);
+            IsRevertAllowed = false;
+            IsProceedAllowed = false;
+            TotalSubscribed = lst.Count();
+            UpdateCount = 0;
+            UpdateTitle = "Almost done";
+            IsRetryEnabled2 = false;
+            PastPaperHelperCore.Source.Subscription.Clear();
+
+            foreach (Subject subj in lst)
             {
+                try
+                {
+                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.Name}...";
+                    await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
+                }
+                catch (Exception)
+                {
+                    IsRetryEnabled2 = true;
+                    IsRevertAllowed = true;
+                    IsProceedAllowed = false;
+                    UpdateTitle = "Error";
+                    UpdateMessage = "";
+                    return;
+                }
+
+                UpdateCount += 1;
                 PastPaperHelperCore.SubscribedSubjects.Add(subj);
             }
-            //TODO: Download papers of each subject selected in FirstRunWindow
+            UpdateTitle = "Finished setting up PastPaperHelper.";
+            UpdateMessage = "Click \"Done\" to exit setup and restart the program.";
+            IsRevertAllowed = true;
+            IsProceedAllowed = true;
         }
         #endregion
 
@@ -180,7 +267,6 @@ namespace PastPaperHelper.ViewModels
         void ExecuteRetryCommand()
         {
             var task = PastPaperHelperUpdateService.UpdateSubjectList();
-
         }
         #endregion
     }

@@ -31,7 +31,7 @@ namespace PastPaperHelper.Test
             Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
 
             //Write to XML
-            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml(null);
+            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml();
             doc.Save(Environment.CurrentDirectory + "\\subjects_test.xml");
         }
 

@@ -99,7 +99,7 @@ namespace PastPaperHelper.Core.Tools
             try
             {
                 //Update finished
-                XmlDocument dataDocument = PastPaperHelperCore.Source.SaveDataToXml(PastPaperHelperCore.Source.Subscription);
+                XmlDocument dataDocument = PastPaperHelperCore.Source.SaveDataToXml();
                 dataDocument.Save(PastPaperHelperCore.UserDataPath);
 
                 UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs

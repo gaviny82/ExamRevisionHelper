@@ -1,5 +1,6 @@
 ﻿using PastPaperHelper.Core.Tools;
 using PastPaperHelper.ViewModels;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,10 +21,11 @@ namespace PastPaperHelper.Views
         {
             if (tab.SelectedIndex == 2)
             {
+                Properties.Settings.Default.UpdatePolicy = updateFreqSelector.SelectedIndex;
+
                 var selection = (source.SelectedItem as ComboBoxItem).Content as string;
                 var split = selection.Split('(');
-                var param = (split.First().Trim(), (UpdateFrequency)updateFreqSelector.SelectedIndex);
-                (DataContext as FirstRunWindowViewModel).LoadSubjectsCommand.Execute(param);
+                (DataContext as FirstRunWindowViewModel).LoadSubjectsCommand.Execute(split.First().Trim());
             }
             else if (tab.SelectedIndex == 3)
             {
