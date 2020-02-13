@@ -13,7 +13,7 @@ namespace PastPaperHelper.Views
             InitializeComponent();
         }
 
-        private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => Process.Start("https://www.e-iceblue.com/Introduce/free-pdf-component.html");
+        private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => Process.Start((sender as TextBlock).Text);
 
     }
 }

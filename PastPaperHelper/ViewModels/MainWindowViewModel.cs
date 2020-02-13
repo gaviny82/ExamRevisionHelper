@@ -40,4 +40,9 @@ namespace PastPaperHelper.ViewModels
         }
 
     }
+
+    public static class ApplicationCommands
+    {
+        
+    }
 }

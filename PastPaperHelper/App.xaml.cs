@@ -44,6 +44,7 @@ namespace PastPaperHelper
 
             //OOBE Test
             //PastPaperHelper.Properties.Settings.Default.FirstRun = true;
+            //PastPaperHelper.Properties.Settings.Default.Save();
             //if (PastPaperHelper.Properties.Settings.Default.FirstRun) return;
 
             UpdateFrequency updatePolicy = (UpdateFrequency)PastPaperHelper.Properties.Settings.Default.UpdatePolicy;

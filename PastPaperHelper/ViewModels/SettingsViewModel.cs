@@ -77,9 +77,9 @@ namespace PastPaperHelper.ViewModels
                 SetProperty(ref _paperSource, value);
                 if (value != null)
                 {
-                    PastPaperHelperCore.Source = value;
-                    Properties.Settings.Default.PaperSource = value.Name;
-                    Properties.Settings.Default.Save();
+                    //PastPaperHelperCore.Source = value;
+                    //Properties.Settings.Default.PaperSource = value.Name;
+                    //Properties.Settings.Default.Save();
                 }
             }
         }
