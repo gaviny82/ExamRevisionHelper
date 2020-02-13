@@ -19,8 +19,7 @@ namespace PastPaperHelper.Core.Tools
 
         public static ObservableCollection<Subject> SubscribedSubjects { get; private set; } = new ObservableCollection<Subject>();
         public static PaperSource Source { get; set; }
-
-        public static string UserDataPath;
+        public static string UserDataPath { get; set; }
 
         /// <summary>
         /// This function should be called when the PastPaperHelper application starts.
@@ -53,9 +52,10 @@ namespace PastPaperHelper.Core.Tools
                         Source = new PaperSourceCIENotes(userData);
                         break;
                 }
+                SubjectsLoaded = Source.SubjectUrlMap.Keys.ToArray();
 
                 if (subscription == null) return InitializationResult.SuccessNoUpdate;
-                //TODO: Check if the paper source supports all subscribed subjects
+                ReloadSubscribedSubjects(subscription);
 
                 DateTime lastUpdate = Source.LastUpdated;
                 double days = (DateTime.Now - lastUpdate).Days;
@@ -95,24 +95,27 @@ namespace PastPaperHelper.Core.Tools
                         Source = new PaperSourceCIENotes();
                         break;
                 }
+                UserDataPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\PastPaperHelper\\PastPaperHelper\\{sourceName}.xml";
                 return InitializationResult.Error;
             }
         }
 
-
-        public static void Subscribe(Subject subject)
+        public static void ReloadSubscribedSubjects(string[] subscription)
         {
-
+            foreach (string item in subscription)
+            {
+                if (!TryFindSubject(item, out Subject subj) || !SubjectsLoaded.Contains(subj))
+                {
+                    //TODO: Unsupported subject handling, remove from subscription automatically
+                    throw new Exception($"{item} not supported");
+                }
+                SubscribedSubjects.Add(subj);
+            }
         }
 
-        public static void Unsubscribe(Subject subject)
+        public static bool TryFindSubject(string syllabusCode, out Subject result, ICollection<Subject> range = null)
         {
-           
-        }
-
-        public static bool TryFindSubject(string syllabusCode, out Subject result)
-        {
-            foreach (Subject item in SubjectsLoaded)
+            foreach (Subject item in range ?? SubjectsLoaded)
             {
                 if (item.SyllabusCode == syllabusCode)
                 {
@@ -120,7 +123,7 @@ namespace PastPaperHelper.Core.Tools
                     return true;
                 }
             }
-            result = new Subject();
+            result = null;
             return false;
         }
 

@@ -4,6 +4,7 @@ using PastPaperHelper.Events;
 using PastPaperHelper.ViewModels;
 using Prism.Events;
 using Prism.Regions;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,47 +23,63 @@ namespace PastPaperHelper.Views
         public static Snackbar MainSnackbar { get; internal set; }
         public static TaskScheduler SyncContextTaskScheduler { get; internal set; }
 
-        private readonly IRegionManager _regionManager;
-        public MainWindow(IRegionManager regionManager, IEventAggregator eventAggregator)
+        public MainWindow(IEventAggregator eventAggregator)
         {
+            SyncContextTaskScheduler = TaskScheduler.Current;
             InitializeComponent();
             MainSnackbar = mainSnackbar;
-            SyncContextTaskScheduler = TaskScheduler.Current;
-            _regionManager = regionManager;
 
+            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (args.NotificationType == NotificationType.Initializing)
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Visible;
+                    }
+                    else if (args.NotificationType == NotificationType.Finished)
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                        //TODO: SettingsViewModel.RefreshSubjectLists();
+                        //TODO: SettingsViewModel.RefreshSubscription();
+                    }
+                    mainSnackbar.MessageQueue.Enqueue(args.Message);
+                });
+            };
+            PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                    mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "Retry", PastPaperHelperUpdateService.UpdateAll);
+                });
+            };
 
             InitializationResult initResult = (Application.Current as App).InitResult;
             if (initResult == InitializationResult.SuccessUpdateNeeded)
             {
-                //TODO: Test needed
-                mainSnackbar.MessageQueue.Enqueue($"Last update: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()}", "Update", () =>
-                {
-                    Application.Current.Resources["IsLoading"] = Visibility.Visible;
-                    PastPaperHelperUpdateService.UpdateAll();
-                });
-                //Refresh view models
+                mainSnackbar.MessageQueue.Enqueue(
+                    content: $"Update needed. (Last updated: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()})",
+                    actionContent: "UPDATE", 
+                    actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(); }, null,
+                    promote: true,
+                    neverConsiderToBeDuplicate: true,
+                    durationOverride:TimeSpan.FromSeconds(5));
             }
             else if (initResult == InitializationResult.Error)
             {
-                //PastPaperHelperUpdateService.UpdateInitiatedEvent += delegate
-                //{
-                //    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Fetching data from {PastPaperHelperCore.Source.Name}...");
-                //    Application.Current.Resources["IsLoading"] = Visibility.Visible;
-                //};
-                //PastPaperHelperUpdateService.UpdateErrorEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
-                //PastPaperHelperUpdateService.UpdateTaskCompleteEvent += (msg) => { eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish(msg); };
-                //PastPaperHelperUpdateService.UpdateFinalizedEvent += delegate
-                //{
-                //    eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Publish($"Updated from {PastPaperHelperCore.Source.Name}.");
-                //    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                //    //SettingsViewModel.RefreshSubjectLists();
-                //    //SettingsViewModel.RefreshSubscription();
-                //};
-                PastPaperHelperUpdateService.UpdateAll();
+                mainSnackbar.MessageQueue.Enqueue(
+                    content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.Name}",
+                    actionContent: "RELOAD",
+                    actionHandler: (param)=> { PastPaperHelperUpdateService.UpdateAll(); }, null,
+                    promote: true,
+                    neverConsiderToBeDuplicate: true,
+                    durationOverride: TimeSpan.FromDays(1));
             }
             else
             {
                 //Refresh view models
+                //TODO: Test needed
             }
         }
 
@@ -93,7 +110,7 @@ namespace PastPaperHelper.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _regionManager.RequestNavigate("ContentRegion", HamburgerMenu.SelectedItem.ToString().Replace(" ", ""));
+            (DataContext as MainWindowViewModel).NavigateCommand.Execute(HamburgerMenu.SelectedItem.ToString().Replace(" ", ""));
         }
 
         private void Reference_Click(object sender, RoutedEventArgs e)

@@ -42,7 +42,7 @@ namespace PastPaperHelper.Core.Tools
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs 
             { 
                 NotificationType = NotificationType.Initializing, 
-                Message = $"Loading from {PastPaperHelperCore.Source.Name}.../" 
+                Message = $"Loading from {PastPaperHelperCore.Source.Name}..." 
             });
 
             //Download subject list from web server
@@ -69,12 +69,18 @@ namespace PastPaperHelper.Core.Tools
             });
 
             //Download papers from web server
+
             List<Subject> failed = new List<Subject>();
+            string[] arr = new string[Properties.Settings.Default.SubjectsSubcription.Count];
+            Properties.Settings.Default.SubjectsSubcription.CopyTo(arr, 0);
+            PastPaperHelperCore.ReloadSubscribedSubjects(arr);
+
             foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
             {
                 try
                 {
                     await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
+                    //TODO: Generate paper repository here
                 }
                 catch (Exception e)
                 {
@@ -155,5 +161,25 @@ namespace PastPaperHelper.Core.Tools
         }
         */
 
+        public async static Task<bool> SubscribeAsync(Subject subject)
+        {
+            try
+            {
+                await PastPaperHelperCore.Source?.AddOrUpdateSubject(subject);
+                PastPaperHelperCore.SubscribedSubjects.Add(subject);
+            }
+            catch (Exception)
+            {
+                //TODO: invoke SubscriptionFailed event
+                return false;
+            }
+            //TODO: invoke SubscriptionSucceeded event
+            return true;
+        }
+
+        public static void Unsubscribe(Subject subject)
+        {
+
+        }
     }
 }

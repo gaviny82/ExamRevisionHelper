@@ -12,18 +12,6 @@ namespace PastPaperHelper.Models
         {
             Subject = subject;
         }
-        public PaperRepository(string syllabusCode)
-        {
-            foreach(Subject subj in PastPaperHelperCore.SubjectsLoaded)
-            {
-                if (subj.SyllabusCode == syllabusCode)
-                {
-                    Subject = subj;
-                    return;
-                }
-            }
-            throw new Exception($"Subject {syllabusCode} not found.");
-        }
 
         public ExamYear this[string year] { get => GetExamYear(year); }
         public ExamYear GetExamYear(string Year)

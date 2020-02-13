@@ -166,7 +166,7 @@ namespace PastPaperHelper.ViewModels
             Properties.Settings.Default.PaperSource = source;
 
             Properties.Settings.Default.SubjectsSubcription.Clear();
-            foreach (Subject subj in PastPaperHelperCore.SubjectsLoaded)
+            foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
             {
                 Properties.Settings.Default.SubjectsSubcription.Add(subj.SyllabusCode);
             }
@@ -237,7 +237,7 @@ namespace PastPaperHelper.ViewModels
                 try
                 {
                     UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.Name}...";
-                    await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
+                    await PastPaperHelperUpdateService.SubscribeAsync(subj);
                 }
                 catch (Exception)
                 {
@@ -248,9 +248,7 @@ namespace PastPaperHelper.ViewModels
                     UpdateMessage = "";
                     return;
                 }
-
                 UpdateCount += 1;
-                PastPaperHelperCore.SubscribedSubjects.Add(subj);
             }
             UpdateTitle = "Finished setting up PastPaperHelper.";
             UpdateMessage = "Click \"Done\" to exit setup and restart the program.";

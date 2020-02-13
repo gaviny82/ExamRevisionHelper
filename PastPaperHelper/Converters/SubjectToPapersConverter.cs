@@ -13,6 +13,7 @@ namespace PastPaperHelper.Converters
         {
             if (value is Subject subject)
             {
+                return null;
                 return PastPaperHelperCore.Source.Subscription[subject];
             }
             else return null;

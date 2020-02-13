@@ -53,7 +53,8 @@
                     </StackPanel>
                 </materialDesign:ColorZone>
                 <ContentControl Margin="0,52,0,0" prism:RegionManager.RegionName="ContentRegion" />
-                <materialDesign:Snackbar x:Name="mainSnackbar" MessageQueue="{materialDesign:MessageQueue}" />
+                <materialDesign:Snackbar x:Name="mainSnackbar" MessageQueue="{materialDesign:MessageQueue}" >
+                </materialDesign:Snackbar>
             </Grid>
         </materialDesign:DrawerHost>
     </materialDesign:DialogHost>

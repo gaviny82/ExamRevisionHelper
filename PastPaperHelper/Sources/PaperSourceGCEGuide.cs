@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
@@ -23,29 +24,28 @@ namespace PastPaperHelper.Sources
             XmlNode subjListNode = data.SelectSingleNode("/Data/SubjectList");
             if (subjListNode == null) throw new Exception("Failed to load subject list.");
 
-            XmlNodeList nodes = subjListNode.SelectNodes("/Subject");
-            if (nodes != null)
+            XmlNodeList nodes = subjListNode.SelectNodes("//Subject");
+            foreach (XmlNode node in nodes)
             {
-                foreach (XmlNode node in nodes)
+                Subject subj = new Subject
                 {
-                    Subject subj = new Subject
-                    {
-                        Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
-                        Name = node.Attributes["Name"].Value,
-                        SyllabusCode = node.Attributes["SyllabusCode"].Value,
-                    };
-                    SubjectUrlMap.Add(subj, node.Attributes["Url"].Value);
-                }
+                    Curriculum = node.ParentNode.Name == "IGCSE" ? Curriculums.IGCSE : Curriculums.ALevel,
+                    Name = node.Attributes["Name"].Value,
+                    SyllabusCode = node.Attributes["SyllabusCode"].Value,
+                };
+                SubjectUrlMap.Add(subj, node.Attributes["Url"].Value);
             }
+
 
             //Load cached repositories of subscribed subjects
             XmlNode subsNode = data.SelectSingleNode("/Data/Subscription");
             if (subsNode == null) throw new Exception("Failed to load subscription.");
 
-            XmlNodeList subjNodes = subsNode.SelectNodes("/Subject");
+            XmlNodeList subjNodes = subsNode.SelectNodes("//Subject");
             foreach (XmlNode subjectNode in subjNodes)
             {
-                PaperRepository repo = new PaperRepository(subjectNode.Attributes["SyllabusCode"].Value);
+                PastPaperHelperCore.TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subj, SubjectUrlMap.Keys);
+                PaperRepository repo = new PaperRepository(subj);
                 foreach (XmlNode yearNode in subjectNode.ChildNodes)
                 {
                     ExamYear year = new ExamYear { Year = yearNode.Attributes["Year"].Value };
