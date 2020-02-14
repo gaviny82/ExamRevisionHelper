@@ -24,7 +24,7 @@ namespace PastPaperHelper.Sources
             XmlNode subjListNode = data.SelectSingleNode("/Data/SubjectList");
             if (subjListNode == null) throw new Exception("Failed to load subject list.");
 
-            XmlNodeList nodes = subjListNode.SelectNodes("//Subject");
+            XmlNodeList nodes = subjListNode.SelectNodes("/Data/SubjectList//Subject");
             foreach (XmlNode node in nodes)
             {
                 Subject subj = new Subject
@@ -41,7 +41,7 @@ namespace PastPaperHelper.Sources
             XmlNode subsNode = data.SelectSingleNode("/Data/Subscription");
             if (subsNode == null) throw new Exception("Failed to load subscription.");
 
-            XmlNodeList subjNodes = subsNode.SelectNodes("//Subject");
+            XmlNodeList subjNodes = subsNode.SelectNodes("/Data/Subscription/Subject");
             foreach (XmlNode subjectNode in subjNodes)
             {
                 PastPaperHelperCore.TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subj, SubjectUrlMap.Keys);
