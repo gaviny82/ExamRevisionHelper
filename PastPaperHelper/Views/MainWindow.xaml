@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:PastPaperHelper.ViewModels" Title="PastPaperHelper" Width="1024"
         Height="576" MinWidth="800" MinHeight="450" prism:ViewModelLocator.AutoWireViewModel="True"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{StaticResource MaterialDesignFont}"
+        FontFamily="{StaticResource MaterialDesignFont}" Topmost="True"
         Loaded="Window_Loaded" TextElement.FontSize="16" TextElement.FontWeight="Regular"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Auto">

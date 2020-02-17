@@ -73,7 +73,7 @@ namespace PastPaperHelper.Sources
                     repo.Add(year);
                 }
 
-                repo.Sort();
+                repo.Sort(new Comparison<ExamYear>((a, b) => { return -a.CompareTo(b); }));//TODO: Allow user preference
                 Subscription.Add(repo.Subject, repo);
             }
 

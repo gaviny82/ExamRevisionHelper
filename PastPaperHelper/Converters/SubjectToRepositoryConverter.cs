@@ -11,9 +11,8 @@ namespace PastPaperHelper.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Subject subject)
+            if (value is Subject subject && PastPaperHelperCore.Source.Subscription.ContainsKey(subject))
             {
-                return null;
                 return PastPaperHelperCore.Source.Subscription[subject];
             }
             else return null;

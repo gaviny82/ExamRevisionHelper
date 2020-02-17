@@ -22,6 +22,7 @@ namespace PastPaperHelper.ViewModels
             set { SetProperty(ref _selectedExamSeries, value); }
         }
 
+        #region OpenExamSeriesCommand
         private DelegateCommand<Exam> _openExamSeriesCommand;
         public DelegateCommand<Exam> OpenExamSeriesCommand =>
             _openExamSeriesCommand ?? (_openExamSeriesCommand = new DelegateCommand<Exam>(ExecuteCommandName));
@@ -30,6 +31,7 @@ namespace PastPaperHelper.ViewModels
         {
             SelectedExamSeries = exam;
         }
+        #endregion
 
         private DelegateCommand<PastPaperResource> _openOnlineResourceCommand;
         public DelegateCommand<PastPaperResource> OpenOnlineResourcesCommand =>

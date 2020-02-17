@@ -35,8 +35,8 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
-   <LangVersion>preview</LangVersion>
- </PropertyGroup>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
@@ -167,7 +167,7 @@
     <Compile Include="Converters\PaperTypeToIconConverter.cs" />
     <Compile Include="Converters\ResourceStateToVisibilityConverter.cs" />
     <Compile Include="Converters\ShortCurriculumNameConverter.cs" />
-    <Compile Include="Converters\SubjectToPapersConverter.cs" />
+    <Compile Include="Converters\SubjectToRepositoryConverter.cs" />
     <Compile Include="Converters\UrlToDisplayNameConverter.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ValidationRules\DirectoryExistValidationRule.cs" />
