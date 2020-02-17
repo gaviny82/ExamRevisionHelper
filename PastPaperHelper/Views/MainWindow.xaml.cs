@@ -20,10 +20,10 @@ namespace PastPaperHelper.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static Snackbar MainSnackbar { get; internal set; }
-        public static TaskScheduler SyncContextTaskScheduler { get; internal set; }
+        public static Snackbar MainSnackbar { get; internal set; }//TODO: Remove in the future
+        public static TaskScheduler SyncContextTaskScheduler { get; internal set; }//TODO: Remove in the future
 
-        public MainWindow(IEventAggregator eventAggregator)
+        public MainWindow()
         {
             SyncContextTaskScheduler = TaskScheduler.Current;
             InitializeComponent();
@@ -44,7 +44,11 @@ namespace PastPaperHelper.Views
                     else if (args.NotificationType == NotificationType.Finished)
                     {
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                        //TODO: Refresh viewmodels
+                        MainWindowViewModel.SubscribedSubjects.Clear();
+                        PastPaperHelperCore.SubscribedSubjects.ForEach((item) =>
+                        {
+                            MainWindowViewModel.SubscribedSubjects.Add(item);
+                        });
                     }
                     mainSnackbar.MessageQueue.Enqueue(args.Message);
                 });
@@ -91,11 +95,6 @@ namespace PastPaperHelper.Views
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromDays(1));
-            }
-            else
-            {
-                //Refresh view models
-                //TODO: Test needed
             }
         }
 

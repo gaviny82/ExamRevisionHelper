@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:PastPaperHelper.ViewModels" Title="PastPaperHelper" Width="1024"
         Height="576" MinWidth="800" MinHeight="450" prism:ViewModelLocator.AutoWireViewModel="True"
         Background="{DynamicResource MaterialDesignPaper}"
-        FontFamily="{StaticResource MaterialDesignFont}" Topmost="True"
+        FontFamily="{StaticResource MaterialDesignFont}"
         Loaded="Window_Loaded" TextElement.FontSize="16" TextElement.FontWeight="Regular"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Auto">
@@ -49,7 +49,7 @@
                                       Style="{DynamicResource MaterialDesignHamburgerToggleButton}" />
                         <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="18"
                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                   Text="{Binding Title}" />
+                                   Text="{Binding PageTitle}" />
                     </StackPanel>
                 </materialDesign:ColorZone>
                 <ContentControl Margin="0,52,0,0" prism:RegionManager.RegionName="ContentRegion" />

@@ -11,38 +11,32 @@ namespace PastPaperHelper.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        public static ObservableCollection<Subject> SubscribedSubjects { get; private set; } = new ObservableCollection<Subject>();
+
         private readonly IRegionManager _regionManager;
 
-        public MainWindowViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)
+        public MainWindowViewModel(IRegionManager regionManager)
         {
             _regionManager = regionManager;
-            //eventAggregator.GetEvent<MessageBarEnqueuedEvent>().Subscribe((msg) =>
-            //{
-            //    MainWindow.MainSnackbar.MessageQueue.Enqueue(msg);
-            //}, ThreadOption.UIThread);
         }
 
+        #region NavigateCommand
         private DelegateCommand<string> _navigateCommand;
         public DelegateCommand<string> NavigateCommand =>
             _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(Navigate));
         private void Navigate(string uri)
         {
-            Title = uri;
+            PageTitle = uri;
             _regionManager.RequestNavigate("ContentRegion", uri.Replace(" ", ""));
         }
+        #endregion
 
-
-        private string _title = "PastPaperHelper";
-        public string Title
+        private string _pageTitle;
+        public string PageTitle
         {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
+            get { return _pageTitle; }
+            set { SetProperty(ref _pageTitle, value); }
         }
 
-    }
-
-    public static class ApplicationCommands
-    {
-        
     }
 }

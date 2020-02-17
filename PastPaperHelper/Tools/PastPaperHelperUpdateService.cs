@@ -81,7 +81,6 @@ namespace PastPaperHelper.Core.Tools
             //Download papers from web server
             try
             {
-                PastPaperHelperCore.SubscribedSubjects.Clear();
                 PastPaperHelperCore.LoadSubscribedSubjects(subscribedSubjects);
             }
             catch (SubjectUnsupportedException e)

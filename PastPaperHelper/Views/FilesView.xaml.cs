@@ -1,6 +1,8 @@
-﻿using PastPaperHelper.Models;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using PastPaperHelper.ViewModels;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -14,16 +16,21 @@ namespace PastPaperHelper.Views
         public FilesView()
         {
             InitializeComponent();
+            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (args.NotificationType == NotificationType.Finished)
+                    {
+                        subjectSelector.SelectedIndex = 0;
+                    }
+                });
+            };
         }
 
         private void SubjectSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            (DataContext as FilesViewModel).SelectedExamSeries = new Exam();
-        }
-
-        private void ViewPaper_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            Process.Start(((sender as Button).DataContext as Paper).Url);
+            (DataContext as FilesViewModel).SelectedExamSeries = FilesViewModel.EmptyExam;
         }
     }
 }

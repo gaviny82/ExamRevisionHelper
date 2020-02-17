@@ -186,7 +186,7 @@ namespace PastPaperHelper.Sources
                 item.Key.Components = components.ToArray();
             }
 
-            repository.Sort();
+            repository.Sort(new Comparison<ExamYear>((a, b) => { return -a.CompareTo(b); }));//TODO: Allow user preference
             return repository;
         });
 

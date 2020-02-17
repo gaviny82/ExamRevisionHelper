@@ -10,9 +10,10 @@ namespace PastPaperHelper.ViewModels
 {
     public class FilesViewModel : BindableBase
     {
+        public static readonly Exam EmptyExam = new Exam();
         public FilesViewModel()
         {
-            SelectedExamSeries = new Exam();
+            SelectedExamSeries = EmptyExam;
         }
 
         private Exam _selectedExamSeries;
@@ -40,6 +41,7 @@ namespace PastPaperHelper.ViewModels
         private void OpenOnlineResource(PastPaperResource resource)
         {
             Process.Start(resource.Url);
+            //TODO: Check local copy
         }
     }
 }

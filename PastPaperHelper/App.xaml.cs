@@ -8,6 +8,7 @@ using Prism.Unity;
 using System;
 using System.IO;
 using System.Windows;
+using PastPaperHelper.ViewModels;
 
 namespace PastPaperHelper
 {
@@ -57,6 +58,13 @@ namespace PastPaperHelper
             subs.CopyTo(subsArr, 0);
 
             InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
+            if (InitResult != InitializationResult.Error)
+            {
+                PastPaperHelperCore.SubscribedSubjects.ForEach((item) =>
+                {
+                    MainWindowViewModel.SubscribedSubjects.Add(item);
+                });
+            }
         }
     }
 }

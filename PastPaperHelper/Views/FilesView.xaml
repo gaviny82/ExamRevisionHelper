@@ -90,7 +90,11 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Paper}">
-                                <Button Content="{Binding Type, Converter={StaticResource PaperTypeToIconConverter}}" Style="{StaticResource MaterialDesignOutlinedButton}" ToolTip="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}" Margin="6,0,0,0" Click="ViewPaper_Click"/>
+                                <Button Margin="6,0,0,0"
+                                        Command="{Binding DataContext.OpenOnlineResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:FilesView}}}" CommandParameter="{Binding}"
+                                        Content="{Binding Type, Converter={StaticResource PaperTypeToIconConverter}}" 
+                                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                                        ToolTip="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -104,7 +108,7 @@
         <ComboBox x:Name="subjectSelector" Margin="16,10,24,10" VerticalAlignment="Top" SelectedIndex="0"
                   SelectionChanged="SubjectSelector_SelectionChanged"
                   ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}"
-                  ItemsSource="{x:Static core:PastPaperHelperCore.SubscribedSubjects}">
+                  ItemsSource="{x:Static vm:MainWindowViewModel.SubscribedSubjects}">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Subject}">
                     <Border x:Name="border1" Margin="0,-8" Padding="2,3,0,4" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MaterialDesignDivider}" Background="Transparent">
