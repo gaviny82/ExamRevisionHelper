@@ -42,7 +42,7 @@ namespace PastPaperHelper
             UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
             if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
 
-            //OOBE Test
+            //Test: First run experience
             //PastPaperHelper.Properties.Settings.Default.FirstRun = true;
             //PastPaperHelper.Properties.Settings.Default.Save();
             //if (PastPaperHelper.Properties.Settings.Default.FirstRun) return;
@@ -51,6 +51,8 @@ namespace PastPaperHelper
             string dataFile = $"{UserDataFolderPath}\\{PastPaperHelper.Properties.Settings.Default.PaperSource}.xml";
             if (!File.Exists(dataFile)) dataFile = null;
             var subs = PastPaperHelper.Properties.Settings.Default.SubjectsSubcription;
+            //TEST: Invalid syllabus code.
+            //subs[0] = "012345";
             string[] subsArr = new string[subs.Count];
             subs.CopyTo(subsArr, 0);
 

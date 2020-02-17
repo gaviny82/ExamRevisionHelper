@@ -9,8 +9,8 @@ using System.Collections.Specialized;
 
 namespace PastPaperHelper.Core.Tools
 {
-    public enum ErrorType { SubjectListUpdateFailed, SubjectRepoUpdateFailed, Other }
-    public enum NotificationType { Initializing, IntermediateTaskState, Finished }
+    public enum ErrorType { SubjectListUpdateFailed, SubjectRepoUpdateFailed, SubjectNotSupported, Other }
+    public enum NotificationType { Initializing, SubjectListUpdated, SubjectUpdated, Finished }
 
     public class UpdateServiceNotifiedEventArgs : EventArgs
     {
@@ -24,6 +24,16 @@ namespace PastPaperHelper.Core.Tools
         public string ErrorMessage { get; set; }
     }
 
+#pragma warning disable CA2237 // Mark ISerializable types with serializable
+    public class SubjectUnsupportedException : Exception
+    {
+        public string[] UnsupportedSubjects { get; set; }
+
+        public SubjectUnsupportedException() { }
+        public SubjectUnsupportedException(string msg) : base(msg) { }
+    }
+
+#pragma warning restore CA2237 // Mark ISerializable types with serializable
 
     public static class PastPaperHelperUpdateService
     {
@@ -37,7 +47,7 @@ namespace PastPaperHelper.Core.Tools
         public static event UpdateServiceErrorEventHandler UpdateServiceErrorEvent;
 
 
-        public static async void UpdateAll()
+        public static async void UpdateAll(ICollection<string> subscribedSubjects)
         {
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs 
             { 
@@ -65,22 +75,31 @@ namespace PastPaperHelper.Core.Tools
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
                 Message = $"Subject list updated from {PastPaperHelperCore.Source.Name}.",
-                NotificationType = NotificationType.IntermediateTaskState
+                NotificationType = NotificationType.SubjectListUpdated
             });
 
             //Download papers from web server
+            try
+            {
+                PastPaperHelperCore.SubscribedSubjects.Clear();
+                PastPaperHelperCore.LoadSubscribedSubjects(subscribedSubjects);
+            }
+            catch (SubjectUnsupportedException e)
+            {
+                UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
+                {
+                    ErrorMessage = e.Message,
+                    ErrorType = ErrorType.SubjectNotSupported,
+                    Exception = e
+                });
+            }
 
             List<Subject> failed = new List<Subject>();
-            string[] arr = new string[Properties.Settings.Default.SubjectsSubcription.Count];
-            Properties.Settings.Default.SubjectsSubcription.CopyTo(arr, 0);
-            PastPaperHelperCore.ReloadSubscribedSubjects(arr);
-
             foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
             {
                 try
                 {
                     await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
-                    //TODO: Generate paper repository here
                 }
                 catch (Exception e)
                 {
@@ -97,7 +116,7 @@ namespace PastPaperHelper.Core.Tools
                 UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
                 {
                     Message = $"{subj.Name} updated from {PastPaperHelperCore.Source.Name}.",
-                    NotificationType = NotificationType.IntermediateTaskState
+                    NotificationType = NotificationType.SubjectUpdated
                 });
             }
 
@@ -125,7 +144,7 @@ namespace PastPaperHelper.Core.Tools
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
                 NotificationType = NotificationType.Initializing,
-                Message = $"Loading subject list from {PastPaperHelperCore.Source.Name}.../"
+                Message = $"Loading subject list from {PastPaperHelperCore.Source.Name}..."
             });
             try
             {

@@ -55,7 +55,8 @@ namespace PastPaperHelper.Core.Tools
                 SubjectsLoaded = Source.SubjectUrlMap.Keys.ToArray();
 
                 if (subscription == null) return InitializationResult.SuccessNoUpdate;
-                ReloadSubscribedSubjects(subscription);
+                LoadSubscribedSubjects(subscription);
+                //Note: if not supported, throw exception and try reloading. If error still occurred in the reload process, remove this failed subject automatically and notify the user.
 
                 DateTime lastUpdate = Source.LastUpdated;
                 double days = (DateTime.Now - lastUpdate).Days;
@@ -100,16 +101,23 @@ namespace PastPaperHelper.Core.Tools
             }
         }
 
-        public static void ReloadSubscribedSubjects(string[] subscription)
+        public static void LoadSubscribedSubjects(ICollection<string> subscription)
         {
+            List<string> failed = new List<string>();
+            SubscribedSubjects.Clear();
             foreach (string item in subscription)
             {
                 if (!TryFindSubject(item, out Subject subj) || !SubjectsLoaded.Contains(subj))
                 {
-                    //TODO: Unsupported subject handling, remove from subscription automatically
-                    throw new Exception($"{item} not supported");
+                    failed.Add(item);
                 }
-                SubscribedSubjects.Add(subj);
+                else SubscribedSubjects.Add(subj);
+            }
+            if (failed.Count != 0)
+            {
+                string code = "";
+                failed.ForEach((str) => { code += str + ","; });
+                throw new SubjectUnsupportedException($"{code.Substring(0, code.Length - 1)} not supported") { UnsupportedSubjects = failed.ToArray() };
             }
         }
 

@@ -29,6 +29,10 @@ namespace PastPaperHelper.Views
             InitializeComponent();
             MainSnackbar = mainSnackbar;
 
+            var subsColl = Properties.Settings.Default.SubjectsSubcription;
+            string[] subscribedSubjects = new string[subsColl.Count];
+            subsColl.CopyTo(subscribedSubjects, 0);
+
             PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
@@ -40,8 +44,7 @@ namespace PastPaperHelper.Views
                     else if (args.NotificationType == NotificationType.Finished)
                     {
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                        //TODO: SettingsViewModel.RefreshSubjectLists();
-                        //TODO: SettingsViewModel.RefreshSubscription();
+                        //TODO: Refresh viewmodels
                     }
                     mainSnackbar.MessageQueue.Enqueue(args.Message);
                 });
@@ -51,7 +54,20 @@ namespace PastPaperHelper.Views
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                    mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "Retry", PastPaperHelperUpdateService.UpdateAll);
+                    if (args.ErrorType == ErrorType.SubjectNotSupported)
+                    {
+                        if(args.Exception is SubjectUnsupportedException exception)
+                        {
+                            string[] unsupportedList = exception.UnsupportedSubjects;
+                            foreach (string item in unsupportedList)
+                            {
+                                Properties.Settings.Default.SubjectsSubcription.Remove(item);
+                            }
+                            Properties.Settings.Default.Save();
+                            mainSnackbar.MessageQueue.Enqueue($"{args.ErrorMessage}, automatically removed from subscription. Go to Settings page to check details.", "SETTINGS", () => { HamburgerMenu.SelectedIndex = HamburgerMenu.Items.Count - 1; }, true);
+                        }
+                    }
+                    else mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "RETRY", () => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); });
                 });
             };
 
@@ -61,7 +77,7 @@ namespace PastPaperHelper.Views
                 mainSnackbar.MessageQueue.Enqueue(
                     content: $"Update needed. (Last updated: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()})",
                     actionContent: "UPDATE", 
-                    actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(); }, null,
+                    actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride:TimeSpan.FromSeconds(5));
@@ -71,7 +87,7 @@ namespace PastPaperHelper.Views
                 mainSnackbar.MessageQueue.Enqueue(
                     content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.Name}",
                     actionContent: "RELOAD",
-                    actionHandler: (param)=> { PastPaperHelperUpdateService.UpdateAll(); }, null,
+                    actionHandler: (param)=> { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromDays(1));
