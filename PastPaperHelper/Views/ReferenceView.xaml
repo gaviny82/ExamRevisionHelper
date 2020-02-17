@@ -9,14 +9,23 @@
         <StackPanel>
             <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
                 <materialDesign:PackIcon Width="64" Height="64" Margin="-11,0,0,0" Kind="FileDocument" />
-                <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="Past Paper Helper" />
+                <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="PastPaperHelper" />
             </StackPanel>
-            <Border Height="1" Background="{DynamicResource MaterialDesignDivider}" SnapsToDevicePixels="True"  Margin="0,16"/>
+            <Separator  Margin="0,16"/>
             <TextBlock TextWrapping="Wrap"><Run Text="The MIT License (MIT)" /><LineBreak /><Run /><LineBreak /><Run Text="Copyright © Jincheng You" /><LineBreak /><Run /><LineBreak /><Run Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE." /></TextBlock>
 
-            <TextBlock FontSize="24" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Third-party components" FontWeight="Bold" Margin="0,16,0,4"/>
-            <Border Height="1" Background="{DynamicResource MaterialDesignDivider}" SnapsToDevicePixels="True" />
+            <TextBlock FontSize="24" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Sources and Papers" FontWeight="Bold" Margin="0,32,0,4"/>
+            <Separator/>
+            <TextBlock Text="Papers are downloaded from the following public sites:"/>
+            <TextBlock Foreground="#FF1197DE" MouseDown="TextBlock_MouseDown" Text="https://papers.gceguide.com/"/>
+            <TextBlock Foreground="#FF1197DE" MouseDown="TextBlock_MouseDown" Text="https://pastpapers.papacambridge.com/"/>
+            <TextBlock Foreground="#FF1197DE" MouseDown="TextBlock_MouseDown" Text="https://www.cienotes.com/"/>
+            <TextBlock><LineBreak/><Run Text="All papers © UCLES. Content provided solely for educational purpose."/></TextBlock>
+
             
+            <TextBlock FontSize="24" Style="{StaticResource MaterialDesignBody2TextBlock}" Text="Third-party Notices" FontWeight="Bold" Margin="0,32,0,4"/>
+            <Separator/>
+
             <TextBlock Margin="0,16" FontSize="20" FontWeight="Bold" Text="HtmlAgilityPack" />
             <TextBlock Cursor="Hand" Margin="0,0,0,8" Foreground="#FF1197DE" MouseDown="TextBlock_MouseDown" Text="https://github.com/zzzprojects/html-agility-pack" />
             <TextBlock TextWrapping="Wrap"><Run Text="The MIT License (MIT)" /><LineBreak /><Run /><LineBreak /><Run Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE." /></TextBlock>
@@ -33,7 +42,7 @@
             <TextBlock Cursor="Hand" Foreground="#FF1197DE" MouseDown="TextBlock_MouseDown" Text="https://www.codeproject.com/info/cpol10.aspx" />
             <Border Height="1" Background="{DynamicResource MaterialDesignDivider}" SnapsToDevicePixels="True" />
 
-            <TextBlock Margin="0,16" FontSize="20" FontWeight="Bold" Text="Unity.Wpf" />
+            <TextBlock Margin="0,16" FontSize="20" FontWeight="Bold" Text="Prism.Wpf" />
             <TextBlock Cursor="Hand" Margin="0,0,0,8" Foreground="#FF1197DE" MouseDown="TextBlock_MouseDown" Text="https://github.com/PrismLibrary/Prism" />
             <TextBlock TextWrapping="Wrap"><Run Text="The MIT License (MIT)" /><LineBreak /><Run /><LineBreak /><Run Text="Copyright © .NET Foundation" /><LineBreak /><Run /><LineBreak /><Run Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE." /></TextBlock>
             <Border Height="1" Background="{DynamicResource MaterialDesignDivider}" SnapsToDevicePixels="True" />
