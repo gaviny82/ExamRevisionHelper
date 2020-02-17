@@ -1,21 +1,42 @@
-﻿using PastPaperHelper.Views;
-using System.Collections.Generic;
+﻿using PastPaperHelper.Models;
+using PastPaperHelper.Events;
+using PastPaperHelper.Views;
+using Prism.Commands;
+using Prism.Events;
+using Prism.Mvvm;
+using Prism.Regions;
+using System.Collections.ObjectModel;
 
 namespace PastPaperHelper.ViewModels
 {
-    class MainWindowViewModel : NotificationObject
+    public class MainWindowViewModel : BindableBase
     {
-        public static List<string> Files = new List<string>();
-        public HamburgerMenuItemViewModel[] ListItems { get; }
+        public static ObservableCollection<Subject> SubscribedSubjects { get; private set; } = new ObservableCollection<Subject>();
 
-        public MainWindowViewModel()
+        private readonly IRegionManager _regionManager;
+
+        public MainWindowViewModel(IRegionManager regionManager)
         {
-            ListItems = new HamburgerMenuItemViewModel[]
-            {
-                new HamburgerMenuItemViewModel("Files", new FilesView()),
-                new HamburgerMenuItemViewModel("Search", new SearchView()),
-                new HamburgerMenuItemViewModel("Settings", new SettingsView()),
-            };
+            _regionManager = regionManager;
         }
+
+        #region NavigateCommand
+        private DelegateCommand<string> _navigateCommand;
+        public DelegateCommand<string> NavigateCommand =>
+            _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(Navigate));
+        private void Navigate(string uri)
+        {
+            PageTitle = uri;
+            _regionManager.RequestNavigate("ContentRegion", uri.Replace(" ", ""));
+        }
+        #endregion
+
+        private string _pageTitle;
+        public string PageTitle
+        {
+            get { return _pageTitle; }
+            set { SetProperty(ref _pageTitle, value); }
+        }
+
     }
 }

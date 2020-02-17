@@ -12,7 +12,12 @@ namespace PastPaperHelper.ValidationRules
             string path = value as string;
             if (string.IsNullOrEmpty(path)) return new ValidationResult(false, "Directory does not exisit.");
             string[] split = path.Split('\\');
-            return Directory.Exists(path.Substring(0,path.Length-split.Last().Length-1)) ? ValidationResult.ValidResult : new ValidationResult(false, "Directory does not exisit.");
+            if (split.Length > 1)
+            {
+                if(split.Last()=="Past Papers")
+                    return Directory.Exists(path.Substring(0, path.Length - split.Last().Length - 1)) ? ValidationResult.ValidResult : new ValidationResult(false, "Directory does not exisit.");
+            }
+            return Directory.Exists(path) ? ValidationResult.ValidResult : new ValidationResult(false, "Directory does not exisit.");
         }
     }
 }

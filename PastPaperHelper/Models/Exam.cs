@@ -3,35 +3,37 @@ using System.Linq;
 
 namespace PastPaperHelper.Models
 {
+    public enum ExamSeries { Spring, Summer, Winter, Specimen }
+
     public class Exam
     {
         public Subject Subject { get; set; }
         public string Year { get; set; }
         public ExamSeries Series { get; set; }
+
         public GradeThreshold GradeThreshold { get; set; }
         public ExaminersReport ExaminersReport { get; set; }
         public Component[] Components { get; set; }
+
+        private Paper[][] _papers { get; set; }
+
+        //public Paper GetPaper(char component, char varient)
+        //{
+
+        //}
 
         public Exam() { }
 
         public Exam(XmlNode node, Subject subject)
         {
             Subject = subject;
-            switch (node.Attributes["Series"].Value)
+            switch(node.Attributes["Series"].Value)
             {
-                default:
-                    Series = ExamSeries.Specimen;
-                    break;
-                case "Spring":
-                    Series = ExamSeries.Spring;
-                    break;
-                case "Summer":
-                    Series = ExamSeries.Summer;
-                    break;
-                case "Winter":
-                    Series = ExamSeries.Winter;
-                    break;
-            }
+                case "Spring": Series = ExamSeries.Spring; break;
+                case "Summer": Series = ExamSeries.Summer; break;
+                case "Winter": Series = ExamSeries.Winter; break;
+                default: Series= ExamSeries.Specimen; break;
+            };
             Year = node.ParentNode.Attributes["Year"].Value;
 
             if (node.Attributes["GradeThreshold"] != null) GradeThreshold = new GradeThreshold { Exam = this, Url = node.Attributes["GradeThreshold"].Value };
@@ -59,7 +61,7 @@ namespace PastPaperHelper.Models
                 Components[i] = new Component(compCode, plst);
             }
             var list = from obj in Components orderby obj.Code ascending select obj;
-            Components = list.ToArray();
+            Components = list.OrderBy(c => c.Code).ToArray();
         }
 
         public XmlNode GetXmlNode(XmlDocument doc)

@@ -1,51 +1,9 @@
-﻿<Grid x:Name="host1" x:Class="PastPaperHelper.Views.SearchView"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:PastPaperHelper.Views"
-      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-      mc:Ignorable="d" Background="White"
-      d:DesignHeight="450" d:DesignWidth="800">
-    <materialDesign:DialogHost Name="host">
-        <Grid>
-            <materialDesign:PackIcon Kind="FolderSearch" Width="32" Height="32" Margin="10,10,0,0"/>
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="52,20,10,10" Text="{Binding SearchPath}"/>
-            <Button x:Name="search" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,58,10,0" Width="80" Command="{Binding SearchCommand}" CommandParameter="{Binding ElementName=host}" materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"/>
-            <TextBox x:Name="keyword" Text="{Binding Keyword, UpdateSourceTrigger=PropertyChanged}" Margin="10,50,95,0" TextWrapping="NoWrap" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Keyword" Style="{StaticResource MaterialDesignFloatingHintTextBox}" IsEnabled="{Binding IsInputEnabled, UpdateSourceTrigger=PropertyChanged}">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
-                </TextBox.InputBindings>
-            </TextBox>
-
-            <DataGrid x:Name="resultsGrid" Margin="10,126,10,10" CanUserAddRows="False" AlternatingRowBackground="#FFB39DDB" AutoGenerateColumns="False" ItemsSource="{Binding Questions}" FontSize="18" >
-                <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Year}" Header="Year" Width="100" IsReadOnly="True"/>
-                    <DataGridTextColumn Binding="{Binding Series}" Header="Series" Width="100" IsReadOnly="True"/>
-                    <DataGridTextColumn Binding="{Binding PaperCode}" Header="Paper" Width="100" IsReadOnly="True"/>
-                    <DataGridTextColumn Binding="{Binding QuestionNumber}" Header="Question" Width="100" IsReadOnly="True"/>
-                    <DataGridTemplateColumn Header="Question Paper" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="View" Click="ViewQuestionPaper"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Mark Scheme" Width="*" IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="View" Click="ViewMarkScheme"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-            <CheckBox Content="Ignore Cases" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" IsChecked="{Binding IgnoreCases, UpdateSourceTrigger=PropertyChanged}"/>
-            <CheckBox Content="Match Whole Word" HorizontalAlignment="Left" Margin="150,95,0,0" VerticalAlignment="Top" IsChecked="{Binding MatchWholeWord, UpdateSourceTrigger=PropertyChanged}"/>
-            <ProgressBar x:Name="progress" Height="10" Margin="10,116,10,0" VerticalAlignment="Top" Maximum="{Binding FileNum, UpdateSourceTrigger=PropertyChanged}" IsIndeterminate="{Binding IsProgressIndeterminate, UpdateSourceTrigger=PropertyChanged}" Value="{Binding Progress, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock HorizontalAlignment="Right" Margin="0,97,10,0" TextWrapping="Wrap" Text="{Binding Info, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top"/>
-            <CheckBox x:Name="multiTasks" Content="Enable Multitasking" HorizontalAlignment="Left" Margin="337,95,0,0" VerticalAlignment="Top"/>
-        </Grid>
-    </materialDesign:DialogHost>
-
-</Grid>
+﻿<UserControl x:Class="PastPaperHelper.Views.SearchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <Grid>
+            
+    </Grid>
+</UserControl>

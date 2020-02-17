@@ -1,20 +1,15 @@
-﻿using PastPaperHelper.Models;
-using PastPaperHelper.Sources;
-using System;
+﻿using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
 namespace PastPaperHelper.Converters
 {
-    class SubjectToRepositoryConverter : IValueConverter
+    public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Subject subject)
-            {
-                return SubscriptionManager.Subscription[subject];
-            }
-            else return null;
+            return (bool)value ? Visibility.Visible : Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

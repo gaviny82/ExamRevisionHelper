@@ -1,6 +1,8 @@
 ﻿using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace PastPaperHelper.Sources
 {
@@ -10,15 +12,21 @@ namespace PastPaperHelper.Sources
         {
             throw new NotImplementedException();
             Name = "CIE Notes";
-            Url = "https://papers.gceguide.com/";
+            UrlBase = "https://papers.gceguide.com/";
+        }
+        public PaperSourceCIENotes(XmlDocument data) : base(data)
+        {
+            throw new NotImplementedException();
+            Name = "CIE Notes";
+            UrlBase = "https://papers.gceguide.com/";
         }
 
-        public override PaperRepository GetPapers(Subject subject, string url)
+        public override Task<PaperRepository> GetPapers(Subject subject)
         {
             throw new NotImplementedException();
         }
 
-        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
+        public override async Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum)
         {
             throw new NotImplementedException();
         }

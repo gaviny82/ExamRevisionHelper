@@ -1,10 +1,14 @@
 ﻿using MaterialDesignThemes.Wpf;
-using PastPaperHelper.Models;
-using PastPaperHelper.Sources;
+using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Events;
 using PastPaperHelper.ViewModels;
-using System.Linq;
+using Prism.Events;
+using Prism.Regions;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -12,42 +16,86 @@ using System.Windows.Media;
 namespace PastPaperHelper.Views
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static Snackbar MainSnackbar;
-        public static readonly TaskScheduler SyncContextTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-        public static DownloadFlyoutViewModel DownloadFlyoutViewModel;
+        public static Snackbar MainSnackbar { get; internal set; }//TODO: Remove in the future
+        public static TaskScheduler SyncContextTaskScheduler { get; internal set; }//TODO: Remove in the future
 
         public MainWindow()
         {
+            SyncContextTaskScheduler = TaskScheduler.Current;
             InitializeComponent();
             MainSnackbar = mainSnackbar;
-            Init();
 
-            //OOBE Test
-            //Properties.Settings.Default.FirstRun = true;
-            //Properties.Settings.Default.Save();
-        }
-        public async void Init()
-        {
-            bool updateSubjectList = false, updateSubscription = false;
-            await Task.Run(() => SubscriptionManager.CheckUpdate(out updateSubjectList, out updateSubscription));
-            if (updateSubjectList || updateSubscription)
+            var subsColl = Properties.Settings.Default.SubjectsSubcription;
+            string[] subscribedSubjects = new string[subsColl.Count];
+            subsColl.CopyTo(subscribedSubjects, 0);
+
+            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
             {
-                Resources["IsLoading"] = Visibility.Visible;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (args.NotificationType == NotificationType.Initializing)
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Visible;
+                    }
+                    else if (args.NotificationType == NotificationType.Finished)
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                        MainWindowViewModel.SubscribedSubjects.Clear();
+                        PastPaperHelperCore.SubscribedSubjects.ForEach((item) =>
+                        {
+                            MainWindowViewModel.SubscribedSubjects.Add(item);
+                        });
+                    }
+                    mainSnackbar.MessageQueue.Enqueue(args.Message);
+                });
+            };
+            PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                    if (args.ErrorType == ErrorType.SubjectNotSupported)
+                    {
+                        if(args.Exception is SubjectUnsupportedException exception)
+                        {
+                            string[] unsupportedList = exception.UnsupportedSubjects;
+                            foreach (string item in unsupportedList)
+                            {
+                                Properties.Settings.Default.SubjectsSubcription.Remove(item);
+                            }
+                            Properties.Settings.Default.Save();
+                            mainSnackbar.MessageQueue.Enqueue($"{args.ErrorMessage}, automatically removed from subscription. Go to Settings page to check details.", "SETTINGS", () => { HamburgerMenu.SelectedIndex = HamburgerMenu.Items.Count - 1; }, true);
+                        }
+                    }
+                    else mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "RETRY", () => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); });
+                });
+            };
+
+            InitializationResult initResult = (Application.Current as App).InitResult;
+            if (initResult == InitializationResult.SuccessUpdateNeeded)
+            {
+                mainSnackbar.MessageQueue.Enqueue(
+                    content: $"Update needed. (Last updated: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()})",
+                    actionContent: "UPDATE", 
+                    actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
+                    promote: true,
+                    neverConsiderToBeDuplicate: true,
+                    durationOverride:TimeSpan.FromSeconds(5));
             }
-            await Task.Run(() => SubscriptionManager.UpdateAndInit(updateSubjectList, updateSubscription));
-
-            SettingsViewModel.RefreshSubjectLists();
-            SettingsViewModel.RefreshSubscription();
-            Resources["IsLoading"] = Visibility.Hidden;
-        }
-
-        public void OpenDownloadPopup()
-        {
-            pop.IsPopupOpen = true;
+            else if (initResult == InitializationResult.Error)
+            {
+                mainSnackbar.MessageQueue.Enqueue(
+                    content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.Name}",
+                    actionContent: "RELOAD",
+                    actionHandler: (param)=> { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
+                    promote: true,
+                    neverConsiderToBeDuplicate: true,
+                    durationOverride: TimeSpan.FromDays(1));
+            }
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -62,21 +110,28 @@ namespace PastPaperHelper.Views
             MenuToggleButton.IsChecked = false;
         }
 
-
         private void RootDlg_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            double newWidth = e.NewSize.Width, newHeight = e.NewSize.Height;
-            dlgGrid.Width = newWidth - 350;
-            dlgGrid.Height = newHeight - 150;
+            double width = e.NewSize.Width, height = e.NewSize.Height;
+            dlg.Width = width - 350;
+            dlg.Height = height - 150;
         }
 
-        private void AddSubject_Click(object sender, RoutedEventArgs e)
+        private void HamburgerMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!(selectionTreeView.SelectedItem is Subject)) return;
-            Subject item = (Subject)selectionTreeView.SelectedItem;
-            SettingsViewModel vm = ((DataContext as MainWindowViewModel).ListItems.Last().Content as SettingsView).DataContext as SettingsViewModel;
-            vm.AddSubjectCommand.Execute(item);
+            string uri = HamburgerMenu.SelectedItem?.ToString();
+            if (uri != null) (DataContext as MainWindowViewModel).NavigateCommand.Execute(uri);
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MainWindowViewModel).NavigateCommand.Execute(HamburgerMenu.SelectedItem.ToString().Replace(" ", ""));
+        }
+
+        private void Reference_Click(object sender, RoutedEventArgs e)
+        {
+            HamburgerMenu.SelectedItem = null;
+            MenuToggleButton.IsChecked = false;
+        }
     }
 }

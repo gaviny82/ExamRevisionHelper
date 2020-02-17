@@ -1,9 +1,10 @@
-﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PastPaperHelper.Sources;
+using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
-using System.Xml;
+using PastPaperHelper.Sources;
+using System;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace PastPaperHelper.Test
 {
@@ -12,60 +13,53 @@ namespace PastPaperHelper.Test
     {
         public UnitTest1()
         {
-            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
-            LoadRepoTest();
+            PastPaperHelperCore.Source = new PaperSourceGCEGuide();
         }
 
         [TestMethod]
         public void LoadRepoTest()
         {
-            SubscriptionManager.CheckUpdate(out bool a, out bool b);
-            SubscriptionManager.UpdateAndInit(false, false);
+            //SubscriptionManager.CheckUpdate(out bool a, out bool b);
+            //SubscriptionManager.UpdateAndInit(false, false);
         }
 
         [TestMethod]
-        public void SaveSubjectListTest()
+        public void FetchSubjectListTest()
         {
-            XmlDocument doc = new XmlDocument();
-            PaperSource.SaveSubjectList(PaperSources.GCE_Guide.GetSubjectUrlMap(), doc);
-            doc.Save(Environment.CurrentDirectory + "\\data\\subjects.xml");
-        }
-        [TestMethod]
-        public void DownloadSubjectListTest()
-        {
-            var result = PaperSources.GCE_Guide.GetSubjectUrlMap();
-            Assert.IsNotNull(result);
+            //Download test
+            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
+
+            //Write to XML
+            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml();
+            doc.Save(Environment.CurrentDirectory + "\\subjects_test.xml");
         }
 
         [TestMethod]
         public void DownloadPapersTest()
         {
+            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
+
+            //Sample subject
             var subj = new Subject
             {
                 Curriculum = Curriculums.IGCSE,
                 Name = "Economics",
                 SyllabusCode = "0455"
             };
-            var result = PaperSources.GCE_Guide.GetPapers(subj, SubscriptionManager.SubjectUrlMap[subj]);
+            //Download all papers of the sample subject
+            var result = PastPaperHelperCore.Source.GetPapers(subj).GetAwaiter().GetResult();
             Assert.IsNotNull(result);
-        }
 
-        [TestMethod]
-        public void SavePaperRepoTest()
-        {
-            PaperSource.CurrentPaperSource = PaperSources.GCE_Guide;
-            var phy = new Subject
+            //Create a test repo
+            Dictionary<Subject, PaperRepository> repo = new Dictionary<Subject, PaperRepository>
             {
-                Curriculum = Curriculums.ALevel,
-                Name = "Physics",
-                SyllabusCode = "9702"
+                { subj, result }
             };
-            var result = PaperSources.GCE_Guide.GetPapers(phy, @"https://papers.gceguide.com/A%20Levels/Physics%20(9702)/");
-            Dictionary<Subject, PaperRepository> repo = new Dictionary<Subject, PaperRepository>();
-            XmlDocument doc = new XmlDocument();
-            repo.Add(phy, result);
-            PaperSource.SaveSubscription(repo, doc);
-            Assert.IsNotNull(result.Subject);
+            //Write to XML
+            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml(repo);
+            doc.Save(Environment.CurrentDirectory + "\\subscription_test.xml");
         }
     }
 }

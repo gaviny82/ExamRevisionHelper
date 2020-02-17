@@ -2,6 +2,9 @@
 using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace PastPaperHelper.Sources
 {
@@ -10,18 +13,22 @@ namespace PastPaperHelper.Sources
         public PaperSourcePapaCambridge()
         {
             Name = "PapaCambridge";
-            Url = "https://papacambridge.com/";
+            UrlBase = "https://papacambridge.com/";
+        }
+        public PaperSourcePapaCambridge(XmlDocument data) : base(data)
+        {
+            Name = "PapaCambridge";
+            UrlBase = "https://papacambridge.com/";
         }
 
-        public override PaperRepository GetPapers(Subject subject, string url)
+        public override async Task<PaperRepository> GetPapers(Subject subject)
         {
-            throw new NotImplementedException();
             PaperRepository repo = new PaperRepository(subject);
-            /*HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load(url);
-            HtmlNodeCollection examNodes = doc.DocumentNode.SelectNodes("//table[1]//td[@data-name and @data-href]");
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument doc = web.Load(SubjectUrlMap[subject]);
+            HtmlNodeCollection examNodes = doc.DocumentNode.SelectSingleNode("//table").SelectNodes("//td[@data-name and @data-href]");
 
-            string resUrl1 = "", resUrl2 = "";
+            string resUrl1 = "", resUrl2 = ""; //specimen papers and syllabuses
             List<Exam> examList = new List<Exam>();
             foreach (HtmlNode examNode in examNodes)
             {
@@ -30,6 +37,7 @@ namespace PastPaperHelper.Sources
 
                 if (examCode.Contains("&"))
                 {
+                    //find the folder storing specimen papers and syllabuses
                     if (string.IsNullOrEmpty(resUrl1)) resUrl1 = examUrl;
                     else resUrl2 = examUrl;
                     continue;
@@ -50,7 +58,13 @@ namespace PastPaperHelper.Sources
                 };
 
                 HtmlDocument examPage = web.Load(examUrl);
-                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectNodes("//table[1]/tbody//td[@data-name!=\"..\"]");
+                HtmlNodeCollection paperNodes = examPage.DocumentNode.SelectSingleNode("//table").SelectNodes("//tbody//td[@data-name]");
+
+                if (paperNodes.Count != 0 && paperNodes[0].Attributes["data-name"]?.Value == "..")
+                {
+                    paperNodes.RemoveAt(0);
+                }
+                else continue;
 
                 List<Paper> paperList = new List<Paper>();
                 foreach (HtmlNode paperNode in paperNodes)
@@ -59,24 +73,54 @@ namespace PastPaperHelper.Sources
                     string fileUrl = "https://pastpapers.papacambridge.com/" + paperNode.Attributes["data-href"].Value;
                     if (fileName.Contains("gt"))
                         exam.GradeThreshold = new GradeThreshold { Exam = exam, Url = fileUrl };
-                    else if(fileName.Contains("er"))
+                    else if (fileName.Contains("er"))
                         exam.ExaminersReport = new ExaminersReport { Exam = exam, Url = fileUrl };//Not available
                     else
                         paperList.Add(new Paper(fileName, exam, fileUrl));
                 }
-                exam.Papers = paperList.ToArray();
+
+                var comps = paperList.GroupBy(p => p.Component).ToArray();
+                exam.Components = new Component[comps.Count()];
+                for (int i = 0; i < exam.Components.Length; i++)
+                {
+                    exam.Components[i] = new Component(comps[i].Key, comps[i].ToArray());
+                }
                 examList.Add(exam);
             }
-            //read specimen papers and syllabus
+            //TODO: read specimen papers and syllabus
 
-            //repo.Exams = examList.ToArray();*/
+            foreach(var year in examList.GroupBy(exam => exam.Year))
+            {
+                ExamYear yr = new ExamYear { Year = year.Key };
+                foreach (Exam item in year)
+                {
+                    switch (item.Series)
+                    {
+                        case ExamSeries.Spring:
+                            yr.Spring = item;
+                            break;
+                        case ExamSeries.Summer:
+                            yr.Summer = item;
+                            break;
+                        case ExamSeries.Winter:
+                            yr.Winter = item;
+                            break;
+                        case ExamSeries.Specimen:
+                            yr.Specimen = item;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                repo.Add(yr);
+            }
+            repo.Sort();
             return repo;
         }
 
-        public override Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum)
+        public override async Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum)
         {
-            throw new NotImplementedException();
-            string url = Url;
+            string url = UrlBase;
             switch (curriculum)
             {
                 case Curriculums.IGCSE: url += "igcse-subjects/"; break;
@@ -95,7 +139,7 @@ namespace PastPaperHelper.Sources
                 Subject subj = new Subject
                 {
                     Curriculum = curriculum,
-                    Name = nameTag.InnerText,
+                    Name = nameTag.InnerText.Trim(),
                     SyllabusCode = syCodeTag.InnerHtml.Substring(1, 4)
                 };
                 map.Add(subj, nameTag.Attributes[0].Value);
