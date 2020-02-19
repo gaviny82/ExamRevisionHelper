@@ -12,13 +12,5 @@ namespace PastPaperHelper.Views
         {
             InitializeComponent();
         }
-
-        private void AddSubject_Click(object sender, RoutedEventArgs e)
-        {
-            //if (!(selectionTreeView.SelectedItem is Subject)) return;
-            //Subject item = (Subject)selectionTreeView.SelectedItem;
-            //SettingsViewModel vm = ((DataContext as MainWindowViewModel).ListItems.Last().Content as SettingsView).DataContext as SettingsViewModel;
-            //vm.AddSubjectCommand.Execute(item);
-        }
     }
 }

@@ -13,12 +13,12 @@ namespace PastPaperHelper.Sources
     {
         public PaperSourceGCEGuide()
         {
-            Name = "GCE Guide";
+            Name = "gce_guide";
             UrlBase = "https://papers.gceguide.com/";
         }
         public PaperSourceGCEGuide(XmlDocument data) : base(data)
         {
-            Name = "GCE Guide";
+            Name = "gce_guide";
             UrlBase = "https://papers.gceguide.com/";
 
             XmlNode subjListNode = data.SelectSingleNode("/Data/SubjectList");
@@ -36,7 +36,6 @@ namespace PastPaperHelper.Sources
                 SubjectUrlMap.Add(subj, node.Attributes["Url"].Value);
             }
 
-
             //Load cached repositories of subscribed subjects
             XmlNode subsNode = data.SelectSingleNode("/Data/Subscription");
             if (subsNode == null) throw new Exception("Failed to load subscription.");
@@ -45,6 +44,9 @@ namespace PastPaperHelper.Sources
             foreach (XmlNode subjectNode in subjNodes)
             {
                 PastPaperHelperCore.TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subj, SubjectUrlMap.Keys);
+                //if (!PastPaperHelperCore.SubscribedSubjects.Contains(subj)) continue;
+                //TODO: Ignore data of subjects which are not subscribed
+
                 PaperRepository repo = new PaperRepository(subj);
                 foreach (XmlNode yearNode in subjectNode.ChildNodes)
                 {

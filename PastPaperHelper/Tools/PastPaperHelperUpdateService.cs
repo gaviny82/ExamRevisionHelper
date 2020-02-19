@@ -47,6 +47,11 @@ namespace PastPaperHelper.Core.Tools
         public static event UpdateServiceErrorEventHandler UpdateServiceErrorEvent;
 
 
+        public delegate void SubjectUnsubscribedEventHandler(Subject subj);
+
+        public static event SubjectUnsubscribedEventHandler SubjectUnsubscribedEvent;
+
+
         public static async void UpdateAll(ICollection<string> subscribedSubjects)
         {
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs 
@@ -197,7 +202,10 @@ namespace PastPaperHelper.Core.Tools
 
         public static void Unsubscribe(Subject subject)
         {
-
+            PastPaperHelperCore.SubscribedSubjects.Remove(subject);
+            var dict = PastPaperHelperCore.Source.Subscription;
+            if (dict.ContainsKey(subject)) dict.Remove(subject);
+            SubjectUnsubscribedEvent?.Invoke(subject);
         }
     }
 }

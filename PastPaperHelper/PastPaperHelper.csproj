@@ -99,6 +99,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\UpdateFrequencyToIndexConverter.cs" />
     <Compile Include="Events\Events.cs" />
     <Compile Include="Models\Component.cs" />
     <Compile Include="Models\Exam.cs" />

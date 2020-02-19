@@ -19,6 +19,7 @@
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converters:MessageVisibilityConverter x:Key="MessageVisibilityConverter" />
             <converters:ShortCurriculumNameConverter x:Key="ShortCurriculumNameConverter" />
+            <converters:UpdateFrequencyToIndexConverter x:Key="UpdateFrequencyToIndexConverter" />
         </Grid.Resources>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -46,9 +47,9 @@
                 </Button>
             </StackPanel>
 
-            <ScrollViewer Grid.Row="1" Grid.Column="1" Margin="0,10,10,30">
-                <StackPanel>
-                    <GroupBox Header="Source" Style="{DynamicResource MaterialDesignCardGroupBox}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1" Margin="0,10,0,30">
+                <StackPanel Margin="0,0,10,0">
+                    <GroupBox Header="Path" Style="{DynamicResource MaterialDesignCardGroupBox}">
                         <GroupBox.HeaderTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -66,21 +67,15 @@
                                 </Binding>
                             </TextBox>
                             <Button Width="80" Margin="0,4,0,0" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding BrowseCommand}" Content="Browse" />
-                            <ComboBox x:Name="source" Margin="0,55,0,0" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Source" SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceConverter}}" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
-                                <ComboBoxItem Content="GCE Guide (https://papers.gceguide.com/)" />
-                                <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)" IsEnabled="False" />
-                                <ComboBoxItem Content="CIEnotes (https://www.cienotes.com/)" IsEnabled="False" />
-                                <ComboBoxItem Content="Mixed sources" IsEnabled="False"/>
-                            </ComboBox>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Margin="0,16,0,0" Header="Update" IsEnabled="False" Style="{DynamicResource MaterialDesignCardGroupBox}" Visibility="Collapsed">
+                    <GroupBox Margin="0,16,0,0" Header="Update" Style="{DynamicResource MaterialDesignCardGroupBox}">
                         <GroupBox.HeaderTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <materialDesign:PackIcon Width="32" Height="32" VerticalAlignment="Center" Kind="ArrowUpBoldCircleOutline" />
                                     <TextBlock Margin="40,6,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding}" />
-                                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" materialDesign:ButtonProgressAssist.IsIndeterminate="True" Click="OpenReleases_Click" Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" IsEnabled="False" materialDesign:ButtonProgressAssist.IsIndeterminate="True" Click="OpenReleases_Click" Style="{StaticResource MaterialDesignToolForegroundButton}">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="Update" />
                                             <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="Check Update" />
@@ -90,11 +85,27 @@
                             </DataTemplate>
                         </GroupBox.HeaderTemplate>
                         <StackPanel>
-                            <CheckBox Content="Check update for past papers" IsChecked="{Binding AutoUpdateFiles}" ToolTip="Check update from websites on startup" />
-                            <CheckBox Margin="0,5,0,0" Content="Check update for Past Paper Helper" IsChecked="{Binding AutoUpdateProgram}" ToolTip="Check on startup" />
+                            <ComboBox x:Name="source" VerticalAlignment="Top" materialDesign:HintAssist.Hint="Source"
+                                      SelectedIndex="{Binding PaperSource, Converter={StaticResource PaperSourceConverter}}"
+                                      Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                                <ComboBoxItem Content="GCE Guide (https://papers.gceguide.com/)" />
+                                <ComboBoxItem Content="PapaCambridge (https://pastpapers.papacambridge.com/)" IsEnabled="False" />
+                                <ComboBoxItem Content="CIEnotes (https://www.cienotes.com/)" IsEnabled="False" />
+                                <ComboBoxItem Content="Mixed sources" IsEnabled="False"/>
+                            </ComboBox>
+                            <ComboBox x:Name="updateFreqSelector" Margin="0,8,0,0" materialDesign:HintAssist.Hint="Update Frequency" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                       SelectedIndex="{Binding UpdateFrequency, Converter={StaticResource UpdateFrequencyToIndexConverter}}">
+                                <ComboBoxItem Content="Disable"/>
+                                <ComboBoxItem Content="Every time on startup"/>
+                                <ComboBoxItem Content="Everyday"/>
+                                <ComboBoxItem Content="Weekly"/>
+                                <ComboBoxItem Content="Monthly"/>
+                                <ComboBoxItem Content="Auto" IsEnabled="False"/>
+                            </ComboBox>
+                            <!--<CheckBox Content="Update file list automatically" IsEnabled="False" Margin="0,8,0,0"/>-->
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Margin="0,16,0,0" Header="Theme" Style="{DynamicResource MaterialDesignCardGroupBox}" Visibility="Collapsed">
+                    <!--<GroupBox Margin="0,16,0,0" Header="Theme" Style="{DynamicResource MaterialDesignCardGroupBox}">
                         <GroupBox.HeaderTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -104,7 +115,8 @@
                             </DataTemplate>
                         </GroupBox.HeaderTemplate>
                         <TextBlock Text="Coming Soon." />
-                    </GroupBox>
+                    </GroupBox>-->
+                    
 
                 </StackPanel>
             </ScrollViewer>
@@ -125,7 +137,7 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <Grid>
-                    <ListBox x:Name="SubjectList" Margin="-4" ItemsSource="{Binding Subjects}" SelectionMode="Extended" VirtualizingPanel.IsVirtualizing="True">
+                    <ListBox x:Name="SubjectList" Margin="-4" ItemsSource="{x:Static vm:MainWindowViewModel.SubscribedSubjects}" SelectionMode="Extended" VirtualizingPanel.IsVirtualizing="True">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Subject}">
                                 <Border x:Name="border1" Margin="-8" Background="Transparent" BorderBrush="{DynamicResource MaterialDesignDivider}" BorderThickness="0,0,0,1">
@@ -141,7 +153,12 @@
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
-                                        <Button Width="16" Height="16" HorizontalAlignment="Right" materialDesign:ShadowAssist.ShadowDepth="Depth0" Background="LightGray" BorderBrush="LightGray" Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}, Mode=FindAncestor}}" CommandParameter="{Binding}" Foreground="Black" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Remove" Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
+                                        <Button Width="16" Height="16" HorizontalAlignment="Right" Margin="0,0,10,0"
+                                                Background="LightGray" BorderBrush="LightGray" ToolTip="Remove" Foreground="Black" materialDesign:ShadowAssist.ShadowDepth="Depth0" 
+                                                Command="{Binding DataContext.RemoveSubjectCommand, RelativeSource={RelativeSource AncestorType={x:Type GroupBox}, Mode=FindAncestor}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" 
+                                                Visibility="{Binding IsMouseOver, Converter={StaticResource BoolToVisibilityConverter}, ElementName=border1, Mode=OneWay}">
                                             <materialDesign:PackIcon Width="10" Height="10" Kind="Close" />
                                         </Button>
                                     </Grid>

@@ -44,11 +44,8 @@ namespace PastPaperHelper.Views
                     else if (args.NotificationType == NotificationType.Finished)
                     {
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                        MainWindowViewModel.SubscribedSubjects.Clear();
-                        PastPaperHelperCore.SubscribedSubjects.ForEach((item) =>
-                        {
-                            MainWindowViewModel.SubscribedSubjects.Add(item);
-                        });
+                        MainWindowViewModel.RefreshSubscribedSubjects();
+                        SubjectDialogViewModel.RefreshSubjectLists();
                     }
                     mainSnackbar.MessageQueue.Enqueue(args.Message);
                 });
@@ -95,7 +92,10 @@ namespace PastPaperHelper.Views
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromDays(1));
+                return;
             }
+            MainWindowViewModel.RefreshSubscribedSubjects();
+            SubjectDialogViewModel.RefreshSubjectLists();
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

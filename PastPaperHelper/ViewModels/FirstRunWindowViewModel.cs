@@ -162,7 +162,7 @@ namespace PastPaperHelper.ViewModels
             if (!Directory.Exists(Path)) Directory.CreateDirectory(Path);
 
             Properties.Settings.Default.Path = Path;
-            string source = PastPaperHelperCore.Source.Name.ToLower().Replace(' ', '_');
+            string source = PastPaperHelperCore.Source.Name;
             Properties.Settings.Default.PaperSource = source;
 
             Properties.Settings.Default.SubjectsSubcription.Clear();
