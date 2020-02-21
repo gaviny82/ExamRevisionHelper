@@ -44,11 +44,8 @@ namespace PastPaperHelper.Views
                     else if (args.NotificationType == NotificationType.Finished)
                     {
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                        MainWindowViewModel.SubscribedSubjects.Clear();
-                        PastPaperHelperCore.SubscribedSubjects.ForEach((item) =>
-                        {
-                            MainWindowViewModel.SubscribedSubjects.Add(item);
-                        });
+                        MainWindowViewModel.RefreshSubscribedSubjects();
+                        SubjectDialogViewModel.RefreshSubjectLists();
                     }
                     mainSnackbar.MessageQueue.Enqueue(args.Message);
                 });
@@ -75,6 +72,27 @@ namespace PastPaperHelper.Views
                 });
             };
 
+            PastPaperHelperUpdateService.SubjectSubscribedEvent += (subj) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    mainSnackbar.MessageQueue.Enqueue(
+                    content: $"{subj.SyllabusCode} {subj.Curriculum} {subj.Name} is added to your subscription.",
+                    actionContent: null,
+                    actionHandler: null, null,
+                    promote: false,
+                    neverConsiderToBeDuplicate: false,
+                    durationOverride: TimeSpan.FromSeconds(1));
+
+                    MainWindowViewModel.SubscribedSubjects.Add(subj);
+                    if (!Properties.Settings.Default.SubjectsSubcription.Contains(subj.SyllabusCode))
+                    {
+                        Properties.Settings.Default.SubjectsSubcription.Add(subj.SyllabusCode);
+                        Properties.Settings.Default.Save();
+                    }
+                });
+            };
+
             InitializationResult initResult = (Application.Current as App).InitResult;
             if (initResult == InitializationResult.SuccessUpdateNeeded)
             {
@@ -95,7 +113,10 @@ namespace PastPaperHelper.Views
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromDays(1));
+                return;
             }
+            MainWindowViewModel.RefreshSubscribedSubjects();
+            SubjectDialogViewModel.RefreshSubjectLists();
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

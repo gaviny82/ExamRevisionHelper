@@ -9,23 +9,24 @@ namespace PastPaperHelper.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is string name)) return null;
-
-            //if (name.StartsWith(PaperSources.GCE_Guide)) return 0;
-            //else if (value == PaperSources.PapaCambridge) return 1;
-            //else return 2;
-            return null;
+            return value switch
+            {
+                "gce_guide" => 0,
+                "papacambridge" => 1,
+                "cie_notes" => 2,
+                _ => null,
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch ((int)value)
+            return value switch
             {
-                default: return null;
-                //case 0: return PaperSources.GCE_Guide;
-                //case 1: return PaperSources.PapaCambridge;
-                //case 2: return PaperSources.CIE_Notes;
-            }
+                0 => "gce_guide",
+                1 => "papacambridge",
+                2 => "cie_notes",
+                _ => null,
+            };
         }
     }
 }

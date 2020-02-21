@@ -19,104 +19,74 @@ namespace PastPaperHelper.ViewModels
 {
     public class SettingsViewModel : BindableBase
     {
-        public static ObservableCollection<Subject> IGSubjects { get; set; } = new ObservableCollection<Subject>();
-        public static ObservableCollection<Subject> ALSubjects { get; set; } = new ObservableCollection<Subject>();
-        public static ObservableCollection<Subject> SubjectSubscribed { get; set; } = new ObservableCollection<Subject>();
-
-        public static void RefreshSubjectLists()
-        {
-            IGSubjects.Clear();
-            ALSubjects.Clear();
-            foreach (Subject item in PastPaperHelperCore.SubjectsLoaded)
-            {
-                if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(item);
-                else ALSubjects.Add(item);
-            }
-        }
-
-        public static void RefreshSubscription()
-        {
-            SubjectSubscribed.Clear();
-            foreach (KeyValuePair<Subject, PaperRepository> item in PastPaperHelperCore.Source.Subscription)
-            {
-                SubjectSubscribed.Add(item.Key);
-            }
-        }
-
         public SettingsViewModel()
         {
-            Path = Properties.Settings.Default.Path;
-            PaperSource = PastPaperHelperCore.Source;
-
-            //AutoUpdateFiles = Properties.Settings.Default.AutoUpdateFiles;
-            //AutoUpdateProgram = Properties.Settings.Default.AutoUpdateProgram;
+            _updateFrequency = (UpdateFrequency)Properties.Settings.Default.UpdatePolicy;
+            _paperSource = Properties.Settings.Default.PaperSource;
+            _path = Properties.Settings.Default.Path;
+            _autoUpdateFileList = Properties.Settings.Default.AutoUpdateFileList;
         }
 
+        #region Setting: PaperSource
+        private string _paperSource;
+        public string PaperSource
+        {
+            get { return _paperSource; }
+            set { SetProperty(ref _paperSource, value); PaperSourceChanged(value); }
+        }
 
+        private void PaperSourceChanged(string value)
+        {
+            Properties.Settings.Default.PaperSource = value;
+            Properties.Settings.Default.Save();
+        }
+        #endregion
+
+        #region Setting: Path
         private string _path;
         public string Path
         {
             get { return _path; }
-            set 
-            { 
-                SetProperty(ref _path, value);
-                if (Directory.Exists(value))
-                {
-                    Properties.Settings.Default.Path = value;
-                    Properties.Settings.Default.Save();
-                }
-            }
+            set { SetProperty(ref _path, value); }
         }
+        #endregion
 
-        private PaperSource _paperSource;
-        public PaperSource PaperSource
+        #region Setting: UpdateFrequency
+        private UpdateFrequency _updateFrequency;
+        public UpdateFrequency UpdateFrequency
         {
-            get { return _paperSource; }
-            set 
-            { 
-                SetProperty(ref _paperSource, value);
-                if (value != null)
-                {
-                    //PastPaperHelperCore.Source = value;
-                    //Properties.Settings.Default.PaperSource = value.Name;
-                    //Properties.Settings.Default.Save();
-                }
-            }
+            get { return _updateFrequency; }
+            set { SetProperty(ref _updateFrequency, value); UpdateFrequencyChanged(value); }
         }
 
-        private bool _autoUpdateFiles;
-        public bool AutoUpdateFiles
+        private void UpdateFrequencyChanged(UpdateFrequency value)
         {
-            get { return _autoUpdateFiles; }
-            set
-            {
-                SetProperty(ref _autoUpdateFiles, value);
-                //Properties.Settings.Default.AutoUpdateFiles = value;
-                Properties.Settings.Default.Save();
-            }
+            Properties.Settings.Default.UpdatePolicy = (int)value;
+            Properties.Settings.Default.Save();
         }
+        #endregion
 
-        private bool _autoUpdateProgram;
-        public bool AutoUpdateProgram
+        private bool _autoUpdateFileList;
+        public bool AutoUpdateFileList
         {
-            get { return _autoUpdateProgram; }
-            set
-            {
-                SetProperty(ref _autoUpdateProgram, value);
-                //Properties.Settings.Default.AutoUpdateProgram = value;
-                Properties.Settings.Default.Save();
-            }
+            get { return _autoUpdateFileList; }
+            set { SetProperty(ref _autoUpdateFileList, value); }
         }
+        //TODO: implement this option
 
+        #region RemoveSubjectCommand
+        private DelegateCommand<Subject> _removeSubjectCommand;
+        public DelegateCommand<Subject> RemoveSubjectCommand =>
+            _removeSubjectCommand ?? (_removeSubjectCommand = new DelegateCommand<Subject>(ExecuteRemoveSubjectCommand));
 
-        public DelegateCommand RemoveSubjectCommand { get; set; }
-        private void RemoveSubjectAsync(object param)
+        void ExecuteRemoveSubjectCommand(Subject subj)
         {
-            Subject subject = (Subject)param;
-            //SubscriptionManager.Unsubscribe(subject);
-            SubjectSubscribed.Remove(subject);
+            PastPaperHelperUpdateService.Unsubscribe(subj);
+            MainWindowViewModel.RefreshSubscribedSubjects();
         }
+        #endregion
 
+        #region RemoveSelectedSubjectsCommand
         private DelegateCommand<IList> _removeSelectedSubjectsCommand;
         public DelegateCommand<IList> RemoveSelectedSubjectsCommand =>
             _removeSelectedSubjectsCommand ?? (_removeSelectedSubjectsCommand = new DelegateCommand<IList>(ExecuteRemoveSelectedSubjectsCommand));
@@ -126,49 +96,12 @@ namespace PastPaperHelper.ViewModels
             while (list.Count > 0)
             {
                 Subject subject = (Subject)list[0];
-                SubjectSubscribed.Remove(subject);
-                //TODO: SubscriptionManager.Unsubscribe(subject);
+                ExecuteRemoveSubjectCommand(subject);
             }
         }
+        #endregion
 
-        private DelegateCommand<Subject> _addSubjectCommand;
-        public DelegateCommand<Subject> AddSubjectCommand =>
-            _addSubjectCommand ?? (_addSubjectCommand = new DelegateCommand<Subject>(ExecuteAddSubjectCommand));
-
-        private async void ExecuteAddSubjectCommand(Subject subject)
-        {
-            pending.Add(subject);
-            await CheckSubscription();
-        }
-
-        private bool isLoading = false;
-        private List<Subject> pending = new List<Subject>();
-        public async Task CheckSubscription()
-        {
-            if (isLoading) return;
-            isLoading = true;
-            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Visible;
-
-            while (pending.Count != 0)
-            {
-                try
-                {
-                    bool result = true;//TODO: await PastPaperHelperCore.Subscribe(pending[0]);
-                    if (result) SubjectSubscribed.Add(pending[0]);
-                    pending.RemoveAt(0);
-                }
-                catch (Exception)
-                {
-                    await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PastPaperHelperCore.Source.Name + ", please check your Internet connection.\nYour subjects will be synced when connected to Internet"), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                    isLoading = false;
-                    Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
-                    return;
-                }
-            }
-            isLoading = false;
-            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
-        }
-
+        #region BrowseCommand
         private DelegateCommand _browseCommand;
         public DelegateCommand BrowseCommand =>
             _browseCommand ?? (_browseCommand = new DelegateCommand(ExecuteBrowseCommand));
@@ -180,11 +113,13 @@ namespace PastPaperHelper.ViewModels
                 if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     Path = dialog.FileName;
+                    Properties.Settings.Default.Path = dialog.FileName;
+                    Properties.Settings.Default.Save();
                 }
                 else return;
-                //TODO: Invoke Change Path Event
             }
         }
+        #endregion
 
     }
 }

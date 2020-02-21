@@ -69,7 +69,7 @@ namespace PastPaperHelper.Sources
             //Write source info
             XmlElement dataNode = doc.CreateElement("Data");
             dataNode.SetAttribute("LastUpdate", DateTime.Now.ToString());
-            dataNode.SetAttribute("Source", PastPaperHelperCore.Source.Name.ToLower().Replace(' ', '_'));
+            dataNode.SetAttribute("Source", PastPaperHelperCore.Source.Name);
             doc.AppendChild(dataNode);
 
             //Write subject and url pairs

@@ -6,12 +6,22 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
+using PastPaperHelper.Core.Tools;
 
 namespace PastPaperHelper.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
         public static ObservableCollection<Subject> SubscribedSubjects { get; private set; } = new ObservableCollection<Subject>();
+
+        public static void RefreshSubscribedSubjects()
+        {
+            SubscribedSubjects.Clear();
+            foreach (Subject item in PastPaperHelperCore.SubscribedSubjects)
+            {
+                SubscribedSubjects.Add(item);
+            }
+        }
 
         private readonly IRegionManager _regionManager;
 

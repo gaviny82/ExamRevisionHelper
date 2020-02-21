@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:models="clr-namespace:PastPaperHelper.Models"
-             xmlns:prism="http://prismlibrary.com/" xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
+             xmlns:prism="http://prismlibrary.com/" 
+             xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <UserControl.Resources>
         <DataTemplate x:Key="DisplaySubject" DataType="{x:Type models:Subject}">
@@ -26,15 +27,15 @@
                   VirtualizingPanel.IsVirtualizing="True">
             <TreeViewItem Header="IGCSE"
                           ItemTemplate="{StaticResource DisplaySubject}"
-                          ItemsSource="{x:Static vm:SettingsViewModel.IGSubjects}" />
+                          ItemsSource="{x:Static vm:SubjectDialogViewModel.IGSubjects}" />
             <TreeViewItem Header="A-Level"
                           ItemTemplate="{StaticResource DisplaySubject}"
-                          ItemsSource="{x:Static vm:SettingsViewModel.ALSubjects}" />
+                          ItemsSource="{x:Static vm:SubjectDialogViewModel.ALSubjects}" />
         </TreeView>
         <Button Grid.Column="0" Margin="0,0,8,0" VerticalAlignment="Bottom"
                 Command="{x:Static md:DialogHost.CloseDialogCommand}"
                 Content="Done" />
-        <Button Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Bottom" Click="AddSubject_Click" Content="Add" />
+        <Button Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Bottom" Content="Add" Command="{Binding SubscribeSubjectCommand}" CommandParameter="{Binding ElementName=selectionTreeView, Path=SelectedItem}"/>
     </Grid>
 
 </UserControl>

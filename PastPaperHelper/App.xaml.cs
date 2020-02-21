@@ -57,14 +57,13 @@ namespace PastPaperHelper
             string[] subsArr = new string[subs.Count];
             subs.CopyTo(subsArr, 0);
 
-            InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
-            if (InitResult != InitializationResult.Error)
+            PastPaperHelperUpdateService.SubjectUnsubscribedEvent += (subj) =>
             {
-                PastPaperHelperCore.SubscribedSubjects.ForEach((item) =>
-                {
-                    MainWindowViewModel.SubscribedSubjects.Add(item);
-                });
-            }
+                var coll = PastPaperHelper.Properties.Settings.Default.SubjectsSubcription;
+                if (coll.Contains(subj.SyllabusCode)) coll.Remove(subj.SyllabusCode);
+                PastPaperHelper.Properties.Settings.Default.Save();
+            };
+            InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
         }
     }
 }
