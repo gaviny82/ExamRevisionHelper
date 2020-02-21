@@ -52,6 +52,16 @@ namespace PastPaperHelper.Core.Tools
         public static event SubjectUnsubscribedEventHandler SubjectUnsubscribedEvent;
 
 
+        public delegate void SubjectSubscribedEventHandler(Subject subj);
+
+        public static event SubjectSubscribedEventHandler SubjectSubscribedEvent;
+
+
+        public delegate void SubjectSubscribeFailedEventHandler(Subject subj);
+
+        public static event SubjectSubscribeFailedEventHandler SubjectSubscribeFailedEvent;
+
+
         public static async void UpdateAll(ICollection<string> subscribedSubjects)
         {
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs 
@@ -172,31 +182,21 @@ namespace PastPaperHelper.Core.Tools
             });
         }
 
-        /* TODO: Hot reload on update
-        public static async Task UpdateSubject(Subject subj)
-        {
-            var downloadThread = Task.Run(() =>
-            {
-                return PastPaperHelperCore.Source.GetPapers(subj);
-            });
-            //Save to XML
-            PastPaperHelperCore.Source.Subscription.Add(subj, await downloadThread);
-        }
-        */
-
-        public async static Task<bool> SubscribeAsync(Subject subject)
+        public async static Task<bool> SubscribeAsync(Subject subj)
         {
             try
             {
-                await PastPaperHelperCore.Source?.AddOrUpdateSubject(subject);
-                PastPaperHelperCore.SubscribedSubjects.Add(subject);
+                if (PastPaperHelperCore.SubscribedSubjects.Contains(subj)) return false;
+
+                await PastPaperHelperCore.Source?.AddOrUpdateSubject(subj);
+                PastPaperHelperCore.SubscribedSubjects.Add(subj);
             }
             catch (Exception)
             {
-                //TODO: invoke SubscriptionFailed event
+                SubjectSubscribeFailedEvent?.Invoke(subj);
                 return false;
             }
-            //TODO: invoke SubscriptionSucceeded event
+            SubjectSubscribedEvent?.Invoke(subj);
             return true;
         }
 

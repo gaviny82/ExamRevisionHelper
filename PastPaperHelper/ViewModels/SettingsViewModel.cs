@@ -27,7 +27,7 @@ namespace PastPaperHelper.ViewModels
             _autoUpdateFileList = Properties.Settings.Default.AutoUpdateFileList;
         }
 
-        #region Property: PaperSource
+        #region Setting: PaperSource
         private string _paperSource;
         public string PaperSource
         {
@@ -42,7 +42,7 @@ namespace PastPaperHelper.ViewModels
         }
         #endregion
 
-        #region Property: Path
+        #region Setting: Path
         private string _path;
         public string Path
         {
@@ -51,7 +51,7 @@ namespace PastPaperHelper.ViewModels
         }
         #endregion
 
-        #region Property: UpdateFrequency
+        #region Setting: UpdateFrequency
         private UpdateFrequency _updateFrequency;
         public UpdateFrequency UpdateFrequency
         {
@@ -72,6 +72,7 @@ namespace PastPaperHelper.ViewModels
             get { return _autoUpdateFileList; }
             set { SetProperty(ref _autoUpdateFileList, value); }
         }
+        //TODO: implement this option
 
         #region RemoveSubjectCommand
         private DelegateCommand<Subject> _removeSubjectCommand;
@@ -99,40 +100,6 @@ namespace PastPaperHelper.ViewModels
             }
         }
         #endregion
-
-        private async void ExecuteAddSubjectCommand(Subject subject)
-        {
-            pending.Add(subject);
-            await CheckSubscription();
-        }
-
-        private bool isLoading = false;
-        private List<Subject> pending = new List<Subject>();
-        public async Task CheckSubscription()
-        {
-            if (isLoading) return;
-            isLoading = true;
-            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Visible;
-
-            while (pending.Count != 0)
-            {
-                try
-                {
-                    bool result = true;//TODO: await PastPaperHelperCore.Subscribe(pending[0]);
-                    //if (result) SubjectSubscribed.Add(pending[0]);
-                    pending.RemoveAt(0);
-                }
-                catch (Exception)
-                {
-                    await Task.Factory.StartNew(() => MainWindow.MainSnackbar.MessageQueue.Enqueue("Failed to fetch data from " + PastPaperHelperCore.Source.Name + ", please check your Internet connection.\nYour subjects will be synced when connected to Internet"), new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                    isLoading = false;
-                    Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
-                    return;
-                }
-            }
-            isLoading = false;
-            Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
-        }
 
         #region BrowseCommand
         private DelegateCommand _browseCommand;
