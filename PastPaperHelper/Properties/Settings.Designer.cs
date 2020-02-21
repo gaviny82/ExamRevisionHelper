@@ -83,5 +83,17 @@ namespace PastPaperHelper.Properties {
                 this["UpdatePolicy"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoUpdateFileList {
+            get {
+                return ((bool)(this["AutoUpdateFileList"]));
+            }
+            set {
+                this["AutoUpdateFileList"] = value;
+            }
+        }
     }
 }

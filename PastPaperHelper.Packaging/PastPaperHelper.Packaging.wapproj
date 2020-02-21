@@ -55,7 +55,7 @@
     <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <PackageCertificateThumbprint>CB833D719C8580CA96B0A502A01325D07A601447</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>CC92B2785FA3DA025DD789BBBA37FED13E580D2B</PackageCertificateThumbprint>
     <EntryPointProjectUniqueName>..\PastPaperHelper\PastPaperHelper.csproj</EntryPointProjectUniqueName>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
@@ -162,6 +162,7 @@
     <Content Include="Images\Wide310x150Logo.scale-150.png" />
     <Content Include="Images\Wide310x150Logo.scale-200.png" />
     <Content Include="Images\Wide310x150Logo.scale-400.png" />
+    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PastPaperHelper\PastPaperHelper.csproj" />

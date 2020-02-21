@@ -7,12 +7,12 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="ca37c4a1-af39-400b-a2b3-23fc22668368"
-    Publisher="CN=Jincheng You, O=Jincheng You, C=CN"
+    Name="22378JinchengYou.PastpaperHelper"
+    Publisher="CN=6FC5A7E5-4851-4ED9-9043-146ABB68A750"
     Version="2.0.0.0" />
 
   <Properties>
-    <DisplayName>PastPaperHelper</DisplayName>
+    <DisplayName>Past Paper Helper</DisplayName>
     <PublisherDisplayName>Jincheng You</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
@@ -31,7 +31,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="PastPaperHelper"
+        DisplayName="Past Paper Helper"
         Description="PastPaperHelper.Packaging"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
