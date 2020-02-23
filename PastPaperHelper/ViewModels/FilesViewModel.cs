@@ -34,14 +34,17 @@ namespace PastPaperHelper.ViewModels
         }
         #endregion
 
-        private DelegateCommand<PastPaperResource> _openOnlineResourceCommand;
-        public DelegateCommand<PastPaperResource> OpenOnlineResourcesCommand =>
-            _openOnlineResourceCommand ?? (_openOnlineResourceCommand = new DelegateCommand<PastPaperResource>(OpenOnlineResource));
+        #region OpenResourcesCommand
+        private DelegateCommand<PastPaperResource> _openResourceCommand;
+        public DelegateCommand<PastPaperResource> OpenResourcesCommand =>
+            _openResourceCommand ?? (_openResourceCommand = new DelegateCommand<PastPaperResource>(ExecuteOpenResource));
 
-        private void OpenOnlineResource(PastPaperResource resource)
+        private void ExecuteOpenResource(PastPaperResource resource)
         {
-            Process.Start(resource.Url);
-            //TODO: Check local copy
+            Process.Start(resource.State == ResourceStates.Offline && !string.IsNullOrEmpty(resource.Path) ?
+            resource.Path :
+            resource.Url);
         }
+        #endregion
     }
 }

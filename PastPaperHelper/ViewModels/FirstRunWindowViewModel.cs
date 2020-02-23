@@ -195,21 +195,15 @@ namespace PastPaperHelper.ViewModels
         {
             IGSubjects.Clear();
             ALSubjects.Clear();
-            switch (source)
+            PastPaperHelperCore.Source = source switch
             {
-                default:
-                    PastPaperHelperCore.Source = new PaperSourceGCEGuide();
-                    break;
-                case "gce_guide":
-                    PastPaperHelperCore.Source = new PaperSourceGCEGuide();
-                    break;
-                case "papacambridge":
-                    PastPaperHelperCore.Source = new PaperSourcePapaCambridge();
-                    break;
-                case "cie_notes":
-                    PastPaperHelperCore.Source = new PaperSourceCIENotes();
-                    break;
-            }
+                "gce_guide" => new PaperSourceGCEGuide(),
+                "papacambridge" => new PaperSourcePapaCambridge(),
+                "cie_notes" => new PaperSourceCIENotes(),
+                _ => new PaperSourceGCEGuide(),
+            };
+
+            await PastPaperHelperCore.LoadLocalFiles(Path);
             await PastPaperHelperUpdateService.UpdateSubjectList();
         }
         #endregion

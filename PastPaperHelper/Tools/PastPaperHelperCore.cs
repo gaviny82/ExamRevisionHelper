@@ -136,6 +136,11 @@ namespace PastPaperHelper.Core.Tools
             }
         }
 
+        public static async Task LoadLocalFiles(string dir)
+        {
+
+        }
+
         public static bool TryFindSubject(string syllabusCode, out Subject result, ICollection<Subject> range = null)
         {
             foreach (Subject item in range ?? SubjectsLoaded)
