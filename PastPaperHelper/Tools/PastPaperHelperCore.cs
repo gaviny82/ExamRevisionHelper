@@ -56,6 +56,7 @@ namespace PastPaperHelper.Core.Tools
 
                 if (subscription == null) return InitializationResult.SuccessNoUpdate;
                 LoadSubscribedSubjects(subscription);
+                //TODO: prompt if repo of any subscribed subject is not found
                 //Note: if not supported, throw exception and try reloading. If error still occurred in the reload process, remove this failed subject automatically and notify the user.
 
                 DateTime lastUpdate = Source.LastUpdated;
