@@ -14,11 +14,13 @@ namespace PastPaperHelper.Sources
         public PaperSourceGCEGuide()
         {
             Name = "gce_guide";
+            DisplayName = "GCE Guide";
             UrlBase = "https://papers.gceguide.com/";
         }
         public PaperSourceGCEGuide(XmlDocument data) : base(data)
         {
             Name = "gce_guide";
+            DisplayName = "GCE Guide";
             UrlBase = "https://papers.gceguide.com/";
 
             XmlNode subjListNode = data.SelectSingleNode("/Data/SubjectList");
@@ -163,7 +165,9 @@ namespace PastPaperHelper.Sources
                         else exam = year.Winter; break;
                 }
 
-                if (fileName.Contains("gt"))
+                if (fileName.Contains("sy"))
+                    year.Syllabus = new Syllabus { Url = url + "/" + fileName, Year = yr };
+                else if (fileName.Contains("gt"))
                     exam.GradeThreshold = new GradeThreshold { Exam = exam, Url = url + "/" + fileName, };
                 else if (fileName.Contains("er"))
                     exam.ExaminersReport = new ExaminersReport { Exam = exam, Url = url + "/" + fileName, };

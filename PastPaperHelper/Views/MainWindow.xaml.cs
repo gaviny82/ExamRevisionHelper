@@ -107,7 +107,7 @@ namespace PastPaperHelper.Views
             else if (initResult == InitializationResult.Error)
             {
                 mainSnackbar.MessageQueue.Enqueue(
-                    content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.Name}",
+                    content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.DisplayName}",
                     actionContent: "RELOAD",
                     actionHandler: (param)=> { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
                     promote: true,

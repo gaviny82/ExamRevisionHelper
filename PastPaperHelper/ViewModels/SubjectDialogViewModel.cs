@@ -63,6 +63,7 @@ namespace PastPaperHelper.ViewModels
             {
                 await PastPaperHelperUpdateService.SubscribeAsync(subj);
             }
+            await PastPaperHelperCore.SaveDataAsync();
             isLoading = false;
             Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
         }

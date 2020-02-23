@@ -236,7 +236,7 @@ namespace PastPaperHelper.ViewModels
             {
                 try
                 {
-                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.Name}...";
+                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.DisplayName}...";
                     await PastPaperHelperUpdateService.SubscribeAsync(subj);
                 }
                 catch (Exception)
