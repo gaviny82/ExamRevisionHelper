@@ -38,6 +38,11 @@ namespace PastPaperHelper.ViewModels
             //    }
             //}
             string cacheFile = $"{Properties.Settings.Default.Path}\\.pastpaperhelper\\files.dat";
+            if (!Directory.Exists($"{Properties.Settings.Default.Path}\\.pastpaperhelper"))
+            {
+                Directory.CreateDirectory($"{Properties.Settings.Default.Path}\\.pastpaperhelper");
+                File.SetAttributes($"{Properties.Settings.Default.Path}\\.pastpaperhelper", FileAttributes.Hidden);
+            }
             if (File.Exists(cacheFile))
             {
                 using (FileStream fileStream = File.OpenRead(cacheFile))
@@ -60,22 +65,25 @@ namespace PastPaperHelper.ViewModels
                     if (!newMap.ContainsKey(fileName)) newMap.Add(fileName, path);
                 }
 
-                foreach (var item in newMap)
+                if (LocalFiles == null) { newEntry = true; } else
                 {
-                    if (!LocalFiles.ContainsKey(item.Key)|| LocalFiles[item.Key] != item.Value)
+                    foreach (var item in newMap)
                     {
-                        newEntry = true;
-                        break;
-                    }
-                }
-                if (!newEntry)
-                {
-                    foreach (var item in LocalFiles)
-                    {
-                        if (!newMap.ContainsKey(item.Key))
+                        if (!LocalFiles.ContainsKey(item.Key) || LocalFiles[item.Key] != item.Value)
                         {
                             newEntry = true;
                             break;
+                        }
+                    }
+                    if (!newEntry)
+                    {
+                        foreach (var item in LocalFiles)
+                        {
+                            if (!newMap.ContainsKey(item.Key))
+                            {
+                                newEntry = true;
+                                break;
+                            }
                         }
                     }
                 }
