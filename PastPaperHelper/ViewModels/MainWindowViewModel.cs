@@ -7,6 +7,9 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
 using PastPaperHelper.Core.Tools;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 
 namespace PastPaperHelper.ViewModels
 {

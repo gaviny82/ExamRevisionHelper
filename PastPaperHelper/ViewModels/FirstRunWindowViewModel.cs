@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
@@ -226,6 +227,46 @@ namespace PastPaperHelper.ViewModels
             IsRetryEnabled2 = false;
             PastPaperHelperCore.Source.Subscription.Clear();
 
+            UpdateMessage = $"Initializing local files...";
+
+            Task t = Task.Run(() => 
+            {
+                if (Directory.Exists(Path))
+                {
+                    //XmlDocument doc = new XmlDocument();
+                    //doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+                    //XmlElement filesNode = doc.CreateElement("Files");
+                    //doc.AppendChild(filesNode);
+
+                    //foreach (string file in Directory.EnumerateFiles(Path, "*.pdf", SearchOption.AllDirectories))
+                    //{
+                    //    XmlElement fileNode = doc.CreateElement("File");
+                    //    fileNode.SetAttribute("Path", file);
+                    //    string[] split = file.Split('\\');
+                    //    fileNode.SetAttribute("Name", split.Last());
+                    //    filesNode.AppendChild(fileNode);
+                    //}
+
+                    var cachePath = $"{Path}\\.pastpaperhelper";
+                    //if (!Directory.Exists(cachePath)) Directory.CreateDirectory(cachePath);
+                    //doc.Save($"{cachePath}\\files.xml");
+
+                    var lst = Directory.EnumerateFiles(Path, "*.pdf", SearchOption.AllDirectories);
+                    Dictionary<string, string> map = new Dictionary<string, string>();
+                    foreach (var path in lst)
+                    {
+                        string fileName = path.Split('\\').Last();
+                        if (!map.ContainsKey(fileName)) map.Add(fileName, path);
+                    }
+                    using (FileStream filestream = File.Create($"{cachePath}\\files.dat"))
+                    {
+                        BinaryFormatter serializer = new BinaryFormatter();
+                        serializer.Serialize(filestream, map);
+                    }
+                    
+                }
+            });
+
             foreach (Subject subj in lst)
             {
                 try
@@ -244,6 +285,8 @@ namespace PastPaperHelper.ViewModels
                 }
                 UpdateCount += 1;
             }
+            await t;
+
             UpdateTitle = "Finished setting up PastPaperHelper.";
             UpdateMessage = "Click \"Done\" to exit setup and restart the program.";
             IsRevertAllowed = true;
