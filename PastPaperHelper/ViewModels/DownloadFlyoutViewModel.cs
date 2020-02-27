@@ -1,6 +1,9 @@
-﻿using PastPaperHelper.Models;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using PastPaperHelper.Sources;
 using PastPaperHelper.Views;
+using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,76 +13,24 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PastPaperHelper.ViewModels
 {
-    public class DownloadFlyoutViewModel : NotificationObject
+    public class DownloadFlyoutViewModel : BindableBase
     {
         public static ObservableCollection<DownloadTask> Tasks = new ObservableCollection<DownloadTask>();
 
-        private DelegateCommand _downloadCommand;
-        public DelegateCommand DownloadCommand =>
-            _downloadCommand ?? (_downloadCommand = new DelegateCommand(ExecuteDownloadCommand));
+        #region DownloadCommand
+        private DelegateCommand<Subject> _downloadCommand;
+        public DelegateCommand<Subject> DownloadCommand =>
+            _downloadCommand ?? (_downloadCommand = new DelegateCommand<Subject>(ExecuteDownloadCommand));
 
-        private DelegateCommand _logCommand;
-        public DelegateCommand LogCommand =>
-            _logCommand ?? (_logCommand = new DelegateCommand(ExecuteLogCommand));
-
-        void ExecuteLogCommand(object param)
+        async void ExecuteDownloadCommand(Subject subj)
         {
-            Task.Factory.StartNew(() =>
-            {
-                Log += $"\n[{DateTime.Now.ToShortTimeString()}] {param.ToString()}";
-            }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-        }
+            if (subj == null) return;
 
-        private int _totalTasks;
-        public int TotalTasks
-        {
-            get { return _totalTasks; }
-            set { _totalTasks = value; RaisePropertyChangedEvent(nameof(TotalTasks)); }
-        }
-
-        private int _taskCompleted;
-        public int TaskCompleted
-        {
-            get { return _taskCompleted; }
-            set { _taskCompleted = value; RaisePropertyChangedEvent(nameof(TaskCompleted)); }
-        }
-
-        private bool _isIndeterminate = true;
-        public bool IsIndeterminate
-        {
-            get { return _isIndeterminate; }
-            set { _isIndeterminate = value; RaisePropertyChangedEvent(nameof(IsIndeterminate)); }
-        }
-
-        private string _log;
-        public string Log
-        {
-            get { return _log; }
-            set { _log = value; RaisePropertyChangedEvent(nameof(Log)); }
-        }
-
-        private string _message = "Waiting for download...";
-        public string Message
-        {
-            get { return _message; }
-            set { _message = value; RaisePropertyChangedEvent(nameof(Message)); }
-        }
-
-        public DownloadFlyoutViewModel()
-        {
-            MainWindow.DownloadFlyoutViewModel = this;
-            Log = $"[{DateTime.Now.ToShortTimeString()}] Download service initialized.";
-        }
-
-        async void ExecuteDownloadCommand(object param)
-        {
-            if (!(param is Subject)) return;
-
-            Subject subj = (Subject)param;
-            PaperRepository repo = SubscriptionManager.Subscription[subj];
+            PaperRepository repo = PastPaperHelperCore.Source.Subscription[subj];
             TotalTasks = 0;
             TaskCompleted = 0;
             duplicateCount = 0;
@@ -122,6 +73,73 @@ namespace PastPaperHelper.ViewModels
             IsIndeterminate = true;
             Tasks.Clear();
         }
+        #endregion
+
+        #region LogCommand
+        private DelegateCommand<string> _logCommand;
+        public DelegateCommand<string> LogCommand =>
+            _logCommand ?? (_logCommand = new DelegateCommand<string>(ExecuteLogCommand));
+
+        void ExecuteLogCommand(string param)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Log += $"\n[{DateTime.Now.ToShortTimeString()}] {param.ToString()}";
+            });
+        }
+        #endregion
+
+
+        #region Property: TotalTasks
+        private int _totalTasks;
+        public int TotalTasks
+        {
+            get { return _totalTasks; }
+            set { SetProperty(ref _totalTasks, value); }
+        }
+        #endregion
+
+        #region Property: TaskCompletd
+        private int _taskCompleted;
+        public int TaskCompleted
+        {
+            get { return _taskCompleted; }
+            set { SetProperty(ref _taskCompleted, value); }
+        }
+        #endregion
+
+        #region Property: IsIndeterminate
+        private bool _isIndeterminate = true;
+        public bool IsIndeterminate
+        {
+            get { return _isIndeterminate; }
+            set { SetProperty(ref _isIndeterminate, value); }
+        }
+        #endregion
+
+        #region Property: Log
+        private string _log = $"[{DateTime.Now.ToShortTimeString()}] Download service initialized.";
+        public string Log
+        {
+            get { return _log; }
+            set { SetProperty(ref _log, value); }
+        }
+        #endregion
+
+        #region Property: Message
+        private string _message = "Waiting for download...";
+        public string Message
+        {
+            get { return _message; }
+            set { SetProperty(ref _message, value); }
+        }
+        #endregion
+
+        public DownloadFlyoutViewModel()
+        {
+
+        }
+
 
         private async void download(int start, int end, WebClient client)
         {
@@ -191,15 +209,17 @@ namespace PastPaperHelper.ViewModels
                     {
                         string file = paper.Url.Split('/').Last();
                         bool duplicate = false;
-                        foreach (var f in MainWindowViewModel.Files)
-                        {
-                            if (file == f.Split('\\').Last())
-                            {
-                                duplicate = true;
-                                duplicateCount++;
-                                break;
-                            }
-                        }
+
+                        //TODO: Check duplicate
+                        //foreach (var f in MainWindowViewModel.Files)
+                        //{
+                        //    if (file == f.Split('\\').Last())
+                        //    {
+                        //        duplicate = true;
+                        //        duplicateCount++;
+                        //        break;
+                        //    }
+                        //}
                         if (!duplicate)
                         {
                             bool flag = false;
