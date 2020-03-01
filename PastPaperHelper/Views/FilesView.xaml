@@ -91,7 +91,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Paper}">
                                 <Button Margin="6,0,0,0"
-                                        Command="{Binding DataContext.OpenOnlineResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:FilesView}}}" CommandParameter="{Binding}"
+                                        Command="{Binding DataContext.OpenResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:FilesView}}}" CommandParameter="{Binding}"
                                         Content="{Binding Type, Converter={StaticResource PaperTypeToIconConverter}}" 
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         ToolTip="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}" />

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -20,21 +21,30 @@ namespace PastPaperHelper.Core.Tools
         public static List<Subject> SubscribedSubjects { get; private set; } = new List<Subject>();
         public static PaperSource Source { get; set; }
         public static string UserDataPath { get; set; }
+        public static string LocalFilesPath { get; set; }
+
+        public static Dictionary<string, string> LocalFiles;
 
         /// <summary>
         /// This function should be called when the PastPaperHelper application starts.
         /// Local user data is loaded, including subjects supported by the current data source, user's subscription and papers of the subscribed subjects, when an XML file path is provided.
         /// </summary>
-        /// <param name="source">Initialize a data source</param>
         /// <param name="userDataFilePath">Path of a XML file that stores user data</param>
+        /// <param name="sourceName">Initialize a data source</param>
         /// <param name="updatePolicy">Specifies update frequency (used in checking update)</param>
         /// <param name="subscription">Syllabus codes of subjects subscribed by the user</param>
         /// <returns>Returns true when the local data needs update OR error is detected when loading user_data.xml.
         /// Returns null: error </returns>
-        public static InitializationResult Initialize(string userDataFilePath, string sourceName, UpdateFrequency updatePolicy, string[] subscription)
+        public static InitializationResult Initialize(string userDataFilePath, string localFilesPath, string sourceName, UpdateFrequency updatePolicy, string[] subscription)
         {
             try
             {
+                LocalFilesPath = localFilesPath;
+                if (!Directory.Exists(localFilesPath))
+                {
+                    Directory.CreateDirectory(localFilesPath);
+                }
+
                 UserDataPath = userDataFilePath;
                 XmlDocument userData = new XmlDocument();
                 userData.Load(userDataFilePath);
