@@ -203,8 +203,6 @@ namespace PastPaperHelper.ViewModels
                 "cie_notes" => new PaperSourceCIENotes(),
                 _ => new PaperSourceGCEGuide(),
             };
-
-            await PastPaperHelperCore.LoadLocalFiles(Path);
             await PastPaperHelperUpdateService.UpdateSubjectList();
         }
         #endregion
@@ -226,66 +224,50 @@ namespace PastPaperHelper.ViewModels
             UpdateTitle = "Almost done";
             IsRetryEnabled2 = false;
             PastPaperHelperCore.Source.Subscription.Clear();
+            PastPaperHelperCore.SubscribedSubjects.Clear();
 
             UpdateMessage = $"Initializing local files...";
 
-            Task t = Task.Run(() => 
+            try
             {
-                if (Directory.Exists(Path))
+                Task t = Task.Run(() =>
                 {
-                    //XmlDocument doc = new XmlDocument();
-                    //doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
-                    //XmlElement filesNode = doc.CreateElement("Files");
-                    //doc.AppendChild(filesNode);
-
-                    //foreach (string file in Directory.EnumerateFiles(Path, "*.pdf", SearchOption.AllDirectories))
-                    //{
-                    //    XmlElement fileNode = doc.CreateElement("File");
-                    //    fileNode.SetAttribute("Path", file);
-                    //    string[] split = file.Split('\\');
-                    //    fileNode.SetAttribute("Name", split.Last());
-                    //    filesNode.AppendChild(fileNode);
-                    //}
-
-                    var cachePath = $"{Path}\\.pastpaperhelper";
-                    //if (!Directory.Exists(cachePath)) Directory.CreateDirectory(cachePath);
-                    //doc.Save($"{cachePath}\\files.xml");
-
-                    var lst = Directory.EnumerateFiles(Path, "*.pdf", SearchOption.AllDirectories);
-                    Dictionary<string, string> map = new Dictionary<string, string>();
-                    foreach (var path in lst)
+                    if (Directory.Exists(Path))//TODO: disable next command if Path does not exist
                     {
-                        string fileName = path.Split('\\').Last();
-                        if (!map.ContainsKey(fileName)) map.Add(fileName, path);
-                    }
-                    using (FileStream filestream = File.Create($"{cachePath}\\files.dat"))
-                    {
-                        BinaryFormatter serializer = new BinaryFormatter();
-                        serializer.Serialize(filestream, map);
-                    }
-                    
-                }
-            });
+                        var cachePath = $"{Path}\\.pastpaperhelper";
 
-            foreach (Subject subj in lst)
-            {
-                try
+                        var lst = Directory.EnumerateFiles(Path, "*.pdf", SearchOption.AllDirectories);
+                        Dictionary<string, string> map = new Dictionary<string, string>();
+                        foreach (var path in lst)
+                        {
+                            string fileName = path.Split('\\').Last();
+                            if (!map.ContainsKey(fileName)) map.Add(fileName, path);
+                        }
+                        using (FileStream filestream = File.Create($"{cachePath}\\files.dat"))
+                        {
+                            BinaryFormatter serializer = new BinaryFormatter();
+                            serializer.Serialize(filestream, map);
+                        }
+                    }
+                });
+
+                foreach (Subject subj in lst)
                 {
                     UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.DisplayName}...";
                     await PastPaperHelperUpdateService.SubscribeAsync(subj);
+                    UpdateCount += 1;
                 }
-                catch (Exception)
-                {
-                    IsRetryEnabled2 = true;
-                    IsRevertAllowed = true;
-                    IsProceedAllowed = false;
-                    UpdateTitle = "Error";
-                    UpdateMessage = "";
-                    return;
-                }
-                UpdateCount += 1;
+                await t;
             }
-            await t;
+            catch (Exception)
+            {
+                IsRetryEnabled2 = true;
+                IsRevertAllowed = true;
+                IsProceedAllowed = false;
+                UpdateTitle = "Error";
+                UpdateMessage = "";
+                return;
+            }
 
             UpdateTitle = "Finished setting up PastPaperHelper.";
             UpdateMessage = "Click \"Done\" to exit setup and restart the program.";
@@ -301,7 +283,7 @@ namespace PastPaperHelper.ViewModels
 
         void ExecuteRetryCommand()
         {
-            var task = PastPaperHelperUpdateService.UpdateSubjectList();
+            _ = PastPaperHelperUpdateService.UpdateSubjectList();
         }
         #endregion
     }

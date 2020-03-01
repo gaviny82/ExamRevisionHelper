@@ -63,7 +63,7 @@ namespace PastPaperHelper
                 if (coll.Contains(subj.SyllabusCode)) coll.Remove(subj.SyllabusCode);
                 PastPaperHelper.Properties.Settings.Default.Save();
             };
-            InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
+            InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.Path, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
         }
     }
 }
