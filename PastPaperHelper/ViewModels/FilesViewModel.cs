@@ -33,21 +33,22 @@ namespace PastPaperHelper.ViewModels
                 File.SetAttributes($"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper", FileAttributes.Hidden);
             }
             string cacheFile = $"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper\\files.dat";
-            if (File.Exists(cacheFile))
+
+            Task load = Task.Run(() =>
             {
-                Task load = Task.Run(() =>
+                if (File.Exists(cacheFile))
                 {
                     using (FileStream fileStream = File.OpenRead(cacheFile))
                     {
                         BinaryFormatter binaryFormatter = new BinaryFormatter();
                         PastPaperHelperCore.LocalFiles = (Dictionary<string, string>)binaryFormatter.Deserialize(fileStream);
                     }
-                });
-            }
-            else
-            {
-                PastPaperHelperCore.LocalFiles = new Dictionary<string, string>();
-            }
+                }
+                else
+                {
+                    PastPaperHelperCore.LocalFiles = new Dictionary<string, string>();
+                }
+            });
 
             Dictionary<string, string> newMap = new Dictionary<string, string>();
             CompareLocalFilesToSource = Task.Run(()=>
@@ -59,43 +60,44 @@ namespace PastPaperHelper.ViewModels
                     string fileName = path.Split('\\').Last();
                     if (!newMap.ContainsKey(fileName)) newMap.Add(fileName, path);
                 }
+            });
 
-                //Compare new files list to the stored one
-                bool newEntry = false;
-                if (PastPaperHelperCore.LocalFiles == null) { newEntry = true; }
-                else
+            //Compare new files list to the stored one
+            await load;
+            bool newEntry = false;
+            if (PastPaperHelperCore.LocalFiles == null) { newEntry = true; }
+            else
+            {
+                foreach (var item in newMap)
                 {
-                    foreach (var item in newMap)
+                    if (!PastPaperHelperCore.LocalFiles.ContainsKey(item.Key) || PastPaperHelperCore.LocalFiles[item.Key] != item.Value)
                     {
-                        if (!PastPaperHelperCore.LocalFiles.ContainsKey(item.Key) || PastPaperHelperCore.LocalFiles[item.Key] != item.Value)
+                        newEntry = true;
+                        break;
+                    }
+                }
+                if (!newEntry)
+                {
+                    foreach (var item in PastPaperHelperCore.LocalFiles)
+                    {
+                        if (!newMap.ContainsKey(item.Key))
                         {
                             newEntry = true;
                             break;
                         }
                     }
-                    if (!newEntry)
-                    {
-                        foreach (var item in PastPaperHelperCore.LocalFiles)
-                        {
-                            if (!newMap.ContainsKey(item.Key))
-                            {
-                                newEntry = true;
-                                break;
-                            }
-                        }
-                    }
                 }
+            }
 
-                if (newEntry)
+            if (newEntry)
+            {
+                PastPaperHelperCore.LocalFiles = newMap;
+                using (FileStream filestream = File.Create(cacheFile))
                 {
-                    PastPaperHelperCore.LocalFiles = newMap;
-                    using (FileStream filestream = File.Create(cacheFile))
-                    {
-                        BinaryFormatter serializer = new BinaryFormatter();
-                        serializer.Serialize(filestream, newMap);
-                    }
+                    BinaryFormatter serializer = new BinaryFormatter();
+                    serializer.Serialize(filestream, newMap);
                 }
-            });
+            }
         }
 
 
