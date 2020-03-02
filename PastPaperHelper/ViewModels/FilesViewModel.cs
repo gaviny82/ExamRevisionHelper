@@ -64,6 +64,7 @@ namespace PastPaperHelper.ViewModels
 
             //Compare new files list to the stored one
             await load;
+            await CompareLocalFilesToSource;
             bool newEntry = false;
             if (PastPaperHelperCore.LocalFiles == null) { newEntry = true; }
             else
