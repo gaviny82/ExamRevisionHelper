@@ -27,6 +27,8 @@ namespace PastPaperHelper.Models
 
         public static bool operator ==(Subject left, Subject right)
         {
+            if (left is null && right is null) return true;
+            if (left is null || right is null) return false;
             return left.SyllabusCode.Equals(right.SyllabusCode);
         }
 

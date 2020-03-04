@@ -8,7 +8,7 @@
              xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
              xmlns:converters="clr-namespace:PastPaperHelper.Converters"
              mc:Ignorable="d" Margin="8,0" d:DesignWidth="500">
-    <Grid Height="450">
+    <Grid>
         <TextBlock VerticalAlignment="Top" Text="{Binding Message}" FontSize="14"/>
         <ProgressBar VerticalAlignment="Top" Height="8" Value="{Binding TaskCompleted}" Maximum="{Binding TotalTasks}" Margin="0,20,0,0" IsIndeterminate="{Binding IsIndeterminate}" ToolTip="{Binding Value, RelativeSource={RelativeSource Mode=Self}}"/>
         <ListBox Margin="0,33,0,105" ItemsSource="{x:Static vm:DownloadFlyoutViewModel.Tasks}" VirtualizingPanel.IsVirtualizing="True">
