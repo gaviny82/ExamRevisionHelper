@@ -41,7 +41,7 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <Border Margin="10,60,16,50" BorderBrush="{DynamicResource SecondaryAccentBrush}" BorderThickness="2">
-            <TextBlock Text="Coming soon!"/>
+            <Label Content="//TODO: Provide options to modify download tasks in details.&#xD;&#xA;                          Coming soon in Version 2.x!" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         </Border>
         <Grid VerticalAlignment="Bottom" Margin="10,10,16,10">
             <Grid.ColumnDefinitions>
