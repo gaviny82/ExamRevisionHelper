@@ -16,7 +16,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <local:DownloadFlyout Grid.Column="1" Margin="0,0,16,16" Width="400"/>
+        <local:DownloadFlyout x:Name="downloaPanel" Grid.Column="1" Margin="0,10,10,10" Width="400"/>
         <ComboBox x:Name="subjectSelector" Margin="10,10,24,10" VerticalAlignment="Top" SelectedIndex="0" Grid.Column="0"
                   ToolTip="{Binding RelativeSource={RelativeSource Mode=Self}, Path=SelectedItem.Name}"
                   ItemsSource="{x:Static vm:MainWindowViewModel.SubscribedSubjects}">
@@ -43,15 +43,16 @@
         <Border Margin="10,60,16,50" BorderBrush="{DynamicResource SecondaryAccentBrush}" BorderThickness="2">
             <TextBlock Text="Coming soon!"/>
         </Border>
-        <Grid VerticalAlignment="Bottom" Margin="10">
+        <Grid VerticalAlignment="Bottom" Margin="10,10,16,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Download" ToolTip="Download all papers for the selected subject" Margin="0,0,5,0"/>
-            <Button Grid.Column="1" Content="Pause" Margin="5,0,5,0"/>
-            <Button Grid.Column="2" Content="Cancel" Margin="5,0,0,0"/>
+            <Button Grid.Column="0" Content="Download" ToolTip="Download all papers for the selected subject" Margin="0,0,5,0"
+                    Command="{Binding DownloadCommand}" CommandParameter="{Binding ElementName=subjectSelector, Path=SelectedItem}"/>
+            <Button Grid.Column="1" Content="Pause" Margin="5,0,5,0" Command="{Binding PauseDownloadCommand}"/>
+            <Button Grid.Column="2" Content="Cancel" Margin="5,0,0,0" Command="{Binding CancelDownloadCommand}"/>
         </Grid>
     </Grid>
 </UserControl>

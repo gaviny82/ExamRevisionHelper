@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PastPaperHelper.ViewModels
 {
-    public enum DownloadTaskState { Pending, Completed, Error }
+    public enum DownloadTaskState { Pending, Downloading, Completed, Error }
     public class DownloadTask : BindableBase
     {
         public string FileName { get; set; }

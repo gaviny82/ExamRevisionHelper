@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using PastPaperHelper.ViewModels;
+using System.Windows.Controls;
 
 namespace PastPaperHelper.Views
 {
@@ -10,6 +11,7 @@ namespace PastPaperHelper.Views
         public DownloadView()
         {
             InitializeComponent();
+            (DataContext as DownloadViewModel).DownloadFlyoutViewModel = downloaPanel.DataContext as DownloadFlyoutViewModel;
         }
     }
 }
