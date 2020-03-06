@@ -190,22 +190,31 @@ namespace PastPaperHelper.ViewModels
                     {
                         TaskCompleted++;
                     });
-                    ExecuteLogCommand($"Failed to download {task.FileName}. File already exists at {task.LocalPath}");
+                    ExecuteLogCommand($"[ERROR] Failed to download {task.FileName}. File already exists at {task.LocalPath}");
                 }
                 else
                 {
-                    //Random random = new Random();random.
-                    //var n = random.Next(0, 2); Console.WriteLine(n);
-                    //if (n == 1)
-                    //{
-                    //    ExecuteLogCommand($"Failed to download {task.FileName}. File already exists at {task.LocalPath}"); task.State = DownloadTaskState.Error;  continue; }
-                    Thread.Sleep(750);
-                    task.State = DownloadTaskState.Completed;
-                    lock (DownloadTasksListLock)
+                    try
                     {
+                        //Thread.Sleep(750);
+                        client.DownloadFile(task.ResourceUrl, task.LocalPath);//TODO: Use async method
+                        task.State = DownloadTaskState.Completed;
+
+                        lock (DownloadTasksListLock)
+                        {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                Tasks.Remove(task);
+                                TaskCompleted++;
+                            });
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ExecuteLogCommand($"[ERROR] Failed to download {task.FileName}. {e.Message}"); 
+                        task.State = DownloadTaskState.Error;
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            Tasks.Remove(task);
                             TaskCompleted++;
                         });
                     }
@@ -285,36 +294,6 @@ namespace PastPaperHelper.ViewModels
         public DownloadFlyoutViewModel()
         {
             
-        }
-
-        private async void download(int start, int end, WebClient client)
-        {
-            await Task.Run(() =>
-            {
-                for (int i = start; i < end; i++)
-                {
-                    try
-                    {
-                        client.DownloadFile(Tasks[i].ResourceUrl, Tasks[i].LocalPath);
-                    }
-                    catch (Exception)
-                    {
-                        var index = i;
-                        Task.Factory.StartNew(() =>
-                        {
-                            ExecuteLogCommand($"[ERROR] Failed to download {Tasks[index].FileName}.");
-                        }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                        continue;
-                    }
-                    finally
-                    {
-                        Task.Factory.StartNew(() =>
-                        {
-                            TaskCompleted += 1;
-                        }, new CancellationTokenSource().Token, TaskCreationOptions.None, MainWindow.SyncContextTaskScheduler);
-                    }
-                }
-            });
         }
     }
 }

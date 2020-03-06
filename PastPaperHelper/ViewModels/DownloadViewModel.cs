@@ -89,6 +89,7 @@ namespace PastPaperHelper.ViewModels
                 }
             }
 
+            //ISSUE: duplicate check
             if (exam.GradeThreshold is GradeThreshold)
             {
                 tasks.Add(new DownloadTask
