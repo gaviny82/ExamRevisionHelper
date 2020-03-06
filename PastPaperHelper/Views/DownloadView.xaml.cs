@@ -11,7 +11,7 @@ namespace PastPaperHelper.Views
         public DownloadView()
         {
             InitializeComponent();
-            (DataContext as DownloadViewModel).DownloadFlyoutViewModel = downloaPanel.DataContext as DownloadFlyoutViewModel;
+            (DataContext as DownloadViewModel).DownloadFlyoutViewModel = downloadPanel.DataContext as DownloadFlyoutViewModel;
         }
     }
 }

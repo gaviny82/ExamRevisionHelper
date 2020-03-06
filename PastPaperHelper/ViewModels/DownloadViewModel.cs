@@ -21,23 +21,6 @@ namespace PastPaperHelper.ViewModels
 
         }
 
-        private DelegateCommand _pauseDownloadCommand;
-        public DelegateCommand PauseDownloadCommand =>
-            _pauseDownloadCommand ?? (_pauseDownloadCommand = new DelegateCommand(ExecutePauseDownloadCommand));
-
-        void ExecutePauseDownloadCommand()
-        {
-
-        }
-
-        private DelegateCommand _cancelDownloadCommand;
-        public DelegateCommand CancelDownloadCommand =>
-            _cancelDownloadCommand ?? (_cancelDownloadCommand = new DelegateCommand(ExecuteCancelDownloadCommand));
-
-        void ExecuteCancelDownloadCommand()
-        {
-
-        }
 
         private DelegateCommand<Subject> _downloadCommand;
         public DelegateCommand<Subject> DownloadCommand =>
