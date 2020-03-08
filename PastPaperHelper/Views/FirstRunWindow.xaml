@@ -38,11 +38,11 @@
     <TabControl x:Name="tab" Style="{StaticResource WizardTabControlStyle}">
         <TabItem Header="Welcome" Width="178" Style="{StaticResource WizardTabItemStyle}">
             <Grid Margin="16">
-                <TextBlock Text="Welcome to PastPaperHelper" Margin="0,-75,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Text="Welcome to Past Paper Helper" Margin="0,-75,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
                 <TextBlock Text="This program helps you manage your CAIE past papers in a more efficient way and provides powerful tools to make your revision process easier." 
                            TextWrapping="Wrap" TextAlignment="Center"
                            HorizontalAlignment="Center" Margin="80,35,80,0" VerticalAlignment="Center"/>
-                <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="Preview 2.0 [Beta]"/>
+                <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Text="Preview 2.0 [Release Candidate]"/>
                 <Button Content="Next" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Click="Next_Click"/>
             </Grid>
         </TabItem>

@@ -5,7 +5,7 @@
         xmlns:models="clr-namespace:PastPaperHelper.Models"
         xmlns:prism="http://prismlibrary.com/" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:views="clr-namespace:PastPaperHelper.Views"
-        xmlns:vm="clr-namespace:PastPaperHelper.ViewModels" Title="PastPaperHelper" Width="1024"
+        xmlns:vm="clr-namespace:PastPaperHelper.ViewModels" Title="Past Paper Helper" Width="1024"
         Height="576" MinWidth="800" MinHeight="450" prism:ViewModelLocator.AutoWireViewModel="True"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{StaticResource MaterialDesignFont}"
