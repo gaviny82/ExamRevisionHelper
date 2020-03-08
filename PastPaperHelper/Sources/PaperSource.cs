@@ -9,8 +9,10 @@ namespace PastPaperHelper.Sources
 {
     public abstract class PaperSource
     {
-        public string Name { get; set; }
-        public string UrlBase { get; set; }
+        public string Name { get; protected set; }
+        public string DisplayName { get; protected set; }
+
+        public string UrlBase { get; protected set; }
         public Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
         public Dictionary<Subject, PaperRepository> Subscription { get; private set; } = new Dictionary<Subject, PaperRepository>();
         public DateTime LastUpdated { get; private set; }

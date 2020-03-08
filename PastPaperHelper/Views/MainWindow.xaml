@@ -36,6 +36,7 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                         <sys:String>Files</sys:String>
+                        <sys:String>Download</sys:String>
                         <!--<sys:String>Search</sys:String>
                         <sys:String>Local Storage</sys:String>-->
                         <sys:String>Settings</sys:String>

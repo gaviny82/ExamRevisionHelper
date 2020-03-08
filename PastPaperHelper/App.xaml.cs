@@ -30,8 +30,8 @@ namespace PastPaperHelper
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<FilesView>("Files");
-            containerRegistry.RegisterForNavigation<FilesView>("Search");
-            containerRegistry.RegisterForNavigation<FilesView>("LocalStorage");
+            //containerRegistry.RegisterForNavigation<FilesView>("Search");
+            containerRegistry.RegisterForNavigation<DownloadView>("Download");
             containerRegistry.RegisterForNavigation<SettingsView>("Settings");
             containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
 
@@ -63,7 +63,7 @@ namespace PastPaperHelper
                 if (coll.Contains(subj.SyllabusCode)) coll.Remove(subj.SyllabusCode);
                 PastPaperHelper.Properties.Settings.Default.Save();
             };
-            InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
+            InitResult = PastPaperHelperCore.Initialize(dataFile, PastPaperHelper.Properties.Settings.Default.Path, PastPaperHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
         }
     }
 }

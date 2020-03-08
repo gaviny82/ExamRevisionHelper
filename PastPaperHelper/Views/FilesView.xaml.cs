@@ -26,6 +26,15 @@ namespace PastPaperHelper.Views
                     }
                 });
             };
+
+            PastPaperHelperUpdateService.SubjectSubscribedEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (subjectSelector.SelectedIndex == -1) 
+                        subjectSelector.SelectedIndex = 0;
+                });
+            };
         }
 
         private void SubjectSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)

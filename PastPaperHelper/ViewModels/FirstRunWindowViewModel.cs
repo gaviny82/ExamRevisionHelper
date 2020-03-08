@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
@@ -195,21 +196,13 @@ namespace PastPaperHelper.ViewModels
         {
             IGSubjects.Clear();
             ALSubjects.Clear();
-            switch (source)
+            PastPaperHelperCore.Source = source switch
             {
-                default:
-                    PastPaperHelperCore.Source = new PaperSourceGCEGuide();
-                    break;
-                case "gce_guide":
-                    PastPaperHelperCore.Source = new PaperSourceGCEGuide();
-                    break;
-                case "papacambridge":
-                    PastPaperHelperCore.Source = new PaperSourcePapaCambridge();
-                    break;
-                case "cie_notes":
-                    PastPaperHelperCore.Source = new PaperSourceCIENotes();
-                    break;
-            }
+                "gce_guide" => new PaperSourceGCEGuide(),
+                "papacambridge" => new PaperSourcePapaCambridge(),
+                "cie_notes" => new PaperSourceCIENotes(),
+                _ => new PaperSourceGCEGuide(),
+            };
             await PastPaperHelperUpdateService.UpdateSubjectList();
         }
         #endregion
@@ -231,25 +224,51 @@ namespace PastPaperHelper.ViewModels
             UpdateTitle = "Almost done";
             IsRetryEnabled2 = false;
             PastPaperHelperCore.Source.Subscription.Clear();
+            PastPaperHelperCore.SubscribedSubjects.Clear();
 
-            foreach (Subject subj in lst)
+            UpdateMessage = $"Initializing local files...";
+
+            try
             {
-                try
+                Task t = Task.Run(() =>
                 {
-                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.Name}...";
+                    if (Directory.Exists(Path))//TODO: disable next command if Path does not exist
+                    {
+                        var cachePath = $"{Path}\\.pastpaperhelper";
+
+                        var lst = Directory.EnumerateFiles(Path, "*.pdf", SearchOption.AllDirectories);
+                        Dictionary<string, string> map = new Dictionary<string, string>();
+                        foreach (var path in lst)
+                        {
+                            string fileName = path.Split('\\').Last();
+                            if (!map.ContainsKey(fileName)) map.Add(fileName, path);
+                        }
+                        using (FileStream filestream = File.Create($"{cachePath}\\files.dat"))
+                        {
+                            BinaryFormatter serializer = new BinaryFormatter();
+                            serializer.Serialize(filestream, map);
+                        }
+                    }
+                });
+
+                foreach (Subject subj in lst)
+                {
+                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.DisplayName}...";
                     await PastPaperHelperUpdateService.SubscribeAsync(subj);
+                    UpdateCount += 1;
                 }
-                catch (Exception)
-                {
-                    IsRetryEnabled2 = true;
-                    IsRevertAllowed = true;
-                    IsProceedAllowed = false;
-                    UpdateTitle = "Error";
-                    UpdateMessage = "";
-                    return;
-                }
-                UpdateCount += 1;
+                await t;
             }
+            catch (Exception)
+            {
+                IsRetryEnabled2 = true;
+                IsRevertAllowed = true;
+                IsProceedAllowed = false;
+                UpdateTitle = "Error";
+                UpdateMessage = "";
+                return;
+            }
+
             UpdateTitle = "Finished setting up PastPaperHelper.";
             UpdateMessage = "Click \"Done\" to exit setup and restart the program.";
             IsRevertAllowed = true;
@@ -264,7 +283,7 @@ namespace PastPaperHelper.ViewModels
 
         void ExecuteRetryCommand()
         {
-            var task = PastPaperHelperUpdateService.UpdateSubjectList();
+            _ = PastPaperHelperUpdateService.UpdateSubjectList();
         }
         #endregion
     }

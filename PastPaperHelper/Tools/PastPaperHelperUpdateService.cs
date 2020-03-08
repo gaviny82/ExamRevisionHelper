@@ -67,7 +67,7 @@ namespace PastPaperHelper.Core.Tools
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs 
             { 
                 NotificationType = NotificationType.Initializing, 
-                Message = $"Loading from {PastPaperHelperCore.Source.Name}..." 
+                Message = $"Loading from {PastPaperHelperCore.Source.DisplayName}..." 
             });
 
             //Download subject list from web server
@@ -80,7 +80,7 @@ namespace PastPaperHelper.Core.Tools
             {
                 UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
                 {
-                    ErrorMessage = $"Failed to download subject list from {PastPaperHelperCore.Source.Name}, please check your Internet connection.",
+                    ErrorMessage = $"Failed to download subject list from {PastPaperHelperCore.Source.DisplayName}, please check your Internet connection.",
                     ErrorType = ErrorType.SubjectListUpdateFailed,
                     Exception= e
                 });
@@ -89,7 +89,7 @@ namespace PastPaperHelper.Core.Tools
 
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
-                Message = $"Subject list updated from {PastPaperHelperCore.Source.Name}.",
+                Message = $"Subject list updated from {PastPaperHelperCore.Source.DisplayName}.",
                 NotificationType = NotificationType.SubjectListUpdated
             });
 
@@ -120,7 +120,7 @@ namespace PastPaperHelper.Core.Tools
                     failed.Add(subj);
                     UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
                     {
-                        ErrorMessage = $"Failed to update {subj.Name} from {PastPaperHelperCore.Source.Name}.",
+                        ErrorMessage = $"Failed to update {subj.Name} from {PastPaperHelperCore.Source.DisplayName}.",
                         ErrorType = ErrorType.SubjectRepoUpdateFailed,
                         Exception = e
                     });
@@ -129,7 +129,7 @@ namespace PastPaperHelper.Core.Tools
 
                 UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
                 {
-                    Message = $"{subj.Name} updated from {PastPaperHelperCore.Source.Name}.",
+                    Message = $"{subj.Name} updated from {PastPaperHelperCore.Source.DisplayName}.",
                     NotificationType = NotificationType.SubjectUpdated
                 });
             }
@@ -143,7 +143,7 @@ namespace PastPaperHelper.Core.Tools
 
                 UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
                 {
-                    Message = $"All subjects updated from {PastPaperHelperCore.Source.Name} successfully.",
+                    Message = $"All subjects updated from {PastPaperHelperCore.Source.DisplayName} successfully.",
                     NotificationType = NotificationType.Finished
                 });
             }
@@ -158,7 +158,7 @@ namespace PastPaperHelper.Core.Tools
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
                 NotificationType = NotificationType.Initializing,
-                Message = $"Loading subject list from {PastPaperHelperCore.Source.Name}..."
+                Message = $"Loading subject list from {PastPaperHelperCore.Source.DisplayName}..."
             });
             try
             {
@@ -169,7 +169,7 @@ namespace PastPaperHelper.Core.Tools
             {
                 UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
                 {
-                    ErrorMessage = $"Failed to fetch data from {PastPaperHelperCore.Source.Name}, please check your Internet connection.",
+                    ErrorMessage = $"Failed to fetch data from {PastPaperHelperCore.Source.DisplayName}, please check your Internet connection.",
                     ErrorType = ErrorType.SubjectListUpdateFailed,
                     Exception = e
                 });
@@ -177,7 +177,7 @@ namespace PastPaperHelper.Core.Tools
             }
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
-                Message = $"Subject list updated from {PastPaperHelperCore.Source.Name} successfully.",
+                Message = $"Subject list updated from {PastPaperHelperCore.Source.DisplayName} successfully.",
                 NotificationType = NotificationType.Finished
             });
         }

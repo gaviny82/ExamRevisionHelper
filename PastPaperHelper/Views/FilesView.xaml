@@ -58,7 +58,7 @@
                                         Command="{Binding DataContext.OpenExamSeriesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}"
                                         CommandParameter="{Binding Specimen}"/>
 
-                            <materialDesign:Chip Grid.Column="1" Grid.ColumnSpan="2" Content="New Syllabus" Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" CommandParameter="{Binding Syllabus}">
+                            <materialDesign:Chip Grid.Column="1" Grid.ColumnSpan="2" Content="New Syllabus" Command="{Binding DataContext.OpenResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ScrollViewer}}}" CommandParameter="{Binding Syllabus}">
                                 <materialDesign:Chip.Visibility>
                                     <MultiBinding Converter="{StaticResource IsSyllabusUpdatedToVisibilityConverter}">
                                         <Binding Path="Syllabus"/>
@@ -91,7 +91,7 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type models:Paper}">
                                 <Button Margin="6,0,0,0"
-                                        Command="{Binding DataContext.OpenOnlineResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:FilesView}}}" CommandParameter="{Binding}"
+                                        Command="{Binding DataContext.OpenResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type local:FilesView}}}" CommandParameter="{Binding}"
                                         Content="{Binding Type, Converter={StaticResource PaperTypeToIconConverter}}" 
                                         Style="{StaticResource MaterialDesignOutlinedButton}"
                                         ToolTip="{Binding Url, Converter={StaticResource UrlToDisplayNameConverter}}" />
@@ -146,14 +146,16 @@
         </TextBlock>
         <Button Content="{materialDesign:PackIcon FileDocumentBoxCheck}" Style="{StaticResource MaterialDesignOutlinedButton}"
              Visibility="{Binding SelectedExamSeries.ExaminersReport, Converter={StaticResource IsNullToVisibilityConverter}}"
-             Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
+             Command="{Binding DataContext.OpenResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
              CommandParameter="{Binding SelectedExamSeries.ExaminersReport}"
-             Grid.Column="1" ToolTip="Examiners Report" VerticalAlignment="Top" HorizontalAlignment="Right"  Margin="0,10,64,0"/>
+             ToolTip="{Binding SelectedExamSeries.ExaminersReport.Url, Converter={StaticResource UrlToDisplayNameConverter}}"
+             Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right"  Margin="0,10,64,0"/>
         <Button Content="{materialDesign:PackIcon ChartBar}" Style="{StaticResource MaterialDesignOutlinedButton}"
              Visibility="{Binding SelectedExamSeries.GradeThreshold, Converter={StaticResource IsNullToVisibilityConverter}}"
-             Command="{Binding DataContext.OpenOnlineResourceCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
+             Command="{Binding DataContext.OpenResourcesCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type local:FilesView}}}"
              CommandParameter="{Binding SelectedExamSeries.GradeThreshold}"
-             Grid.Column="1" ToolTip="Grade Threshold" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,8,0"/>
+             ToolTip="{Binding SelectedExamSeries.GradeThreshold.Url, Converter={StaticResource UrlToDisplayNameConverter}}"
+             Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,8,0"/>
 
         <Line Grid.Column="1" X1="0" X2="1" Y1="0" Y2="0" Stretch="UniformToFill" StrokeThickness="1" Stroke="Gray" VerticalAlignment="Top" Margin="4,48" />
         <ScrollViewer Grid.Column="1" Margin="0,50,8,0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
