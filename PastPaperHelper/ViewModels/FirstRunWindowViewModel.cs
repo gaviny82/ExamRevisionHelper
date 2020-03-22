@@ -243,6 +243,8 @@ namespace PastPaperHelper.ViewModels
                             string fileName = path.Split('\\').Last();
                             if (!map.ContainsKey(fileName)) map.Add(fileName, path);
                         }
+
+                        if (!Directory.Exists(cachePath)) Directory.CreateDirectory(cachePath);
                         using (FileStream filestream = File.Create($"{cachePath}\\files.dat"))
                         {
                             BinaryFormatter serializer = new BinaryFormatter();
@@ -259,13 +261,13 @@ namespace PastPaperHelper.ViewModels
                 }
                 await t;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 IsRetryEnabled2 = true;
                 IsRevertAllowed = true;
                 IsProceedAllowed = false;
                 UpdateTitle = "Error";
-                UpdateMessage = "";
+                UpdateMessage = e.StackTrace + "\n" + e.Message;
                 return;
             }
 
