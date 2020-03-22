@@ -66,6 +66,21 @@ namespace PastPaperHelper.ViewModels
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
             List<DownloadTask> tasks = new List<DownloadTask>();
+            Action<PastPaperResource> tryAddToTasks = (item) =>
+            {
+                string file = item.Url.Split('/').Last();
+                if (!PastPaperHelperCore.LocalFiles.Keys.Contains(file))
+                {
+                    tasks.Add(new DownloadTask
+                    {
+                        FileName = file,
+                        State = DownloadTaskState.Pending,
+                        Progress = 0,
+                        ResourceUrl = item.Url,
+                        LocalPath = $"{dir}\\{file}",
+                    });
+                }
+            };
             var lst = (from comp in exam.Components select comp.Variants);
             foreach (var varients in lst)
             {
@@ -73,45 +88,13 @@ namespace PastPaperHelper.ViewModels
                 {
                     foreach (Paper paper in item.Papers)
                     {
-                        string file = paper.Url.Split('/').Last();
-                        if (!PastPaperHelperCore.LocalFiles.Keys.Contains(file))
-                        {
-                            tasks.Add(new DownloadTask
-                            {
-                                FileName = file,
-                                State = DownloadTaskState.Pending,
-                                Progress = 0,
-                                ResourceUrl = paper.Url,
-                                LocalPath = $"{dir}\\{file}",
-                            });
-                        }
+                        tryAddToTasks(paper);
                     }
                 }
             }
 
-            //ISSUE: duplicate check
-            if (exam.GradeThreshold is GradeThreshold)
-            {
-                tasks.Add(new DownloadTask
-                {
-                    FileName = exam.GradeThreshold.Url.Split('/').Last(),
-                    State = DownloadTaskState.Pending,
-                    Progress = 0,
-                    ResourceUrl = exam.GradeThreshold.Url,
-                    LocalPath = $"{dir}\\{exam.GradeThreshold.Url.Split('/').Last()}",
-                });
-            }
-            if (exam.ExaminersReport is ExaminersReport)
-            {
-                tasks.Add(new DownloadTask
-                {
-                    FileName = exam.ExaminersReport.Url.Split('/').Last(),
-                    State = DownloadTaskState.Pending,
-                    Progress = 0,
-                    ResourceUrl = exam.ExaminersReport.Url,
-                    LocalPath = $"{dir}\\{exam.ExaminersReport.Url.Split('/').Last()}",
-                });
-            }
+            if (exam.GradeThreshold is GradeThreshold) tryAddToTasks(exam.GradeThreshold);
+            if (exam.ExaminersReport is ExaminersReport) tryAddToTasks(exam.ExaminersReport);
 
             return tasks;
         }

@@ -230,7 +230,7 @@ namespace PastPaperHelper.ViewModels
 
         void ExecutePauseDownloadCommand()
         {
-
+            DownloadTaskCancellation.Cancel();
         }
         #endregion
 

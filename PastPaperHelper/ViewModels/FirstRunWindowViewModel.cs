@@ -267,7 +267,7 @@ namespace PastPaperHelper.ViewModels
                 IsRevertAllowed = true;
                 IsProceedAllowed = false;
                 UpdateTitle = "Error";
-                UpdateMessage = e.StackTrace + "\n" + e.Message;
+                UpdateMessage = e.Message;
                 return;
             }
 
