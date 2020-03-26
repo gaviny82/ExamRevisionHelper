@@ -75,7 +75,7 @@
                                 <Grid>
                                     <materialDesign:PackIcon Width="32" Height="32" VerticalAlignment="Center" Kind="ArrowUpBoldCircleOutline" />
                                     <TextBlock Margin="40,6,0,6" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Style="{StaticResource MaterialDesignSubtitle1TextBlock}" Text="{Binding}" />
-                                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" IsEnabled="False" materialDesign:ButtonProgressAssist.IsIndeterminate="True" Click="OpenReleases_Click" Style="{StaticResource MaterialDesignToolForegroundButton}">
+                                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" materialDesign:ButtonProgressAssist.IsIndeterminate="True" Command="{Binding DataContext.UpdateAllCommand, RelativeSource={RelativeSource AncestorType=GroupBox, Mode=FindAncestor}}" Style="{StaticResource MaterialDesignToolForegroundButton}">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="Update" />
                                             <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="Check Update" />

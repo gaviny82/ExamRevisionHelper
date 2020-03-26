@@ -50,18 +50,14 @@ namespace PastPaperHelper.Core.Tools
                 userData.Load(userDataFilePath);
 
                 XmlNode dataNode = userData.SelectSingleNode("/Data");
-                switch (dataNode.Attributes["Source"].Value)
+                Source = dataNode.Attributes["Source"].Value switch
                 {
-                    case "gce_guide":
-                        Source = new PaperSourceGCEGuide(userData);
-                        break;
-                    case "papacambridge":
-                        Source = new PaperSourcePapaCambridge(userData);
-                        break;
-                    case "cie_notes":
-                        Source = new PaperSourceCIENotes(userData);
-                        break;
-                }
+                    "gce_guide" => new PaperSourceGCEGuide(userData),
+                    "papacambridge" => new PaperSourcePapaCambridge(userData),
+                    "cie_notes" => new PaperSourceCIENotes(userData),
+
+                    _ => throw new NotImplementedException()
+                };
                 SubjectsLoaded = Source.SubjectUrlMap.Keys.ToArray();
 
                 if (subscription == null) return InitializationResult.SuccessNoUpdate;
@@ -74,6 +70,8 @@ namespace PastPaperHelper.Core.Tools
                 //TODO: prompt if repo of any subscribed subject is not found
                 //Note: if not supported, throw exception and try reloading. If error still occurred in the reload process, remove this failed subject automatically and notify the user.
 
+                return InitializationResult.SuccessNoUpdate;
+                //TODO: diff to local profile when updated.
                 DateTime lastUpdate = Source.LastUpdated;
                 double days = (DateTime.Now - lastUpdate).Days;
                 switch (updatePolicy)
@@ -93,25 +91,16 @@ namespace PastPaperHelper.Core.Tools
                         break;
                 }
 
-                return InitializationResult.SuccessNoUpdate;
             }
             catch (Exception)
             {
-                switch (sourceName)
+                Source = sourceName switch
                 {
-                    default:
-                        Source = new PaperSourceGCEGuide();
-                        break;
-                    case "gce_guide":
-                        Source = new PaperSourceGCEGuide();
-                        break;
-                    case "papacambridge":
-                        Source = new PaperSourcePapaCambridge();
-                        break;
-                    case "cie_notes":
-                        Source = new PaperSourceCIENotes();
-                        break;
-                }
+                    "gce_guide" => new PaperSourceGCEGuide(),
+                    "papacambridge" => new PaperSourcePapaCambridge(),
+                    "cie_notes" => new PaperSourceCIENotes(),
+                    _ => new PaperSourceGCEGuide(),
+                };
                 UserDataPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\PastPaperHelper\\PastPaperHelper\\{sourceName}.xml";
                 return InitializationResult.Error;
             }

@@ -121,5 +121,14 @@ namespace PastPaperHelper.ViewModels
         }
         #endregion
 
+        private DelegateCommand _updateAllCommand;
+        public DelegateCommand UpdateAllCommand =>
+            _updateAllCommand ?? (_updateAllCommand = new DelegateCommand(ExecuteUpdateAllCommand));
+
+        void ExecuteUpdateAllCommand()
+        {
+            var lst = (from subj in PastPaperHelperCore.SubscribedSubjects select subj.SyllabusCode).ToList();
+            PastPaperHelperUpdateService.UpdateAll(lst);
+        }
     }
 }
