@@ -127,9 +127,9 @@ namespace PastPaperHelper.ViewModels
             IsIndeterminate = false;
 
             TaskFactory factory = new TaskFactory();
-            DownloadTaskPool = new Task[10];
-            _webClientPool = new WebClient[10];
-            for (int i = 0; i < 10; i++)
+            DownloadTaskPool = new Task[8];
+            _webClientPool = new WebClient[8];
+            for (int i = 0; i < 8; i++)
             {
                 var client = new WebClient();
                 _webClientPool[i] = client;
@@ -144,8 +144,11 @@ namespace PastPaperHelper.ViewModels
                 DownloadTaskCancellation.Dispose();
                 DownloadTaskCancellation = new CancellationTokenSource();
                 _cancelationToken = DownloadTaskCancellation.Token;
-                if (Tasks.Count != 0) ExecuteLogCommand($"[ERROR]. Failed to download {Tasks.Count} items, please retry.");
+
                 ExecuteLogCommand($"Done. {TotalTasks} items downloaded.");
+                if (Tasks.Count != 0)
+                    ExecuteLogCommand(IsDownloading ? $"[ERROR]. Failed to download {Tasks.Count} items, please retry." : "Operation cancelled.");
+
                 _taskFailedCounter = 0;
                 IsDownloading = false;
                 TaskCompleted = 0;
@@ -196,8 +199,8 @@ namespace PastPaperHelper.ViewModels
                 {
                     try
                     {
-                        //Thread.Sleep(750);
-                        client.DownloadFile(task.ResourceUrl, task.LocalPath);//TODO: Use async method
+                        client.DownloadFile(task.ResourceUrl, task.LocalPath);
+
                         task.State = DownloadTaskState.Completed;
 
                         lock (DownloadTasksListLock)
@@ -212,7 +215,7 @@ namespace PastPaperHelper.ViewModels
                     catch (Exception e)
                     {
                         ExecuteLogCommand($"[ERROR] Failed to download {task.FileName}. {e.Message}"); 
-                        task.State = DownloadTaskState.Error;
+                        task.State = DownloadTaskState.Error;//TODO: Check network status
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             TaskCompleted++;
@@ -228,9 +231,17 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand PauseDownloadCommand =>
             _pauseDownloadCommand ?? (_pauseDownloadCommand = new DelegateCommand(ExecutePauseDownloadCommand));
 
-        void ExecutePauseDownloadCommand()
+        async void ExecutePauseDownloadCommand()
         {
+            IsDownloading = false;
+            LogCommand.Execute("Pausing tasks...");
+            Message = "Pausing...";
             DownloadTaskCancellation.Cancel();
+
+            try { await Task.WhenAll(DownloadTaskPool); } catch (Exception) { }
+
+            Message = "Paused";
+            LogCommand.Execute("Paused");
         }
         #endregion
 
@@ -239,12 +250,19 @@ namespace PastPaperHelper.ViewModels
         public DelegateCommand CancelDownloadCommand =>
             _cancelDownloadCommand ?? (_cancelDownloadCommand = new DelegateCommand(ExecuteCancelDownloadCommand));
 
-        void ExecuteCancelDownloadCommand()
+        async void ExecuteCancelDownloadCommand()
         {
+            IsDownloading = false;
+            LogCommand.Execute("Cancelling tasks...");
+            Message = "Cancelling...";
             DownloadTaskCancellation.Cancel();
+
+            try { await Task.WhenAll(DownloadTaskPool); } catch (Exception) { }
+            Tasks.Clear();
+
+            LogCommand.Execute("Tasks cancelled.");
         }
         #endregion
-
 
         #region Property: TotalTasks
         private int _totalTasks;

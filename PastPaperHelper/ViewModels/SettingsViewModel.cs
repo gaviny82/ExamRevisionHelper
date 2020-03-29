@@ -115,6 +115,7 @@ namespace PastPaperHelper.ViewModels
                     Path = dialog.FileName;
                     Properties.Settings.Default.Path = dialog.FileName;
                     Properties.Settings.Default.Save();
+                    PastPaperHelperCore.LocalFilesPath = dialog.FileName;
                 }
                 else return;
             }

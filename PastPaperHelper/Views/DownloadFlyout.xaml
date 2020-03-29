@@ -6,8 +6,13 @@
              xmlns:local="clr-namespace:PastPaperHelper.Views"
              xmlns:models="clr-namespace:PastPaperHelper.Models"
              xmlns:vm="clr-namespace:PastPaperHelper.ViewModels"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:PastPaperHelper.Converters"
              mc:Ignorable="d" Margin="8,0" d:DesignWidth="500">
+    <UserControl.Resources>
+        <converters:DownloadStateToPackIconConverter x:Key="DownloadStateToPackIconConverter"/>
+        <converters:DownloadStateToVisibilityConverter x:Key="DownloadStateToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid>
         <TextBlock VerticalAlignment="Top" Text="{Binding Message}" FontSize="14"/>
         <ProgressBar VerticalAlignment="Top" Height="8" Value="{Binding TaskCompleted}" Maximum="{Binding TotalTasks}" Margin="0,20,0,0" IsIndeterminate="{Binding IsIndeterminate}" ToolTip="{Binding Value, RelativeSource={RelativeSource Mode=Self}}"/>
@@ -15,7 +20,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:DownloadTask}">
                     <Grid>
-                        <TextBlock Text="{Binding FileName}"/>
+                        <TextBlock Text="{Binding FileName}" HorizontalAlignment="Left" Margin="24,0,0,0"/>
+                        <md:PackIcon Kind="{Binding State, Converter={StaticResource DownloadStateToPackIconConverter}}" Visibility="{Binding State, Converter={StaticResource DownloadStateToVisibilityConverter}}"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
