@@ -168,7 +168,15 @@ namespace PastPaperHelper.ViewModels
                 {
                     cts.Token.ThrowIfCancellationRequested();
                     PdfPageBase page = doc.Pages[i];
-                    PdfTextFind[] coll = page.FindText(kword, param).Finds;
+                    PdfTextFind[] coll;
+                    try
+                    {
+                        coll = page.FindText(kword, param)?.Finds;
+                    }
+                    catch (NullReferenceException)
+                    {
+                        continue;
+                    }
 
                     foreach (PdfTextFind result in coll)
                     {
