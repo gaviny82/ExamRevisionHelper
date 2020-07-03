@@ -271,7 +271,7 @@ namespace PastPaperHelper.ViewModels
                 return;
             }
 
-            UpdateTitle = "Finished setting up PastPaperHelper.";
+            UpdateTitle = "Finished setting up Exam Revision Helper.";
             UpdateMessage = "Click \"Done\" to exit setup and restart the program.";
             IsRevertAllowed = true;
             IsProceedAllowed = true;
