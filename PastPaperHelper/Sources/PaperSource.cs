@@ -1,4 +1,5 @@
-﻿using PastPaperHelper.Core.Tools;
+﻿using HtmlAgilityPack;
+using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ namespace PastPaperHelper.Sources
 {
     public abstract class PaperSource
     {
+
+        protected static HtmlWeb web = new HtmlWeb();
         public string Name { get; protected set; }
         public string DisplayName { get; protected set; }
 
