@@ -18,7 +18,7 @@
       Background="{DynamicResource MaterialDesignPaper}"
       FontFamily="{StaticResource MaterialDesignFont}"
       mc:Ignorable="d"
-      Title="Past Paper Helper Setup" Height="510" Width="910" ResizeMode="NoResize">
+      Title="Exam Revision Helper Setup" Height="510" Width="910" ResizeMode="NoResize">
     <Window.Resources>
         <DataTemplate x:Key="DisplaySubject" DataType="{x:Type vm:SubjectSelection}">
             <CheckBox IsChecked="{Binding IsSelected}">
@@ -38,7 +38,7 @@
     <TabControl x:Name="tab" Style="{StaticResource WizardTabControlStyle}">
         <TabItem Header="Welcome" Width="178" Style="{StaticResource WizardTabItemStyle}">
             <Grid Margin="16">
-                <TextBlock Text="Welcome to Past Paper Helper" Margin="0,-75,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock Text="Welcome to Exam Revision Helper" Margin="0,-75,0,0" TextAlignment="Center" FontSize="36" FontWeight="Bold" VerticalAlignment="Center"/>
                 <TextBlock Text="This program helps you manage your CAIE past papers in a more efficient way and provides powerful tools to make your revision process easier." 
                            TextWrapping="Wrap" TextAlignment="Center"
                            HorizontalAlignment="Center" Margin="80,35,80,0" VerticalAlignment="Center"/>
