@@ -30,8 +30,10 @@ namespace PastPaperHelper
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<FilesView>("Files");
-            //containerRegistry.RegisterForNavigation<FilesView>("Search");
+            containerRegistry.RegisterForNavigation<SearchView>("Search");
             containerRegistry.RegisterForNavigation<DownloadView>("Download");
+            containerRegistry.RegisterForNavigation<PracticeView>("Practice");
+            containerRegistry.RegisterForNavigation<NotebookView>("Notebook");
             containerRegistry.RegisterForNavigation<SettingsView>("Settings");
             containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
 
