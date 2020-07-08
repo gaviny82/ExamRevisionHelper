@@ -1,4 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
+using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Spire.Pdf;
@@ -39,13 +41,6 @@ namespace PastPaperHelper.ViewModels
         {
             get { return questions; }
         }
-
-        private string _searchPath;
-        public string SearchPath
-        {
-            get { return _searchPath; }
-        set { SetProperty(ref _searchPath, value); }
-    }
 
         private string _keyword;
         public string Keyword
@@ -91,6 +86,13 @@ namespace PastPaperHelper.ViewModels
         }
 
 
+        private Subject _selectedSubject;
+        public Subject SelectedSubject
+        {
+            get { return _selectedSubject; }
+            set { SetProperty(ref _selectedSubject, value); }
+        }
+
         private DelegateCommand<object> _searchActivationCommand;
         public DelegateCommand<object> SearchActivationCommand =>
             _searchActivationCommand ?? (_searchActivationCommand = new DelegateCommand<object>(ExecuteSearchActivationCommand));
@@ -104,82 +106,96 @@ namespace PastPaperHelper.ViewModels
         private void Cancel(object param)
         {
             cts.Cancel();
-            Info = "Cancelled. Last file searched: " + Info.Substring(11);
+            Info = "Cancelled.";
             SearchStatus = SearchStatus.Standby;
             GC.Collect();
         }
         private void Search(object param)
         {
-            if (!Directory.Exists(SearchPath)) { DialogHost.OpenDialogCommand.Execute(Application.Current.MainWindow.FindResource("InvalidPath"), (IInputElement)param); return; }
             if (string.IsNullOrWhiteSpace(Keyword)) { DialogHost.OpenDialogCommand.Execute(Application.Current.MainWindow.FindResource("InvalidKeyword"), (IInputElement)param); return; }
+            if (SelectedSubject == null) return;
 
             SearchStatus = SearchStatus.Searching;
+
+            //TODO: Check if localfiles list is loaded
+            var fileslst = from item in PastPaperHelperCore.LocalFiles
+                           where item.Key.StartsWith(SelectedSubject.SyllabusCode)
+                           select item.Value;
+            string[] filesarr = fileslst.ToArray();
             //search init
-            string[] files = Directory.GetFiles(SearchPath, "*qp*.pdf", SearchOption.AllDirectories);
             Progress = 0;
-            FileNum = files.Length;
+            FileNum = filesarr.Length;
             questions.Clear();
             //start search tasks
             cts = new CancellationTokenSource();
-            Task.Run(() => { Search(files, Keyword, MatchWholeWord, IgnoreCases); }, cts.Token);
+            Task.Run(() => { Search(filesarr, Keyword, MatchWholeWord, IgnoreCases); }, cts.Token);
         }
         private void Search(string[] files, string kword, bool wholeWord, bool ignCases)
         {
             TextFindParameter param = 0;
             if (wholeWord) param |= TextFindParameter.WholeWord;
-            if (ignCases) param |= TextFindParameter.IgnoreCase;
+            if (ignCases) param |= TextFindParameter.IgnoreCase; 
+            Info = "Searching...";
 
             foreach (string file in files)
             {
-                List<int> fileResult = new List<int>();
-                PdfDocument doc = new PdfDocument();
-                doc.LoadFromFile(file);
-                string fileName = file.Split('\\').Last();
-                Progress += 1;
-                Info = "Searching: " + fileName;
-                for (int i = 1; i < doc.Pages.Count; i++)
+                try
                 {
-                    cts.Token.ThrowIfCancellationRequested();
-                    PdfPageBase page = doc.Pages[i];
-                    PdfTextFind[] coll = page.FindText(kword, param).Finds;
+                    List<int> fileResult = new List<int>();
+                    using PdfDocument doc = new PdfDocument();
+                    doc.LoadFromFile(file);
+                    string fileName = file.Split('\\').Last();
+                    Progress += 1;
 
-                    foreach (PdfTextFind result in coll)
+                    for (int i = 1; i < doc.Pages.Count; i++)
                     {
-                        //extract the question numbers
-                        RectangleF boundary = result.Bounds;
-                        string questions = page.ExtractText(new RectangleF(0, 0, 56, boundary.Bottom)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
-                        List<string> questionList = ProcessQuestionNumbers(questions);
+                        cts.Token.ThrowIfCancellationRequested();
+                        PdfPageBase page = doc.Pages[i];
+                        PdfTextFind[] coll = page.FindText(kword, param).Finds;
 
-                        //try to find the question number in previous pages if it is not found in this page
-                        int pageIndex = i;
-                        while (questionList.Count == 0 && pageIndex != 0)
+                        foreach (PdfTextFind result in coll)
                         {
-                            PdfPageBase lastPage = doc.Pages[--pageIndex];
-                            questions = lastPage.ExtractText(new RectangleF(0, 0, 56, lastPage.ActualSize.Height)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
-                            questionList = ProcessQuestionNumbers(questions);
-                        }
+                            //extract the question numbers
+                            RectangleF boundary = result.Bounds;
+                            string questions = page.ExtractText(new RectangleF(0, 0, 56, boundary.Bottom)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
+                            List<string> questionList = ProcessQuestionNumbers(questions);
 
-                        int questionNo;
-                        if (questionList.Count == 0) questionNo = 0;
-                        else int.TryParse(questionList.Last().ToString(), out questionNo);
-
-                        //duplicate check
-                        if (!fileResult.Contains(questionNo))
-                        {
-                            fileResult.Add(questionNo);
-                            ThreadPool.QueueUserWorkItem(delegate
+                            //try to find the question number in previous pages if it is not found in this page
+                            int pageIndex = i;
+                            while (questionList.Count == 0 && pageIndex != 0)
                             {
-                                SynchronizationContext.SetSynchronizationContext(new
-                                  System.Windows.Threading.DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
-                                SynchronizationContext.Current.Post(pl =>
+                                PdfPageBase lastPage = doc.Pages[--pageIndex];
+                                questions = lastPage.ExtractText(new RectangleF(0, 0, 56, lastPage.ActualSize.Height)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
+                                questionList = ProcessQuestionNumbers(questions);
+                            }
+
+                            int questionNo;
+                            if (questionList.Count == 0) questionNo = 0;
+                            else int.TryParse(questionList.Last().ToString(), out questionNo);
+
+                            //duplicate check
+                            if (!fileResult.Contains(questionNo))
+                            {
+                                fileResult.Add(questionNo);
+                                ThreadPool.QueueUserWorkItem(delegate
                                 {
-                                    this.questions.Add(new Question(fileName, questionNo) { FilePath = file });
-                                }, null);
-                            });
+                                    SynchronizationContext.SetSynchronizationContext(new
+                                      System.Windows.Threading.DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
+                                    SynchronizationContext.Current.Post(pl =>
+                                    {
+                                        this.questions.Add(new Question(fileName, questionNo) { FilePath = file });
+                                    }, null);
+                                });
+                            }
                         }
                     }
                 }
-                doc.Close();
+                catch (Exception)
+                {
+                    //throw;
+                    continue;
+                }
+                
             }
             SearchStatus = SearchStatus.Standby;
             Info = "Done, " + questions.Count + " result" + (questions.Count > 1 ? "s" : "") + " found in " + FileNum + " files.";
