@@ -4,6 +4,7 @@ using PastPaperHelper.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Spire.Pdf;
+using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.General.Find;
 using System;
 using System.Collections.Generic;
@@ -152,7 +153,7 @@ namespace PastPaperHelper.ViewModels
                         cts.Token.ThrowIfCancellationRequested();
                         PdfPageBase page = doc.Pages[i];
                         PdfTextFind[] coll = page.FindText(kword, param).Finds;
-
+                        string str = page.ExtractText();
                         foreach (PdfTextFind result in coll)
                         {
                             //extract the question numbers
