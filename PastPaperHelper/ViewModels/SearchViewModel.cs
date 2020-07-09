@@ -7,6 +7,7 @@ using Spire.Pdf;
 using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.General.Find;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -14,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using System.Windows;
 using System.Windows.Input;
 
@@ -129,13 +131,41 @@ namespace PastPaperHelper.ViewModels
             questions.Clear();
             //start search tasks
             cts = new CancellationTokenSource();
+
+
+
+            TextFindParameter searchParam = 0;
+            if (MatchWholeWord) searchParam |= TextFindParameter.WholeWord;
+            if (IgnoreCases) searchParam |= TextFindParameter.IgnoreCase;
+            Info = "Searching...";
+
+            var workerBlock = new ActionBlock<string>(
+      millisecondsTimeout => Thread.Sleep(123),
+      new ExecutionDataflowBlockOptions
+      {
+          CancellationToken = cts.Token,
+          MaxDegreeOfParallelism = 5
+      });
+
+            foreach (var item in fileslst)
+            {
+                workerBlock.Post(item);
+            }
+            workerBlock.Complete();
+            workerBlock.Completion.ContinueWith((task) =>
+            {
+
+            });
+
             Task.Run(() => { Search(filesarr, Keyword, MatchWholeWord, IgnoreCases); }, cts.Token);
         }
+
+
         private void Search(string[] files, string kword, bool wholeWord, bool ignCases)
         {
             TextFindParameter param = 0;
-            if (wholeWord) param |= TextFindParameter.WholeWord;
-            if (ignCases) param |= TextFindParameter.IgnoreCase; 
+            if (MatchWholeWord) param |= TextFindParameter.WholeWord;
+            if (IgnoreCases) param |= TextFindParameter.IgnoreCase;
             Info = "Searching...";
 
             foreach (string file in files)
@@ -150,7 +180,6 @@ namespace PastPaperHelper.ViewModels
 
                     for (int i = 1; i < doc.Pages.Count; i++)
                     {
-                        cts.Token.ThrowIfCancellationRequested();
                         PdfPageBase page = doc.Pages[i];
                         PdfTextFind[] coll = page.FindText(kword, param).Finds;
                         string str = page.ExtractText();

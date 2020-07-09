@@ -279,6 +279,9 @@
     <PackageReference Include="Spire.PDF">
       <Version>6.7.2</Version>
     </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Dataflow">
+      <Version>4.11.1</Version>
+    </PackageReference>
     <PackageReference Include="WindowsAPICodePack-Shell">
       <Version>1.1.1</Version>
     </PackageReference>
