@@ -113,7 +113,7 @@ namespace PastPaperHelper.ViewModels
             SearchStatus = SearchStatus.Standby;
             GC.Collect();
         }
-        private void Search(object param)
+        private async void Search(object param)
         {
             if (string.IsNullOrWhiteSpace(Keyword)) { DialogHost.OpenDialogCommand.Execute(Application.Current.MainWindow.FindResource("InvalidKeyword"), (IInputElement)param); return; }
             if (SelectedSubject == null) return;
@@ -132,32 +132,95 @@ namespace PastPaperHelper.ViewModels
             //start search tasks
             cts = new CancellationTokenSource();
 
+            Task.Run(() => { Search(filesarr, Keyword, MatchWholeWord, IgnoreCases); }, cts.Token);
 
-
+            return;
             TextFindParameter searchParam = 0;
             if (MatchWholeWord) searchParam |= TextFindParameter.WholeWord;
             if (IgnoreCases) searchParam |= TextFindParameter.IgnoreCase;
             Info = "Searching...";
 
-            var workerBlock = new ActionBlock<string>(
-      millisecondsTimeout => Thread.Sleep(123),
-      new ExecutionDataflowBlockOptions
-      {
-          CancellationToken = cts.Token,
-          MaxDegreeOfParallelism = 5
-      });
+            var workerBlock = new ActionBlock<string>(file => SearchFile(file, Keyword, searchParam),
+                 new ExecutionDataflowBlockOptions
+                 {
+                    CancellationToken = cts.Token,
+                    MaxDegreeOfParallelism = 4
+                 });
 
             foreach (var item in fileslst)
             {
                 workerBlock.Post(item);
             }
             workerBlock.Complete();
-            workerBlock.Completion.ContinueWith((task) =>
+            try
             {
+                await workerBlock.Completion.ConfigureAwait(true);
+            }
+            catch (TaskCanceledException) { }
+            finally
+            {
+                SearchStatus = SearchStatus.Standby;
+                Info = "Done, " + questions.Count + " result" + (questions.Count > 1 ? "s" : "") + " found in " + FileNum + " files.";
+            }
+        }
 
-            });
+        private void SearchFile(string file, string keyWord, TextFindParameter searchParam)
+        {
 
-            Task.Run(() => { Search(filesarr, Keyword, MatchWholeWord, IgnoreCases); }, cts.Token);
+            try
+            {
+                List<int> fileResult = new List<int>();
+                using PdfDocument doc = new PdfDocument();
+                doc.LoadFromFile(file);
+                string fileName = file.Split('\\').Last();
+                Progress += 1;
+
+                for (int i = 1; i < doc.Pages.Count; i++)
+                {
+                    PdfPageBase page = doc.Pages[i];
+                    PdfTextFind[] coll = page.FindText(keyWord, searchParam).Finds;
+                    string str = page.ExtractText();
+                    foreach (PdfTextFind result in coll)
+                    {
+                        //extract the question numbers
+                        RectangleF boundary = result.Bounds;
+                        string questions = page.ExtractText(new RectangleF(0, 0, 56, boundary.Bottom)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
+                        List<string> questionList = ProcessQuestionNumbers(questions);
+
+                        //try to find the question number in previous pages if it is not found in this page
+                        int pageIndex = i;
+                        while (questionList.Count == 0 && pageIndex != 0)
+                        {
+                            PdfPageBase lastPage = doc.Pages[--pageIndex];
+                            questions = lastPage.ExtractText(new RectangleF(0, 0, 56, lastPage.ActualSize.Height)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
+                            questionList = ProcessQuestionNumbers(questions);
+                        }
+
+                        int questionNo;
+                        if (questionList.Count == 0) questionNo = 0;
+                        else int.TryParse(questionList.Last().ToString(), out questionNo);
+
+                        //duplicate check
+                        if (!fileResult.Contains(questionNo))
+                        {
+                            fileResult.Add(questionNo);
+                            ThreadPool.QueueUserWorkItem(delegate
+                            {
+                                SynchronizationContext.SetSynchronizationContext(new
+                                  System.Windows.Threading.DispatcherSynchronizationContext(System.Windows.Application.Current.Dispatcher));
+                                SynchronizationContext.Current.Post(pl =>
+                                {
+                                    this.questions.Add(new Question(fileName, questionNo) { FilePath = file });
+                                }, null);
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //throw;
+            }
         }
 
 
