@@ -101,6 +101,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\SecondToTimeConverter.cs" />
     <Compile Include="Converters\DownloadStateToPackIconConverter.cs" />
     <Compile Include="Converters\UpdateFrequencyToIndexConverter.cs" />
     <Compile Include="Events\Events.cs" />
@@ -124,8 +125,12 @@
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\LocalStorageViewModel.cs" />
     <Compile Include="ViewModels\FirstRunWindowViewModel.cs" />
+    <Compile Include="ViewModels\MarkPaperView.xaml.cs">
+      <DependentUpon>MarkPaperView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MarkPaperViewModel.cs" />
     <Compile Include="ViewModels\NotebookViewModel.cs" />
-    <Compile Include="ViewModels\PracticeViewModel.cs" />
+    <Compile Include="ViewModels\CountdownViewModel.cs" />
     <Compile Include="ViewModels\ReferenceViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
@@ -145,8 +150,8 @@
     <Compile Include="Views\NotebookView.xaml.cs">
       <DependentUpon>NotebookView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PracticeView.xaml.cs">
-      <DependentUpon>PracticeView.xaml</DependentUpon>
+    <Compile Include="Views\CountdownView.xaml.cs">
+      <DependentUpon>CountdownView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReferenceView.xaml.cs">
       <DependentUpon>ReferenceView.xaml</DependentUpon>
@@ -160,6 +165,10 @@
     <Compile Include="Views\SubjectDialog.xaml.cs">
       <DependentUpon>SubjectDialog.xaml</DependentUpon>
     </Compile>
+    <Page Include="ViewModels\MarkPaperView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DownloadFlyout.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -217,7 +226,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PracticeView.xaml">
+    <Page Include="Views\CountdownView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

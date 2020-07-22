@@ -32,7 +32,8 @@ namespace PastPaperHelper
             containerRegistry.RegisterForNavigation<FilesView>("Files");
             containerRegistry.RegisterForNavigation<SearchView>("Search");
             containerRegistry.RegisterForNavigation<DownloadView>("Download");
-            containerRegistry.RegisterForNavigation<PracticeView>("Practice");
+            containerRegistry.RegisterForNavigation<CountdownView>("Countdown");
+            containerRegistry.RegisterForNavigation<MarkPaperView>("MarkPaper");
             containerRegistry.RegisterForNavigation<NotebookView>("Notebook");
             containerRegistry.RegisterForNavigation<SettingsView>("Settings");
             containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
