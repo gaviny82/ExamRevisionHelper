@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="PastPaperHelper.Views.PracticeView"
+    x:Class="PastPaperHelper.Views.CountdownView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:PastPaperHelper.Converters"
@@ -17,13 +17,17 @@
     <UserControl.Resources>
         <converters:IsNullToVisibilityConverter x:Key="IsNullToVisibilityConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+        <converters:SecondToHourConverter x:Key="SecondToHourConverter"/>
+        <converters:SecondToMinuteConverter x:Key="SecondToMinuteConverter"/>
+        <converters:SecondToDisplayConverter x:Key="SecondToDisplayConverter"/>
     </UserControl.Resources>
     <Grid>
         <TextBlock FontSize="30" Text="practice" />
         <Grid
             x:Name="countdownView"
             Background="{StaticResource PrimaryHueMidBrush}"
-            Visibility="{Binding IsMockStarted, Converter={StaticResource BoolToVisibilityConverter}}">
+            Visibility="{Binding IsMockModeOn, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -31,7 +35,7 @@
                 <TextBlock
                     FontSize="100"
                     Foreground="White"
-                    Text="00" />
+                    Text="{Binding Countdown, Converter={StaticResource SecondToHourConverter}}" />
                 <TextBlock
                     Margin="0,-10,0,0"
                     FontSize="100"
@@ -40,7 +44,16 @@
                 <TextBlock
                     FontSize="100"
                     Foreground="White"
-                    Text="00" />
+                    Text="{Binding Countdown, Converter={StaticResource SecondToMinuteConverter}}" />
+                <TextBlock
+                    Margin="0,-10,0,0"
+                    FontSize="100"
+                    Foreground="White"
+                    Text=" : " />
+                <TextBlock
+                    FontSize="100"
+                    Foreground="White"
+                    Text="{Binding Countdown, Converter={StaticResource SecondToDisplayConverter}}" />
             </StackPanel>
             <TextBlock
                 Margin="0,-200,0,0"
@@ -54,7 +67,8 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Background="White"
-                Content="Start"
+                Content="{Binding MockExamControllerContent}"
+                Command="{Binding ControlMockExamCommand}"
                 Style="{StaticResource MaterialDesignOutlinedButton}" />
         </Grid>
     </Grid>

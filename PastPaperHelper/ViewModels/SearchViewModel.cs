@@ -293,25 +293,25 @@ namespace PastPaperHelper.ViewModels
             SearchStatus = SearchStatus.Standby;
             Info = "Done, " + questions.Count + " result" + (questions.Count > 1 ? "s" : "") + " found in " + FileNum + " files.";
         }
-        private List<string> ProcessQuestionNumbers(string str)
+        public static List<string> ProcessQuestionNumbers(string str)
         {
             List<string> list = str.Split('\n').ToList();
             for (int i = 0; i < list.Count; i++)
             {
-                string item = list[i];
-                string trimed = item.Trim();
+                string item = list[i].Trim();
 
                 int index = 0;
-                while (index < trimed.Length)
+                while (index < item.Length)
                 {
-                    if (trimed[index] != '0' && trimed[index] != '1' && trimed[index] != '2' && trimed[index] != '3' && trimed[index] != '4' && trimed[index] != '5' && trimed[index] != '6' && trimed[index] != '7' && trimed[index] != '8' && trimed[index] != '9')
+                    if (item[index] != '0' && item[index] != '1' && item[index] != '2' && item[index] != '3' && item[index] != '4' && item[index] != '5' && item[index] != '6' && item[index] != '7' && item[index] != '8' && item[index] != '9')
                     {
                         break;
                     }
                     index++;
                 }
-                item = trimed.Substring(0, index);
+                item = item.Substring(0, index);
                 if (string.IsNullOrEmpty(item)) list.RemoveAt(i--);
+                else list[i] = item;
             }
 
             return list;

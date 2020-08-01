@@ -1,5 +1,4 @@
-﻿using PastPaperHelper.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PastPaperHelper.Views
+namespace PastPaperHelper.ViewModels
 {
     /// <summary>
-    /// PracticeView.xaml 的交互逻辑
+    /// MarkPaperView.xaml 的交互逻辑
     /// </summary>
-    public partial class PracticeView : UserControl
+    public partial class MarkPaperView : UserControl
     {
-        public PracticeView()
+        public MarkPaperView()
         {
             InitializeComponent();
         }
