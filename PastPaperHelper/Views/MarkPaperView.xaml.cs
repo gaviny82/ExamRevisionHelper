@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PastPaperHelper.ViewModels
+namespace PastPaperHelper.Views
 {
     /// <summary>
     /// MarkPaperView.xaml 的交互逻辑

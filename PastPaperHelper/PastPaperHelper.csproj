@@ -125,7 +125,7 @@
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\LocalStorageViewModel.cs" />
     <Compile Include="ViewModels\FirstRunWindowViewModel.cs" />
-    <Compile Include="ViewModels\MarkPaperView.xaml.cs">
+    <Compile Include="Views\MarkPaperView.xaml.cs">
       <DependentUpon>MarkPaperView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\MarkPaperViewModel.cs" />
@@ -165,7 +165,7 @@
     <Compile Include="Views\SubjectDialog.xaml.cs">
       <DependentUpon>SubjectDialog.xaml</DependentUpon>
     </Compile>
-    <Page Include="ViewModels\MarkPaperView.xaml">
+    <Page Include="Views\MarkPaperView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
