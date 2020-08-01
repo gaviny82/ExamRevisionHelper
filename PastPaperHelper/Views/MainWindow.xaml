@@ -37,7 +37,7 @@
                         </ListBox.ItemTemplate>
                         <sys:String>Files</sys:String>
                         <sys:String>Download</sys:String>
-                        <sys:String>Search</sys:String>
+                        <!--<sys:String>Search</sys:String>-->
                         <sys:String>Practice</sys:String>
                         <sys:String>Notebook</sys:String>
                         <sys:String>Settings</sys:String>
