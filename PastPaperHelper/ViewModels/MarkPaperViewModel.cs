@@ -5,6 +5,7 @@ using Prism.Regions;
 using Spire.Pdf;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,12 @@ namespace PastPaperHelper.ViewModels
     public class MarkPaperViewModel : BindableBase, INavigationAware
     {
         public Variant MockPaper;
+
+        /// <summary>
+        /// true: wrong
+        /// false: correct
+        /// </summary>
+        public ObservableCollection<QuestionMarkingViewModel> Questions = new ObservableCollection<QuestionMarkingViewModel>();
 
         #region Implement Prism.Regions.INavigationAware
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -33,12 +40,21 @@ namespace PastPaperHelper.ViewModels
             if (param.ContainsKey("MockPaper"))
             {
                 MockPaper = param["MockPaper"] as Variant;
-                AnalyzePaperStructure();
+                int questions = GetNumberOfQuestions();
+                Questions.Clear();
+                for (int i = 1; i <= questions; i++)
+                {
+                    Questions.Add(new QuestionMarkingViewModel
+                    {
+                        QuestionNumber = i,
+                        IsCorrect = true
+                    });
+                }
             }
         }
         #endregion
 
-        private void AnalyzePaperStructure()
+        private int GetNumberOfQuestions()
         {
             Paper qp = null;
             foreach (var item in MockPaper.Papers)
@@ -49,7 +65,7 @@ namespace PastPaperHelper.ViewModels
                     break;
                 }
             }
-            if (qp == null) return;
+            if (qp == null) return 0;
 
             using PdfDocument doc = new PdfDocument();
             doc.LoadFromFile(PastPaperHelperCore.LocalFiles[qp.Url.Split('/').Last()]);
@@ -62,9 +78,27 @@ namespace PastPaperHelper.ViewModels
                 string questions = page.ExtractText(new RectangleF(0, 0, 56, page.ActualSize.Height)).Replace("Evaluation Warning : The document was created with Spire.PDF for .NET.", "").Replace("\r", "");
                 questionList = SearchViewModel.ProcessQuestionNumbers(questions);
             }
-            if (questionList.Count == 0) return;
+            if (questionList.Count == 0) return 0;
 
+            bool parseResult = int.TryParse(questionList.Last(), out int num);
+            return parseResult ? num : 0;
+        }
+    }
 
+    public class QuestionMarkingViewModel : BindableBase
+    {
+        private int _questionNumber;
+        public int QuestionNumber
+        {
+            get { return _questionNumber; }
+            set { SetProperty(ref _questionNumber, value); }
+        }
+
+        private bool _isCorrect;
+        public bool IsCorrect
+        {
+            get { return _isCorrect; }
+            set { SetProperty(ref _isCorrect, value); }
         }
     }
 }
