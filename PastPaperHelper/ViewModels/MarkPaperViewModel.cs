@@ -3,9 +3,11 @@ using PastPaperHelper.Models;
 using Prism.Mvvm;
 using Prism.Regions;
 using Spire.Pdf;
+using Spire.Pdf.General.Find;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -40,6 +42,7 @@ namespace PastPaperHelper.ViewModels
             if (param.ContainsKey("MockPaper"))
             {
                 MockPaper = param["MockPaper"] as Variant;
+
                 int questions = GetNumberOfQuestions();
                 Questions.Clear();
                 for (int i = 1; i <= questions; i++)
@@ -50,9 +53,48 @@ namespace PastPaperHelper.ViewModels
                         IsCorrect = true
                     });
                 }
+
+                foreach (Paper item in MockPaper.Papers)
+                {
+                    if (item.Type == ResourceType.MarkScheme)
+                    {
+                        var filename = item.Url?.Split('/').Last();
+                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+
+                        Task.Run(() => {
+                            try
+                            {
+                                PdfDocument doc = new PdfDocument(PastPaperHelperCore.LocalFiles[filename]);
+                                PdfPageBase page = doc.Pages[0];
+                                var match = page.FindText("Maximum Mark.?:.?\\d+", TextFindParameter.Regex).Finds.First();
+                                string maxMarks = match?.MatchText.Split(':').Last().Trim();
+                                int.TryParse(maxMarks, out int tmpmark);
+                                MaxMarks = tmpmark;
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                        });
+                    }
+                }
             }
         }
         #endregion
+
+        private int _maxMarks;
+        public int MaxMarks
+        {
+            get { return _maxMarks; }
+            set { SetProperty(ref _maxMarks, value); }
+        }
+
+        private int _yourMark = -1;
+        public string YourMark
+        {
+            get { return _yourMark == -1 ? "" : _yourMark.ToString(); }
+            set { SetProperty(ref _yourMark, int.Parse(value)); }
+        }
 
         private int GetNumberOfQuestions()
         {

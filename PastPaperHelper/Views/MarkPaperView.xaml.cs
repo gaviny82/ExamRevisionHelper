@@ -26,5 +26,13 @@ namespace PastPaperHelper.Views
             InitializeComponent();
             list.ItemsSource = (DataContext as MarkPaperViewModel).Questions;
         }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if((e.Key<Key.NumPad0||e.Key>Key.NumPad9) && (e.Key < Key.D0 || e.Key > Key.D9))
+            {
+                e.Handled = true;
+            }
+        }
     }
 }

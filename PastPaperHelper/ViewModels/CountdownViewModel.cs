@@ -91,15 +91,6 @@ namespace PastPaperHelper.ViewModels
                 timer.Stop();
                 (App.Current.MainWindow.DataContext as MainWindowViewModel)
                 .FinishMockExamCommand.Execute(MockPaper);
-
-                foreach (Paper item in MockPaper.Papers)
-                {
-                    if (item.Type == ResourceType.MarkScheme)
-                    {
-                        var filename = item.Url?.Split('/').Last();
-                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
-                    }
-                }
             }
         }
         #endregion
