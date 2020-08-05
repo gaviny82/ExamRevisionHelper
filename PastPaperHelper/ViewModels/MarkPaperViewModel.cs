@@ -88,12 +88,17 @@ namespace PastPaperHelper.ViewModels
 
         void ExecuteSaveExamResultCommand()
         {
+            Paper questionPaper = null;
+            foreach (var item in MockPaper.Papers)
+            {
+                if (item.Type == ResourceType.QuestionPaper) { questionPaper = item; break; }
+            }
             PracticeExamData practiceExam = new PracticeExamData
             {
                 Date = DateTime.Now,
                 TotalMarks = MaxMarks,
                 Mark = _yourMark == -1 ? 0 : _yourMark,
-                ExamPaper = MockPaper,
+                QuestionPaper = questionPaper.Url.Split('/').Last(),
                 Mistakes = (from item in Questions 
                             where !item.IsCorrect 
                             select item.QuestionNumber)

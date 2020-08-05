@@ -16,24 +16,18 @@ namespace PastPaperHelper.ViewModels
     class PracticeViewModel : BindableBase
     {
         public static ObservableCollection<PracticeExamData> MockExams = new ObservableCollection<PracticeExamData>();
-        public static XDocument MockExamsData;
 
+        private static readonly string _mockExamDataPath = @$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\PastPaperHelper\PastPaperHelper\mock_exams.xml";
+        
         static PracticeViewModel()
         {
-            var mockExamDataPath = @$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\PastPaperHelper\PastPaperHelper\mock_exams.xml";
-            if (File.Exists(mockExamDataPath))
-            {
-                MockExamsData = XDocument.Load(mockExamDataPath);
-            }
-            else
-            {
-                MockExamsData = new XDocument(new XElement("MockExams"));
-                MockExamsData.Save(mockExamDataPath);
-            }
+            if (!File.Exists(_mockExamDataPath)) return;
 
-            var list = from item in MockExamsData.XPathSelectElements("/MockExams//Exam")
+            XDocument doc = XDocument.Load(_mockExamDataPath);
+            var list = from item in doc.XPathSelectElements("/MockExams//Exam")
                        select new PracticeExamData
                        {
+                           QuestionPaper = item.Attribute("QuestionPaper").Value,
                            Date = DateTime.Parse(item.Attribute("Date").Value),
                            TotalMarks = int.Parse(item.Attribute("TotalMarks").Value),
                            Mark = int.Parse(item.Attribute("Mark").Value),
@@ -44,7 +38,16 @@ namespace PastPaperHelper.ViewModels
 
         public static void SaveMockExamsData()
         {
-
+            XDocument doc = new XDocument(new XElement("MockExams",
+                from item in MockExams
+                select new XElement("Exam",
+                    new XAttribute("QuestionPaper", item.QuestionPaper),
+                    new XAttribute("Date", item.Date),
+                    new XAttribute("TotalMarks", item.TotalMarks),
+                    new XAttribute("Mark", item.Mark),
+                    new XAttribute("Mistakes", string.Join(",", item.Mistakes))
+                )));
+            doc.Save(_mockExamDataPath);
         }
     }
 
@@ -53,7 +56,7 @@ namespace PastPaperHelper.ViewModels
         public int TotalMarks { get; set; }
         public int Mark { get; set; }
         public DateTime Date { get; set; }
-        public Variant ExamPaper { get; set; }
+        public string QuestionPaper { get; set; }
         public int[] Mistakes { get; set; }
     }
 }
