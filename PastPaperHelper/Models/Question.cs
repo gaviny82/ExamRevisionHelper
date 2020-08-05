@@ -1,6 +1,4 @@
-﻿using PastPaperHelper.Models;
-
-namespace PastPaperHelper
+﻿namespace PastPaperHelper.Models
 {
     public class Question
     {

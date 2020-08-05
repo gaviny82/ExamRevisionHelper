@@ -109,7 +109,7 @@
                             <StackPanel Margin="-4" Orientation="Horizontal">
                                 <RadioButton
                                     BorderBrush="#43A047"
-                                    IsChecked="True"
+                                    IsChecked="{Binding IsCorrect}"
                                     Style="{DynamicResource ToggleButtonSelectionStyle}">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="Tick" />

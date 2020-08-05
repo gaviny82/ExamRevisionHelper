@@ -130,7 +130,6 @@
       <DependentUpon>MarkPaperView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\MarkPaperViewModel.cs" />
-    <Compile Include="ViewModels\NotebookViewModel.cs" />
     <Compile Include="ViewModels\CountdownViewModel.cs" />
     <Compile Include="ViewModels\ReferenceViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
@@ -147,9 +146,6 @@
     </Compile>
     <Compile Include="Views\FirstRunWindow.xaml.cs">
       <DependentUpon>FirstRunWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\NotebookView.xaml.cs">
-      <DependentUpon>NotebookView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CountdownView.xaml.cs">
       <DependentUpon>CountdownView.xaml</DependentUpon>
@@ -223,10 +219,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\FirstRunWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\NotebookView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

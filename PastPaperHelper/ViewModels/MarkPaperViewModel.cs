@@ -88,7 +88,19 @@ namespace PastPaperHelper.ViewModels
 
         void ExecuteSaveExamResultCommand()
         {
-
+            PracticeExamData practiceExam = new PracticeExamData
+            {
+                Date = DateTime.Now,
+                TotalMarks = MaxMarks,
+                Mark = _yourMark == -1 ? 0 : _yourMark,
+                ExamPaper = MockPaper,
+                Mistakes = (from item in Questions 
+                            where !item.IsCorrect 
+                            select item.QuestionNumber)
+                            .ToArray(),
+            };
+            PracticeViewModel.MockExams.Add(practiceExam);
+            PracticeViewModel.SaveMockExamsData();
             //(App.Current.MainWindow.DataContext as MainWindowViewModel).NavigateCommand.Execute("Practice");
         }
 
@@ -146,7 +158,7 @@ namespace PastPaperHelper.ViewModels
             set { SetProperty(ref _questionNumber, value); }
         }
 
-        private bool _isCorrect;
+        private bool _isCorrect = true;
         public bool IsCorrect
         {
             get { return _isCorrect; }

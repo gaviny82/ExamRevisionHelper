@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using PastPaperHelper.Models;
 using PastPaperHelper.ViewModels;
 using System.Configuration;
 using System.Diagnostics;
