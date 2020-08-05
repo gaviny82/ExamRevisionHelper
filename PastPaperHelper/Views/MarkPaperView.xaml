@@ -160,6 +160,7 @@
             <Button
             Width="40"
             Height="40" Margin="16,0,0,0"
+            Command="{Binding SaveExamResultCommand}"
             Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
             ToolTip="Save">
                 <materialDesign:PackIcon

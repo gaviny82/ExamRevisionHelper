@@ -1,5 +1,6 @@
 ﻿using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Spire.Pdf;
@@ -28,12 +29,11 @@ namespace PastPaperHelper.ViewModels
         #region Implement Prism.Regions.INavigationAware
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            throw new NotImplementedException();
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -81,6 +81,15 @@ namespace PastPaperHelper.ViewModels
             }
         }
         #endregion
+
+        private DelegateCommand _saveExamResultCommand;
+        public DelegateCommand SaveExamResultCommand =>
+            _saveExamResultCommand ?? (_saveExamResultCommand = new DelegateCommand(ExecuteSaveExamResultCommand));
+
+        void ExecuteSaveExamResultCommand()
+        {
+            
+        }
 
         private int _maxMarks;
         public int MaxMarks
