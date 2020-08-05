@@ -125,6 +125,7 @@
     <Compile Include="ViewModels\FilesViewModel.cs" />
     <Compile Include="ViewModels\LocalStorageViewModel.cs" />
     <Compile Include="ViewModels\FirstRunWindowViewModel.cs" />
+    <Compile Include="ViewModels\PracticeViewModel.cs" />
     <Compile Include="Views\MarkPaperView.xaml.cs">
       <DependentUpon>MarkPaperView.xaml</DependentUpon>
     </Compile>
@@ -152,6 +153,9 @@
     </Compile>
     <Compile Include="Views\CountdownView.xaml.cs">
       <DependentUpon>CountdownView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PracticeView.xaml.cs">
+      <DependentUpon>PracticeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ReferenceView.xaml.cs">
       <DependentUpon>ReferenceView.xaml</DependentUpon>
@@ -227,6 +231,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CountdownView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PracticeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

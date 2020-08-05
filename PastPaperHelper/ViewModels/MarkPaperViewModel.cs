@@ -88,7 +88,8 @@ namespace PastPaperHelper.ViewModels
 
         void ExecuteSaveExamResultCommand()
         {
-            
+
+            //(App.Current.MainWindow.DataContext as MainWindowViewModel).NavigateCommand.Execute("Practice");
         }
 
         private int _maxMarks;

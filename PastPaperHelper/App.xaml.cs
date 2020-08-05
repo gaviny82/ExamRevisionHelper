@@ -37,6 +37,7 @@ namespace PastPaperHelper
             containerRegistry.RegisterForNavigation<NotebookView>("Notebook");
             containerRegistry.RegisterForNavigation<SettingsView>("Settings");
             containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
+            containerRegistry.RegisterForNavigation<PracticeView>("Practice");
 
             containerRegistry.RegisterForNavigation<SubjectDialog>("SubjectDialog");
         }

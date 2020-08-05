@@ -34,5 +34,10 @@ namespace PastPaperHelper.Views
                 e.Handled = true;
             }
         }
+
+        private void Discard_Click(object sender, RoutedEventArgs e)
+        {
+            (App.Current.MainWindow.DataContext as MainWindowViewModel).NavigateCommand.Execute("Practice");
+        }
     }
 }

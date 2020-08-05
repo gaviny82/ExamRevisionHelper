@@ -141,7 +141,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"
             Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
-            ToolTip="Discard this paper">
+            ToolTip="Discard this paper" Click="Discard_Click">
             <materialDesign:PackIcon
                 Width="24"
                 Height="24"
