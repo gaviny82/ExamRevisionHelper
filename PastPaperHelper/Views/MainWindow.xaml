@@ -29,7 +29,7 @@
                             Foreground="{DynamicResource MaterialDesignBody}"
                             Style="{DynamicResource MaterialDesignFlatButton}" />
                     <ListBox x:Name="HamburgerMenu" Margin="0,16" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
-                             SelectedIndex="0" SelectionChanged="HamburgerMenu_SelectionChanged">
+                             SelectedIndex="{Binding NavigationSelectionIndex}" SelectionChanged="HamburgerMenu_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type sys:String}">
                                 <TextBlock Margin="10,0,0,0" Text="{Binding}" />

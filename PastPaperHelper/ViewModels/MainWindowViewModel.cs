@@ -62,10 +62,16 @@ namespace PastPaperHelper.ViewModels
             {
                 { "MockPaper", parameter }
             };
+            NavigationSelectionIndex = -1;
             _regionManager.RequestNavigate("ContentRegion", "Countdown", navParam);
         }
 
-
+        private int _navigationSelectionIndex = 0;
+        public int NavigationSelectionIndex
+        {
+            get { return _navigationSelectionIndex; }
+            set { SetProperty(ref _navigationSelectionIndex, value); }
+        }
 
         private DelegateCommand<Variant> _finishMockExam;
         public DelegateCommand<Variant> FinishMockExamCommand =>
@@ -78,6 +84,7 @@ namespace PastPaperHelper.ViewModels
             {
                 { "MockPaper", parameter }
             };
+            NavigationSelectionIndex = -1;
             _regionManager.RequestNavigate("ContentRegion", "MarkPaper", navParam);
         }
     }
