@@ -1,6 +1,8 @@
-﻿using PastPaperHelper.ViewModels;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +26,20 @@ namespace PastPaperHelper.Views
         public PracticeView()
         {
             InitializeComponent();
+        }
+
+        private void view_qp_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            var vm = btn.DataContext as MistakeViewModel;
+            Process.Start(PastPaperHelperCore.LocalFiles[vm.QuestionPaper]);
+        }
+
+        private void view_ms_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            var vm = btn.DataContext as MistakeViewModel;
+            Process.Start(PastPaperHelperCore.LocalFiles[vm.QuestionPaper.Replace("qp", "ms")]);
         }
     }
 }

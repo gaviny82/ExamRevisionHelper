@@ -30,7 +30,10 @@
         </Grid.RowDefinitions>
         <TextBlock
             Grid.Row="0"
-            Grid.Column="0" FontSize="24" Margin="10,10,0,0" FontWeight="Bold"
+            Grid.Column="0"
+            Margin="10,10,0,0"
+            FontSize="24"
+            FontWeight="Bold"
             Text="{Binding TotalNumberOfPapers, Converter={StaticResource NumberToPracticeViewMessageConverter}}" />
         <!--<lvc:PieChart x:Name="Chart" Grid.Row="1" Series="{Binding SeriesCollection}"
                       LegendLocation="Right" InnerRadius="100">
@@ -58,20 +61,46 @@
                 <lvc:Axis Labels="{Binding Labels}" />
             </lvc:CartesianChart.AxisX>
         </lvc:CartesianChart>
-        <ListView
-            x:Name="list"
-            Grid.RowSpan="3"
-            Grid.Column="1"
-            Width="300"
-            Background="Black"
-            BorderBrush="Black"
-            BorderThickness="2"
-            ItemsSource="{x:Static vm:PracticeViewModel.Mistakes}">
-            <ListView.ItemTemplate>
-                <DataTemplate DataType="{x:Type vm:MistakeViewModel}">
-                    <TextBlock Text="{Binding QuestionPaper}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <ScrollViewer Grid.RowSpan="3" Grid.Column="1">
+            <ItemsControl x:Name="list" ItemsSource="{x:Static vm:PracticeViewModel.Mistakes}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:MistakeViewModel}">
+                        <Border Width="300" Padding="8">
+                            <Grid>
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding QuestionPaper}" />
+                                <TextBlock
+                                    Margin="0,20,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontSize="14">
+                                    <Run Text="Question " />
+                                    <Run Text="{Binding QuestionNumber}" />
+                                </TextBlock>
+                                <Button
+                                    x:Name="view_qp"
+                                    Margin="0,0,60,0"
+                                    HorizontalAlignment="Right"
+                                    Click="view_qp_Click"
+                                    Content="{materialDesign:PackIcon Kind=FileDocumentEdit}"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    ToolTip="View question paper" />
+                                <Button
+                                    x:Name="view_ms"
+                                    HorizontalAlignment="Right"
+                                    Click="view_ms_Click"
+                                    Content="{materialDesign:PackIcon Kind=FileTick}"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    ToolTip="View mark scheme" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>
