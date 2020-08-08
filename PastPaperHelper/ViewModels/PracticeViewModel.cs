@@ -1,4 +1,7 @@
-﻿using PastPaperHelper.Models;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -8,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
@@ -15,7 +19,8 @@ namespace PastPaperHelper.ViewModels
 {
     class PracticeViewModel : BindableBase
     {
-        public static ObservableCollection<PracticeExamData> MockExams = new ObservableCollection<PracticeExamData>();
+        public static ObservableCollection<MistakeViewModel> Mistakes = new ObservableCollection<MistakeViewModel>();
+        public static Dictionary<Subject, IEnumerable<PracticeExamData>> MockExams = new Dictionary<Subject, IEnumerable<PracticeExamData>>();
 
         private static readonly string _mockExamDataPath = @$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\PastPaperHelper\PastPaperHelper\mock_exams.xml";
         
@@ -24,31 +29,83 @@ namespace PastPaperHelper.ViewModels
             if (!File.Exists(_mockExamDataPath)) return;
 
             XDocument doc = XDocument.Load(_mockExamDataPath);
-            var list = from item in doc.XPathSelectElements("/MockExams//Exam")
-                       select new PracticeExamData
-                       {
-                           QuestionPaper = item.Attribute("QuestionPaper").Value,
-                           Date = DateTime.Parse(item.Attribute("Date").Value),
-                           TotalMarks = int.Parse(item.Attribute("TotalMarks").Value),
-                           Mark = int.Parse(item.Attribute("Mark").Value),
-                           Mistakes = (from q in item.Attribute("Mistakes").Value.Split(',') select int.Parse(q)).ToArray(),
-                       };
-            MockExams.AddRange(list);
+            foreach (var node in doc.XPathSelectElements("/MockExams/Subject"))
+            {
+                var flag = PastPaperHelperCore.TryFindSubject(node.Attribute("SyllabusCode").Value, out Subject subj);
+                if (!flag) continue;
+                MockExams.Add(subj, from item in node.Elements("Exam")
+                                      select new PracticeExamData
+                                      {
+                                          QuestionPaper = item.Attribute("QuestionPaper").Value,
+                                          Date = DateTime.Parse(item.Attribute("Date").Value),
+                                          TotalMarks = int.Parse(item.Attribute("TotalMarks").Value),
+                                          Mark = int.Parse(item.Attribute("Mark").Value),
+                                          Mistakes = (from q in item.Attribute("Mistakes").Value.Split(',') select int.Parse(q)).ToArray(),
+                                      }
+                    );
+            }
         }
 
         public static void SaveMockExamsData()
         {
             XDocument doc = new XDocument(new XElement("MockExams",
-                from item in MockExams
-                select new XElement("Exam",
-                    new XAttribute("QuestionPaper", item.QuestionPaper),
-                    new XAttribute("Date", item.Date),
-                    new XAttribute("TotalMarks", item.TotalMarks),
-                    new XAttribute("Mark", item.Mark),
-                    new XAttribute("Mistakes", string.Join(",", item.Mistakes))
-                )));
+                from subj in MockExams
+                select new XElement("Subject",
+                    new XAttribute("SyllabusCode", subj.Key.SyllabusCode),
+                
+                        from item in subj.Value select new XElement("Exam",
+                            new XAttribute("QuestionPaper", item.QuestionPaper),
+                            new XAttribute("Date", item.Date),
+                            new XAttribute("TotalMarks", item.TotalMarks),
+                            new XAttribute("Mark", item.Mark),
+                            new XAttribute("Mistakes", string.Join(",", item.Mistakes))
+                ))));
             doc.Save(_mockExamDataPath);
         }
+
+        public PracticeViewModel()
+        {
+            SeriesCollection = new SeriesCollection();
+            int maxSize = 0;
+            foreach (var item in MockExams)
+            {
+                var (subj, list) = (item.Key, item.Value);
+                var series = new LineSeries
+                {
+                    Title = $"{subj.SyllabusCode} {subj.Name}",
+                    Values = new ChartValues<double>(from data in list select 100D * (data.Mark / (double)data.TotalMarks))
+                };
+                if (series.Values.Count > maxSize) maxSize = series.Values.Count;
+                SeriesCollection.Add(series);
+                foreach (var data in list)
+                {
+                    Mistakes.AddRange(from a in data.Mistakes select new MistakeViewModel { QuestionPaper = data.QuestionPaper, QuestionNumber = a });
+                }
+                TotalNumberOfPapers += list.Count();
+            }
+            Labels = new string[maxSize];
+            for (int i = 0; i < maxSize; i++)
+            {
+                Labels[i] = (i + 1).ToString();
+            }
+        }
+
+        private int _totalNumberOfPapers = 0;
+        public int TotalNumberOfPapers
+        {
+            get { return _totalNumberOfPapers; }
+            set { SetProperty(ref _totalNumberOfPapers, value); }
+        }
+
+        public SeriesCollection SeriesCollection { get; set; }
+        public string[] Labels { get; set; }
+        public Func<double, string> YFormatter { get; set; } = (value) => string.Format("{0:F2}%", value);
+    }
+
+    class MistakeViewModel : BindableBase
+    {
+        public string QuestionPaper { get; set; }
+        public int QuestionNumber { get; set; }
     }
 
     struct PracticeExamData

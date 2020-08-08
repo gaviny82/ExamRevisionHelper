@@ -104,9 +104,15 @@ namespace PastPaperHelper.ViewModels
                             select item.QuestionNumber)
                             .ToArray(),
             };
-            PracticeViewModel.MockExams.Add(practiceExam);
+
+            var subj = questionPaper.Exam.Subject;
+            if (PracticeViewModel.MockExams.ContainsKey(subj))
+                PracticeViewModel.MockExams[subj].Append(practiceExam);
+            else
+                PracticeViewModel.MockExams.Add(subj, new PracticeExamData[] { practiceExam });
+
             PracticeViewModel.SaveMockExamsData();
-            //(App.Current.MainWindow.DataContext as MainWindowViewModel).NavigateCommand.Execute("Practice");
+            (App.Current.MainWindow.DataContext as MainWindowViewModel).NavigateCommand.Execute("Practice");
         }
 
         private int _maxMarks;

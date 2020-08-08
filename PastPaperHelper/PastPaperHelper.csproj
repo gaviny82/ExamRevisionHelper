@@ -101,6 +101,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\NumberToPracticeViewMessageConverter.cs" />
     <Compile Include="Converters\SecondToTimeConverter.cs" />
     <Compile Include="Converters\DownloadStateToPackIconConverter.cs" />
     <Compile Include="Converters\UpdateFrequencyToIndexConverter.cs" />
@@ -274,6 +275,9 @@
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.11.18</Version>
+    </PackageReference>
+    <PackageReference Include="LiveCharts.Wpf">
+      <Version>0.9.7</Version>
     </PackageReference>
     <PackageReference Include="MaterialDesignColors">
       <Version>1.2.2</Version>
