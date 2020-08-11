@@ -36,21 +36,25 @@
             FontSize="24"
             FontWeight="Bold"
             Text="{Binding TotalNumberOfPapers, Converter={StaticResource NumberToPracticeViewMessageConverter}}" />
-        <!--<lvc:PieChart x:Name="Chart" Grid.Row="1" Series="{Binding SeriesCollection}"
-                      LegendLocation="Right" InnerRadius="100">
+        <lvc:PieChart
+            x:Name="pie"
+            Grid.Row="1" HorizontalAlignment="Center" Width="350"
+            InnerRadius="50"
+            LegendLocation="Right"
+            Series="{Binding PieSeriesCollection}">
             <lvc:PieChart.ChartLegend>
-                <lvc:DefaultLegend BulletSize="20"></lvc:DefaultLegend>
+                <lvc:DefaultLegend BulletSize="20" />
             </lvc:PieChart.ChartLegend>
             <lvc:PieChart.DataTooltip>
-                <lvc:DefaultTooltip BulletSize="20"></lvc:DefaultTooltip>
+                <lvc:DefaultTooltip BulletSize="20" />
             </lvc:PieChart.DataTooltip>
-        </lvc:PieChart>-->
+        </lvc:PieChart>
         <lvc:CartesianChart
             Grid.Row="2"
             Grid.Column="0"
             Margin="8,4,8,8"
             LegendLocation="Right"
-            Series="{Binding SeriesCollection}">
+            Series="{Binding ExamSeriesCollection}">
             <lvc:CartesianChart.AxisY>
                 <lvc:Axis
                     Title="Percentage Marks"
@@ -62,13 +66,17 @@
                 <lvc:Axis Labels="{Binding Labels}" />
             </lvc:CartesianChart.AxisX>
         </lvc:CartesianChart>
-        <TextBlock 
+        <TextBlock
             Grid.Row="0"
             Grid.Column="2"
             Margin="8,10,0,0"
             FontSize="24"
-            FontWeight="Bold" Text="Mistakes"/>
-        <ScrollViewer Grid.RowSpan="2" Grid.Column="2" Grid.Row="1">
+            FontWeight="Bold"
+            Text="Mock Exam Mistakes" />
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2">
             <ItemsControl x:Name="list" ItemsSource="{x:Static vm:PracticeViewModel.Mistakes}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:MistakeViewModel}">

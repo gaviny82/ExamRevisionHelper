@@ -1,8 +1,10 @@
 ﻿using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using PastPaperHelper.Core.Tools;
 using PastPaperHelper.Models;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +19,7 @@ using System.Xml.XPath;
 
 namespace PastPaperHelper.ViewModels
 {
-    class PracticeViewModel : BindableBase
+    class PracticeViewModel : BindableBase, INavigationAware
     {
         public static ObservableCollection<MistakeViewModel> Mistakes = new ObservableCollection<MistakeViewModel>();
         public static Dictionary<Subject, IEnumerable<PracticeExamData>> MockExams = new Dictionary<Subject, IEnumerable<PracticeExamData>>();
@@ -65,10 +67,19 @@ namespace PastPaperHelper.ViewModels
 
         public PracticeViewModel()
         {
-            SeriesCollection = new SeriesCollection();
+            RefreshCharts();
+        }
+
+        void RefreshCharts()
+        {
+            //Init models
+            ExamSeriesCollection = new SeriesCollection();
+            PieSeriesCollection = new SeriesCollection();
             int maxSize = 0;
+
             foreach (var item in MockExams)
             {
+                //Refresh line chart
                 var (subj, list) = (item.Key, item.Value);
                 var series = new LineSeries
                 {
@@ -76,12 +87,21 @@ namespace PastPaperHelper.ViewModels
                     Values = new ChartValues<double>(from data in list select 100D * (data.Mark / (double)data.TotalMarks))
                 };
                 if (series.Values.Count > maxSize) maxSize = series.Values.Count;
-                SeriesCollection.Add(series);
+                ExamSeriesCollection.Add(series);
                 foreach (var data in list)
                 {
                     Mistakes.AddRange(from a in data.Mistakes select new MistakeViewModel { QuestionPaper = data.QuestionPaper, QuestionNumber = a });
                 }
-                TotalNumberOfPapers += list.Count();
+                int count = list.Count();
+                TotalNumberOfPapers += count;
+
+                //Refresh pie chart
+                PieSeriesCollection.Add(new PieSeries
+                {
+                    Title = $"{subj.SyllabusCode} {subj.Name}",
+                    Values = new ChartValues<ObservableValue> { new ObservableValue(count) },
+                    DataLabels = true
+                });
             }
             Labels = new string[maxSize];
             for (int i = 0; i < maxSize; i++)
@@ -90,6 +110,22 @@ namespace PastPaperHelper.ViewModels
             }
         }
 
+        #region Implement INavigationAware
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            RefreshCharts();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+        #endregion
+
         private int _totalNumberOfPapers = 0;
         public int TotalNumberOfPapers
         {
@@ -97,7 +133,9 @@ namespace PastPaperHelper.ViewModels
             set { SetProperty(ref _totalNumberOfPapers, value); }
         }
 
-        public SeriesCollection SeriesCollection { get; set; }
+        public SeriesCollection PieSeriesCollection { get; set; }
+
+        public SeriesCollection ExamSeriesCollection { get; set; }
         public string[] Labels { get; set; }
         public Func<double, string> YFormatter { get; set; } = (value) => string.Format("{0:F2}%", value);
     }
