@@ -36,7 +36,7 @@
                 <Button Margin="20,8,0,0" VerticalAlignment="Center" Click="OpenReleases_Click" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="View changelog">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Tag" />
-                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="Alpha Release" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="Beta Release" />
                     </StackPanel>
                 </Button>
                 <Button Margin="16,8,0,0" VerticalAlignment="Center" Click="OpenGithub_Click" Style="{DynamicResource MaterialDesignFlatButton}">
