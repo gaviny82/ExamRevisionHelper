@@ -7,6 +7,7 @@ using Spire.Pdf;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -119,7 +120,10 @@ namespace PastPaperHelper.ViewModels
                     var filename = item.Url?.Split('/').Last();
                     if (item.Type == ResourceType.QuestionPaper)
                     {
-                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        if (PastPaperHelperCore.LocalFiles.ContainsKey(filename))
+                            Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        else
+                            return;
                         using PdfDocument doc = new PdfDocument(PastPaperHelperCore.LocalFiles[filename]);
                         string txt = doc.Pages[0]?.ExtractText();
                         MatchCollection matches = Regex.Matches(txt, @"([0-9]+\s)(?:hour(s)?|minutes)((\s[0-9]+\s)(?:hour(s)?|minutes))*");
