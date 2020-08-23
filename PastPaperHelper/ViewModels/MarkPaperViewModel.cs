@@ -107,7 +107,10 @@ namespace PastPaperHelper.ViewModels
 
             var subj = questionPaper.Exam.Subject;
             if (PracticeViewModel.MockExams.ContainsKey(subj))
-                PracticeViewModel.MockExams[subj].Append(practiceExam);
+            {
+                var entries = PracticeViewModel.MockExams[subj].Append(practiceExam);
+                PracticeViewModel.MockExams[subj] = entries.ToArray();
+            }
             else
                 PracticeViewModel.MockExams.Add(subj, new PracticeExamData[] { practiceExam });
 
