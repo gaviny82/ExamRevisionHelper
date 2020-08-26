@@ -41,5 +41,16 @@ namespace PastPaperHelper.Views
         {
             (DataContext as FilesViewModel).SelectedExamSeries = FilesViewModel.EmptyExam;
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as FilesViewModel).OpenPaperCommand.Execute((sender as MenuItem).DataContext as Variant);
+        }
+
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            (App.Current.MainWindow.DataContext as MainWindowViewModel)
+                .StartMockExamCommand.Execute((sender as MenuItem).DataContext as Variant);
+        }
     }
 }

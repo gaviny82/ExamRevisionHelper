@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Windows;
 using PastPaperHelper.ViewModels;
+using System.Xml.Linq;
 
 namespace PastPaperHelper
 {
@@ -30,10 +31,13 @@ namespace PastPaperHelper
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<FilesView>("Files");
-            //containerRegistry.RegisterForNavigation<FilesView>("Search");
+            containerRegistry.RegisterForNavigation<SearchView>("Search");
             containerRegistry.RegisterForNavigation<DownloadView>("Download");
+            containerRegistry.RegisterForNavigation<CountdownView>("Countdown");
+            containerRegistry.RegisterForNavigation<MarkPaperView>("MarkPaper");
             containerRegistry.RegisterForNavigation<SettingsView>("Settings");
             containerRegistry.RegisterForNavigation<ReferenceView>("Reference");
+            containerRegistry.RegisterForNavigation<PracticeView>("Practice");
 
             containerRegistry.RegisterForNavigation<SubjectDialog>("SubjectDialog");
         }

@@ -18,7 +18,7 @@ namespace PastPaperHelper.ViewModels
         public static readonly Exam EmptyExam = new Exam();
 
         private Task CompareLocalFilesToSource;
-        
+
         public FilesViewModel()
         {
             SelectedExamSeries = EmptyExam;
@@ -51,7 +51,7 @@ namespace PastPaperHelper.ViewModels
             });
 
             Dictionary<string, string> newMap = new Dictionary<string, string>();
-            CompareLocalFilesToSource = Task.Run(()=>
+            CompareLocalFilesToSource = Task.Run(() =>
             {
                 //Load current files list
                 var lst = Directory.EnumerateFiles(PastPaperHelperCore.LocalFilesPath, "*.pdf", SearchOption.AllDirectories);
@@ -152,5 +152,30 @@ namespace PastPaperHelper.ViewModels
             //resource.Url);
         }
         #endregion
+
+        private DelegateCommand<Variant> _openPaperCommand;
+        public DelegateCommand<Variant> OpenPaperCommand =>
+            _openPaperCommand ?? (_openPaperCommand = new DelegateCommand<Variant>(ExecuteOpenPaperCommand));
+
+        void ExecuteOpenPaperCommand(Variant parameter)
+        {
+            if (parameter == null) return;
+            foreach (Paper item in parameter.Papers)
+            {
+                var filename = item.Url?.Split('/').Last();
+                if (item.Type == ResourceType.QuestionPaper)
+                {
+                    Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                }
+                else if (item.Type == ResourceType.Insert)
+                {
+                    Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                }
+                else if (item.Type == ResourceType.ListeningAudio)
+                {
+                    Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                }
+            }
+        }
     }
 }

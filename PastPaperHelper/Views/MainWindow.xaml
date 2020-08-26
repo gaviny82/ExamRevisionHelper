@@ -5,7 +5,7 @@
         xmlns:models="clr-namespace:PastPaperHelper.Models"
         xmlns:prism="http://prismlibrary.com/" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:views="clr-namespace:PastPaperHelper.Views"
-        xmlns:vm="clr-namespace:PastPaperHelper.ViewModels" Title="Past Paper Helper" Width="1024"
+        xmlns:vm="clr-namespace:PastPaperHelper.ViewModels" Title="Exam Revision Helper" Width="1024"
         Height="576" MinWidth="800" MinHeight="450" prism:ViewModelLocator.AutoWireViewModel="True"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{StaticResource MaterialDesignFont}"
@@ -29,7 +29,7 @@
                             Foreground="{DynamicResource MaterialDesignBody}"
                             Style="{DynamicResource MaterialDesignFlatButton}" />
                     <ListBox x:Name="HamburgerMenu" Margin="0,16" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
-                             SelectedIndex="0" SelectionChanged="HamburgerMenu_SelectionChanged">
+                             SelectedIndex="{Binding NavigationSelectionIndex}" SelectionChanged="HamburgerMenu_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="{x:Type sys:String}">
                                 <TextBlock Margin="10,0,0,0" Text="{Binding}" />
@@ -37,8 +37,8 @@
                         </ListBox.ItemTemplate>
                         <sys:String>Files</sys:String>
                         <sys:String>Download</sys:String>
-                        <!--<sys:String>Search</sys:String>
-                        <sys:String>Local Storage</sys:String>-->
+                        <sys:String>Search</sys:String>
+                        <sys:String>Practice</sys:String>
                         <sys:String>Settings</sys:String>
                     </ListBox>
                 </DockPanel>

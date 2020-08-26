@@ -32,11 +32,11 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.ColumnSpan="2" Margin="10,10,10,0" VerticalAlignment="Top" Orientation="Horizontal">
                 <materialDesign:PackIcon Width="64" Height="64" HorizontalAlignment="Left" VerticalAlignment="Top" Kind="FileDocument" />
-                <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="Past Paper Helper" />
+                <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignHeadline4TextBlock}" Text="Exam Revision Helper" />
                 <Button Margin="20,8,0,0" VerticalAlignment="Center" Click="OpenReleases_Click" Style="{DynamicResource MaterialDesignFlatButton}" ToolTip="View changelog">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Tag" />
-                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="Release 2.0-RC1" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="Beta Release" />
                     </StackPanel>
                 </Button>
                 <Button Margin="16,8,0,0" VerticalAlignment="Center" Click="OpenGithub_Click" Style="{DynamicResource MaterialDesignFlatButton}">
