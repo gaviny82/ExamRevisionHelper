@@ -122,7 +122,7 @@ namespace PastPaperHelper.ViewModels
 
             //TODO: Check if localfiles list is loaded
             var fileslst = from item in PastPaperHelperCore.LocalFiles
-                           where item.Key.StartsWith(SelectedSubject.SyllabusCode)
+                           where item.Key.StartsWith(SelectedSubject.SyllabusCode) && item.Key.Contains("qp")
                            select item.Value;
             string[] filesarr = fileslst.ToArray();
             //search init

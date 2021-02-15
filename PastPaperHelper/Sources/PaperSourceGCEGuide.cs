@@ -116,6 +116,7 @@ namespace PastPaperHelper.Sources
             HtmlDocument doc = web.Load(new Uri(url));
             HtmlNodeCollection nodes = doc.DocumentNode.SelectNodes("//*[@id=\"paperslist\"][1]/li");
 
+            if (nodes == null) return;
             foreach (HtmlNode node in nodes)
             {
                 var nodeClass = node.Attributes["class"].Value;
