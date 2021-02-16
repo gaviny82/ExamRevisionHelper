@@ -9,6 +9,7 @@
     <AssemblyOriginatorKeyFile>ExamRevisionHelper_Key.pfx</AssemblyOriginatorKeyFile>
     <AnalysisLevel>latest</AnalysisLevel>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

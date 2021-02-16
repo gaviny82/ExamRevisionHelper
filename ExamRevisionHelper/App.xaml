@@ -5,6 +5,7 @@
     xmlns:local="clr-namespace:ExamRevisionHelper"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
+    xmlns:sys="clr-namespace:System;assembly=netstandard"
     xmlns:windows="http://schemas.microsoft.com/netfx/2007/xaml/presentation"
     Startup="PrismApplication_Startup">
     <Application.Resources>
@@ -18,6 +19,8 @@
             <windows:Visibility x:Key="IsLoading">
                 1
             </windows:Visibility>
+            <sys:String x:Key="AppVersion">2.0-rc4</sys:String>
+
             <StackPanel x:Key="InvalidPath" Margin="16">
                 <TextBlock
                     HorizontalAlignment="Center"
@@ -308,6 +311,5 @@
             </Style>
 
         </ResourceDictionary>
-
     </Application.Resources>
 </prism:PrismApplication>

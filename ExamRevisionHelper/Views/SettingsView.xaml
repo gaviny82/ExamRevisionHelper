@@ -50,8 +50,10 @@
                     Style="{StaticResource MaterialDesignHeadline4TextBlock}"
                     Text="Exam Revision Helper" />
                 <Button
+                    Width="108"
                     Margin="20,8,0,0"
                     VerticalAlignment="Center"
+                    HorizontalContentAlignment="Left"
                     Click="OpenReleases_Click"
                     Style="{DynamicResource MaterialDesignFlatButton}"
                     ToolTip="View changelog">
@@ -60,12 +62,14 @@
                         <TextBlock
                             Margin="8,0,0,0"
                             VerticalAlignment="Center"
-                            Text="Beta Release" />
+                            Text="{StaticResource AppVersion}" />
                     </StackPanel>
                 </Button>
                 <Button
+                    Width="108"
                     Margin="16,8,0,0"
                     VerticalAlignment="Center"
+                    HorizontalContentAlignment="Left"
                     Click="OpenGithub_Click"
                     Style="{DynamicResource MaterialDesignFlatButton}">
                     <StackPanel Orientation="Horizontal">
