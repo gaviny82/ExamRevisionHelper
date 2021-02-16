@@ -178,8 +178,18 @@ namespace PastPaperHelper.ViewModels
                 for (int i = 1; i < doc.Pages.Count; i++)
                 {
                     PdfPageBase page = doc.Pages[i];
-                    PdfTextFind[] coll = page.FindText(keyWord, searchParam).Finds;
+                    PdfTextFind[] coll;
+                    try
+                    {
+                        coll = page.FindText(kword, param)?.Finds;
+                    }
+                    catch (NullReferenceException)
+                    {
+                        continue;
+                    }
+
                     string str = page.ExtractText();
+
                     foreach (PdfTextFind result in coll)
                     {
                         //extract the question numbers
