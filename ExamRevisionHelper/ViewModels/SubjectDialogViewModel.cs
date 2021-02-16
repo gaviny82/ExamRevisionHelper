@@ -1,14 +1,9 @@
 ﻿using ExamRevisionHelper.Core.Tools;
 using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Views;
 using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 

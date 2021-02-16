@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ExamRevisionHelper.Models
+﻿namespace ExamRevisionHelper.Models
 {
     public enum Curriculums { IGCSE, ALevel }
 

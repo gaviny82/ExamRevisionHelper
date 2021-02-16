@@ -4,20 +4,16 @@ using ExamRevisionHelper.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Spire.Pdf;
-using Spire.Pdf.Exporting.Text;
 using Spire.Pdf.General.Find;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
-using System.Windows.Input;
 
 namespace ExamRevisionHelper.ViewModels
 {

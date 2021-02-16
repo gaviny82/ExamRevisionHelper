@@ -1,15 +1,9 @@
 ﻿using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Events;
-using ExamRevisionHelper.Views;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Collections.ObjectModel;
 using ExamRevisionHelper.Core.Tools;
-using System.Collections.Generic;
-using System.IO;
-using System.Xml;
 
 namespace ExamRevisionHelper.ViewModels
 {

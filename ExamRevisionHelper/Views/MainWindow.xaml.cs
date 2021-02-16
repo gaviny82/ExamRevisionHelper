@@ -1,11 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Events;
 using ExamRevisionHelper.ViewModels;
-using Prism.Events;
-using Prism.Regions;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;

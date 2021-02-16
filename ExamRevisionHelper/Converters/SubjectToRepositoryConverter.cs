@@ -1,7 +1,5 @@
 ﻿using ExamRevisionHelper.Core.Tools;
 using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Sources;
-using ExamRevisionHelper.Views;
 using System;
 using System.Globalization;
 using System.Windows.Data;

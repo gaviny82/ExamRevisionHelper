@@ -1,10 +1,9 @@
-﻿using HtmlAgilityPack;
-using ExamRevisionHelper.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using ExamRevisionHelper.Models;
+using HtmlAgilityPack;
 
 namespace ExamRevisionHelper.Sources
 {
