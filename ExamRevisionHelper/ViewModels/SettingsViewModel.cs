@@ -1,5 +1,4 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using ExamRevisionHelper.Core.Tools;
+﻿using ExamRevisionHelper.Core.Tools;
 using ExamRevisionHelper.Models;
 using ExamRevisionHelper.Views;
 using ExamRevisionHelper.Sources;
@@ -14,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Ookii.Dialogs.Wpf;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -108,16 +108,14 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteBrowseCommand()
         {
-            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true })
+            VistaFolderBrowserDialog picker = new();
+            if (picker.ShowDialog() == true)
             {
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    Path = dialog.FileName;
-                    Properties.Settings.Default.Path = dialog.FileName;
-                    Properties.Settings.Default.Save();
-                    PastPaperHelperCore.LocalFilesPath = dialog.FileName;
-                }
-                else return;
+                var path = picker.SelectedPath;
+                Path = path;
+                Properties.Settings.Default.Path = path;
+                Properties.Settings.Default.Save();
+                PastPaperHelperCore.LocalFilesPath = path;
             }
         }
         #endregion

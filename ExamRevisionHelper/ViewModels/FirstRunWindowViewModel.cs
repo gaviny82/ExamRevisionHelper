@@ -1,8 +1,8 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
-using ExamRevisionHelper.Core.Tools;
+﻿using ExamRevisionHelper.Core.Tools;
 using ExamRevisionHelper.Events;
 using ExamRevisionHelper.Models;
 using ExamRevisionHelper.Sources;
+using Ookii.Dialogs.Wpf;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -139,14 +139,12 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteBrowseCommand()
         {
-            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog { IsFolderPicker = true })
+            VistaFolderBrowserDialog picker = new();
+            if (picker.ShowDialog() == true)
             {
-                if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    var path = dialog.FileName;
-                    if (!path.EndsWith("Past Papers")) path += "\\Past Papers";
-                    Path = path;
-                }
+                var path = picker.SelectedPath;
+                if (!path.EndsWith("Past Papers")) path += "\\Past Papers";
+                Path = path;
             }
         }
         #endregion
