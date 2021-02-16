@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ExamRevisionHelper.Packaging", "PastPaperHelper.Packaging\ExamRevisionHelper.Packaging.wapproj", "{FB49DF54-F3EE-47F0-8883-43D5AE59A2CD}"
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "ExamRevisionHelper.Packaging", "ExamRevisionHelper.Packaging\ExamRevisionHelper.Packaging.wapproj", "{FB49DF54-F3EE-47F0-8883-43D5AE59A2CD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamRevisionHelper", "ExamRevisionHelper\ExamRevisionHelper.csproj", "{C8719505-F902-464A-8AD4-97AB55DBD783}"
 EndProject
