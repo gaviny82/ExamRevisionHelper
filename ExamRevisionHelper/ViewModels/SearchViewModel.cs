@@ -177,7 +177,7 @@ namespace ExamRevisionHelper.ViewModels
                     PdfTextFind[] coll;
                     try
                     {
-                        coll = page.FindText(kword, param)?.Finds;
+                        coll = page.FindText(keyWord, searchParam)?.Finds;
                     }
                     catch (NullReferenceException)
                     {
