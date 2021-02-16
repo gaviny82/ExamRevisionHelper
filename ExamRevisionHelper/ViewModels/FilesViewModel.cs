@@ -132,7 +132,7 @@ namespace ExamRevisionHelper.ViewModels
             if (PastPaperHelperCore.LocalFiles.ContainsKey(filename))
             {
                 var file = PastPaperHelperCore.LocalFiles[filename];
-                if (File.Exists(file)) Process.Start(file);
+                if (File.Exists(file)) App.StartProcess(file);
             }
             else
             {
@@ -142,10 +142,10 @@ namespace ExamRevisionHelper.ViewModels
                     if (PastPaperHelperCore.LocalFiles.ContainsKey(filename))
                     {
                         var file = PastPaperHelperCore.LocalFiles[filename];
-                        if (File.Exists(file)) Process.Start(file);
+                        if (File.Exists(file)) App.StartProcess(file);
                     }
                 }
-                Process.Start(resource.Url);
+                App.StartProcess(resource.Url);
             }
             //Process.Start(resource.State == ResourceStates.Offline && !string.IsNullOrEmpty(resource.Path) ?
             //resource.Path :

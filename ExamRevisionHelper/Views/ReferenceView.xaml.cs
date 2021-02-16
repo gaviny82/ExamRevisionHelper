@@ -13,7 +13,11 @@ namespace ExamRevisionHelper.Views
             InitializeComponent();
         }
 
-        private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) => Process.Start((sender as TextBlock).Text);
+        private void TextBlock_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            string url = (sender as TextBlock).Text;
+            App.StartProcess(url);
+        }
 
     }
 }

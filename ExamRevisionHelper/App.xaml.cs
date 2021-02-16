@@ -7,6 +7,7 @@ using Prism.Unity;
 using System.IO;
 using ExamRevisionHelper.Core.Tools;
 using ExamRevisionHelper.Views;
+using System.Diagnostics;
 
 namespace ExamRevisionHelper
 {
@@ -66,5 +67,7 @@ namespace ExamRevisionHelper
             };
             InitResult = PastPaperHelperCore.Initialize(dataFile, ExamRevisionHelper.Properties.Settings.Default.Path, ExamRevisionHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
         }
+
+        public static void StartProcess(string path) => Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
     }
 }
