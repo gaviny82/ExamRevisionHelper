@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastPaperHelper", "PastPape
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "PastPaperHelper.Packaging", "PastPaperHelper.Packaging\PastPaperHelper.Packaging.wapproj", "{FB49DF54-F3EE-47F0-8883-43D5AE59A2CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamRevisionHelper", "ExamRevisionHelper\ExamRevisionHelper.csproj", "{C8719505-F902-464A-8AD4-97AB55DBD783}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,26 @@ Global
 		{FB49DF54-F3EE-47F0-8883-43D5AE59A2CD}.Release|x86.ActiveCfg = Release|x86
 		{FB49DF54-F3EE-47F0-8883-43D5AE59A2CD}.Release|x86.Build.0 = Release|x86
 		{FB49DF54-F3EE-47F0-8883-43D5AE59A2CD}.Release|x86.Deploy.0 = Release|x86
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|ARM.Build.0 = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|x64.Build.0 = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Debug|x86.Build.0 = Debug|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|ARM.Build.0 = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|ARM64.Build.0 = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|x64.ActiveCfg = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|x64.Build.0 = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|x86.ActiveCfg = Release|Any CPU
+		{C8719505-F902-464A-8AD4-97AB55DBD783}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
