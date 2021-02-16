@@ -8,6 +8,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>ExamRevisionHelper_Key.pfx</AssemblyOriginatorKeyFile>
     <AnalysisLevel>latest</AnalysisLevel>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

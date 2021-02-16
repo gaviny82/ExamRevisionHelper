@@ -41,7 +41,7 @@
                 </Button>
                 <Button Margin="16,8,0,0" VerticalAlignment="Center" Click="OpenGithub_Click" Style="{DynamicResource MaterialDesignFlatButton}">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="GithubCircle" />
+                        <materialDesign:PackIcon Kind="MicrosoftGithub" />
                         <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" Text="Github" />
                     </StackPanel>
                 </Button>

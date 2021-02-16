@@ -107,19 +107,6 @@
                                     <materialDesign:PackIcon Kind="FileDocument" />
                                 </materialDesign:Chip.Icon>
                             </materialDesign:Chip>
-                            <Button
-                                Grid.Column="1"
-                                HorizontalAlignment="Left"
-                                Style="{DynamicResource MaterialDesignFlatButton}"
-                                Visibility="Collapsed">
-                                <StackPanel Margin="-8,0" Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="GithubCircle" />
-                                    <TextBlock
-                                        Margin="8,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Text="Github" />
-                                </StackPanel>
-                            </Button>
                         </Grid>
                     </materialDesign:Card>
                 </Border>
@@ -129,10 +116,8 @@
                     <Border Background="Transparent">
                         <Border.ContextMenu>
                             <ContextMenu>
-                                <MenuItem
-                                    Click="MenuItem_Click"
-                                    Header="Open all" />
-                                <MenuItem Header="Mock exam" Click="MenuItem_Click_1"/>
+                                <MenuItem Click="MenuItem_Click" Header="Open all" />
+                                <MenuItem Click="MenuItem_Click_1" Header="Mock exam" />
                             </ContextMenu>
                         </Border.ContextMenu>
                         <TextBlock
