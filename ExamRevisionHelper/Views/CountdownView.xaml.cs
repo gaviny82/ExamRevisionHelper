@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExamRevisionHelper.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,14 +14,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ExamRevisionHelper
+namespace ExamRevisionHelper.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// PracticeView.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class CountdownView : UserControl
     {
-        public MainWindow()
+        public CountdownView()
         {
             InitializeComponent();
         }
