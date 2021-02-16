@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using PastPaperHelper.Models;
 using PastPaperHelper.ViewModels;
 using System.Configuration;
 using System.Diagnostics;
@@ -9,9 +10,9 @@ using System.Windows.Data;
 namespace PastPaperHelper.Views
 {
     /// <summary>
-    /// SearchView.xaml 的交互逻辑
+    /// Interaction logic for SearchView
     /// </summary>
-    public partial class SearchView : Grid
+    public partial class SearchView : UserControl
     {
         Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
         public SearchStatus SearchStatus { get => (SearchStatus)GetValue(SearchStatusProperty); set => SetValue(SearchStatusProperty, value); }
@@ -28,11 +29,11 @@ namespace PastPaperHelper.Views
             InitializeComponent();
             SearchViewModel model = new SearchViewModel();
             resultsGrid.DataContext = model;
-            model.SearchPath = Properties.Settings.Default.Path;
             Binding binding = new Binding("SearchStatus") { Source = model, Mode = BindingMode.TwoWay };
             SetBinding(SearchStatusProperty, binding);
             DataContext = model;
             SearchStatusChanged_Callback(SearchStatus.Standby);
+            subjectSelector.SelectedIndex = 0;
         }
 
         private void ViewMarkScheme(object sender, RoutedEventArgs e)
@@ -63,6 +64,12 @@ namespace PastPaperHelper.Views
                 keyword.IsEnabled = false;
                 progress.IsIndeterminate = false;
             }
+        }
+
+        private void keyword_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+                (DataContext as SearchViewModel).SearchActivationCommand.Execute(host);
         }
     }
 }

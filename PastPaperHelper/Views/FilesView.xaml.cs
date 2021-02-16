@@ -1,62 +1,56 @@
-﻿using PastPaperHelper.Models;
+﻿using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using PastPaperHelper.ViewModels;
 using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
-using System.Net;
-using PastPaperHelper.Sources;
-using System.Collections.Generic;
-using System.Windows;
-using System.Threading;
 
 namespace PastPaperHelper.Views
 {
     /// <summary>
-    /// FilesView.xaml 的交互逻辑
+    /// Interaction logic for FilesView
     /// </summary>
-    public partial class FilesView : Grid
+    public partial class FilesView : UserControl
     {
         public FilesView()
         {
             InitializeComponent();
-            DataContext = new FilesViewModel();
+            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (args.NotificationType == NotificationType.Finished)
+                    {
+                        subjectSelector.SelectedIndex = 0;
+                    }
+                });
+            };
+
+            PastPaperHelperUpdateService.SubjectSubscribedEvent += (args) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (subjectSelector.SelectedIndex == -1) 
+                        subjectSelector.SelectedIndex = 0;
+                });
+            };
         }
 
         private void SubjectSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            (DataContext as FilesViewModel).SelectedExamSeries = new Exam();
+            (DataContext as FilesViewModel).SelectedExamSeries = FilesViewModel.EmptyExam;
         }
 
-        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            ListBox view = sender as ListBox;
-            if (view.SelectedItem != null)
-            {
-                (DataContext as FilesViewModel).OpenOnlineResourceCommand.Execute(view.SelectedItem);
-            }
+            (DataContext as FilesViewModel).OpenPaperCommand.Execute((sender as MenuItem).DataContext as Variant);
         }
 
-        private void ViewPaper_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
-            string path = ((sender as Button).DataContext as Paper).Url;
-            foreach (var file in MainWindowViewModel.Files)
-            {
-                if (file.Split('\\').Last() == path.Split('/').Last())
-                {
-                    path = file;
-                    break;
-                }
-            }
-            Process.Start(path);
-        }
-
-        private void Download_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            MainWindow.DownloadFlyoutViewModel.DownloadCommand.Execute((Subject)subjectSelector.SelectedItem);
-            (Application.Current.MainWindow as MainWindow).OpenDownloadPopup();
+            (App.Current.MainWindow.DataContext as MainWindowViewModel)
+                .StartMockExamCommand.Execute((sender as MenuItem).DataContext as Variant);
         }
     }
 }

@@ -1,21 +1,91 @@
-﻿using PastPaperHelper.Views;
+﻿using PastPaperHelper.Models;
+using PastPaperHelper.Events;
+using PastPaperHelper.Views;
+using Prism.Commands;
+using Prism.Events;
+using Prism.Mvvm;
+using Prism.Regions;
+using System.Collections.ObjectModel;
+using PastPaperHelper.Core.Tools;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 
 namespace PastPaperHelper.ViewModels
 {
-    class MainWindowViewModel : NotificationObject
+    public class MainWindowViewModel : BindableBase
     {
-        public static List<string> Files = new List<string>();
-        public HamburgerMenuItemViewModel[] ListItems { get; }
+        public static ObservableCollection<Subject> SubscribedSubjects { get; private set; } = new ObservableCollection<Subject>();
 
-        public MainWindowViewModel()
+        public static void RefreshSubscribedSubjects()
         {
-            ListItems = new HamburgerMenuItemViewModel[]
+            SubscribedSubjects.Clear();
+            foreach (Subject item in PastPaperHelperCore.SubscribedSubjects)
             {
-                new HamburgerMenuItemViewModel("Files", new FilesView()),
-                new HamburgerMenuItemViewModel("Search", new SearchView()),
-                new HamburgerMenuItemViewModel("Settings", new SettingsView()),
+                SubscribedSubjects.Add(item);
+            }
+        }
+
+        private readonly IRegionManager _regionManager;
+
+        public MainWindowViewModel(IRegionManager regionManager)
+        {
+            _regionManager = regionManager;
+        }
+
+        #region NavigateCommand
+        private DelegateCommand<string> _navigateCommand;
+        public DelegateCommand<string> NavigateCommand =>
+            _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(Navigate));
+        private void Navigate(string uri)
+        {
+            PageTitle = uri;
+            _regionManager.RequestNavigate("ContentRegion", uri.Replace(" ", ""));
+        }
+        #endregion
+
+        private string _pageTitle;
+        public string PageTitle
+        {
+            get { return _pageTitle; }
+            set { SetProperty(ref _pageTitle, value); }
+        }
+
+        private DelegateCommand<Variant> _startMockExam;
+        public DelegateCommand<Variant> StartMockExamCommand =>
+            _startMockExam ?? (_startMockExam = new DelegateCommand<Variant>(ExecuteStartMockExamCommand));
+
+        void ExecuteStartMockExamCommand(Variant parameter)
+        {
+            PageTitle = "Mock exam";
+            NavigationParameters navParam = new NavigationParameters
+            {
+                { "MockPaper", parameter }
             };
+            NavigationSelectionIndex = -1;
+            _regionManager.RequestNavigate("ContentRegion", "Countdown", navParam);
+        }
+
+        private int _navigationSelectionIndex = 0;
+        public int NavigationSelectionIndex
+        {
+            get { return _navigationSelectionIndex; }
+            set { SetProperty(ref _navigationSelectionIndex, value); }
+        }
+
+        private DelegateCommand<Variant> _finishMockExam;
+        public DelegateCommand<Variant> FinishMockExamCommand =>
+            _finishMockExam ?? (_finishMockExam = new DelegateCommand<Variant>(ExecuteFinishMockExamCommand));
+
+        void ExecuteFinishMockExamCommand(Variant parameter)
+        {
+            PageTitle = "Marking";
+            NavigationParameters navParam = new NavigationParameters
+            {
+                { "MockPaper", parameter }
+            };
+            NavigationSelectionIndex = -1;
+            _regionManager.RequestNavigate("ContentRegion", "MarkPaper", navParam);
         }
     }
 }

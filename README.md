@@ -1,4 +1,4 @@
-# PastPaperHelper
+# ExamRevisionHelper
 This tool is built for downloading and managing CIE past papers
 
 # Roadmap

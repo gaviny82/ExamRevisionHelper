@@ -1,43 +1,91 @@
-﻿using PastPaperHelper.Models;
+﻿using HtmlAgilityPack;
+using PastPaperHelper.Core.Tools;
+using PastPaperHelper.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace PastPaperHelper.Sources
 {
     public abstract class PaperSource
     {
-        public static PaperSource CurrentPaperSource { get; set; }
-        public string Name { get; set; }
-        public string Url { get; set; }
 
-        public virtual Dictionary<Subject, string> GetSubjectUrlMap()
+        protected static HtmlWeb web = new HtmlWeb();
+        public string Name { get; protected set; }
+        public string DisplayName { get; protected set; }
+
+        public string UrlBase { get; protected set; }
+        public Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
+        public Dictionary<Subject, PaperRepository> Subscription { get; private set; } = new Dictionary<Subject, PaperRepository>();
+        public DateTime LastUpdated { get; private set; }
+
+        public PaperSource()
         {
-            Dictionary<Subject, string> repoIG = GetSubjectUrlMap(Curriculums.IGCSE);
-            Dictionary<Subject, string> repoAL = GetSubjectUrlMap(Curriculums.ALevel);
 
-            Dictionary<Subject, string> tmp = new Dictionary<Subject, string>();
-            foreach (KeyValuePair<Subject, string> item in repoIG) tmp.Add(item.Key, item.Value);
-            foreach (KeyValuePair<Subject, string> item in repoAL) tmp.Add(item.Key, item.Value);
-            return tmp;
+        }
+        public PaperSource(XmlDocument data)
+        {
+            XmlNode dataNode = data.SelectSingleNode("/Data");
+            if (dataNode == null || dataNode.Attributes["LastUpdate"] == null) throw new Exception("Failed to load source data.");
+
+            //Load time of last update
+            DateTime.TryParse(dataNode.Attributes["LastUpdate"].Value, out DateTime lastUpdate);
+            LastUpdated = lastUpdate;
         }
 
-        public abstract Dictionary<Subject, string> GetSubjectUrlMap(Curriculums curriculum);
-
-        public abstract PaperRepository GetPapers(Subject subject, string url);
-
-        public static void SaveSubjectList(Dictionary<Subject, string> map, XmlDocument doc)
+        public async virtual Task UpdateSubjectUrlMapAsync()
         {
-            doc.RemoveAll();
-            doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
-            XmlElement data = doc.CreateElement("Data");
-            data.SetAttribute("Time", DateTime.Now.ToString());
-            data.SetAttribute("Source", PaperSource.CurrentPaperSource.Name);
-            doc.AppendChild(data);
+            Task<Dictionary<Subject, string>> repoIG = null;
+            Task<Dictionary<Subject, string>> repoAL = null;
+            try
+            {
+                repoIG = GetSubjectUrlMapAsync(Curriculums.IGCSE);
+                repoAL = GetSubjectUrlMapAsync(Curriculums.ALevel);
+            }
+            catch (Exception e)
+            {
+                //Once exception arised, stop updating
+                throw e;
+            }
+            Dictionary<Subject, string> tmp = new Dictionary<Subject, string>();
+            foreach (var item in await repoIG) tmp.Add(item.Key, item.Value);
+            foreach (var item in await repoAL) tmp.Add(item.Key, item.Value);
+            SubjectUrlMap = tmp;
+        }
 
-            XmlElement IG = doc.CreateElement("IGCSE");
-            XmlElement AL = doc.CreateElement("ALevel");
-            foreach (KeyValuePair<Subject,string> item in map)
+        public async virtual Task AddOrUpdateSubject(Subject subj)
+        {
+            if (!SubjectUrlMap.ContainsKey(subj)) throw new Exception($"Cannot find {subj.SyllabusCode} {subj.Name} in {nameof(SubjectUrlMap)}");
+            var repo = await GetPapers(subj);
+            if (Subscription.ContainsKey(subj)) Subscription[subj] = repo;
+            else Subscription.Add(subj, repo);
+        }
+
+        public abstract Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum);
+
+        public abstract Task<PaperRepository> GetPapers(Subject subject);
+
+        public XmlDocument SaveDataToXml(Dictionary<Subject, PaperRepository> subscription = null)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+
+            //Write source info
+            XmlElement dataNode = doc.CreateElement("Data");
+            dataNode.SetAttribute("LastUpdate", DateTime.Now.ToString());
+            dataNode.SetAttribute("Source", Name);
+            doc.AppendChild(dataNode);
+
+            //Write subject and url pairs
+            XmlElement subjList = doc.CreateElement("SubjectList");
+            dataNode.AppendChild(subjList);
+            XmlElement igSubjNode = doc.CreateElement("IGCSE");
+            XmlElement alSubjNode = doc.CreateElement("ALevel");
+            subjList.AppendChild(igSubjNode);
+            subjList.AppendChild(alSubjNode);
+
+            foreach (KeyValuePair<Subject, string> item in SubjectUrlMap)
             {
                 XmlElement element = doc.CreateElement("Subject");
                 element.SetAttribute("Name", item.Key.Name);
@@ -46,24 +94,17 @@ namespace PastPaperHelper.Sources
                 switch (item.Key.Curriculum)
                 {
                     default: break;
-                    case Curriculums.IGCSE: IG.AppendChild(element); break;
-                    case Curriculums.ALevel: AL.AppendChild(element); break;
+                    case Curriculums.IGCSE: igSubjNode.AppendChild(element); break;
+                    case Curriculums.ALevel: alSubjNode.AppendChild(element); break;
                 }
             }
-            data.AppendChild(IG);
-            data.AppendChild(AL);
-        }
-        
-        public static void SaveSubscription(Dictionary<Subject, PaperRepository> list, XmlDocument doc)
-        {
-            doc.RemoveAll();
-            doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
-            XmlElement data = doc.CreateElement("Data");
-            data.SetAttribute("Time", DateTime.Now.ToString());
-            data.SetAttribute("Source", PaperSource.CurrentPaperSource.Name);
-            doc.AppendChild(data);
 
-            foreach(KeyValuePair<Subject, PaperRepository> item in list)
+            //Write subscribed subjects and exams
+            XmlElement subsNode = doc.CreateElement("Subscription");
+            dataNode.AppendChild(subsNode);
+
+            if (subscription == null) subscription = Subscription;
+            foreach (KeyValuePair<Subject, PaperRepository> item in subscription)
             {
                 Subject subject = item.Key;
                 PaperRepository repo = item.Value;
@@ -71,13 +112,13 @@ namespace PastPaperHelper.Sources
                 XmlElement subjNode = doc.CreateElement("Subject");
                 subjNode.SetAttribute("Name", subject.Name);
                 subjNode.SetAttribute("SyllabusCode", subject.SyllabusCode);
-                data.AppendChild(subjNode);
+                subsNode.AppendChild(subjNode);
 
                 foreach (ExamYear year in repo)
                 {
                     XmlElement yearNode = doc.CreateElement("ExamYear");
                     yearNode.SetAttribute("Year", year.Year);
-                    if (year.Syllabus != null)  yearNode.SetAttribute("Syllabus", year.Syllabus.Url);
+                    if (year.Syllabus != null) yearNode.SetAttribute("Syllabus", year.Syllabus.Url);
                     if (year.Specimen != null) yearNode.AppendChild(year.Specimen.GetXmlNode(doc));
                     if (year.Spring != null) yearNode.AppendChild(year.Spring.GetXmlNode(doc));
                     if (year.Summer != null) yearNode.AppendChild(year.Summer.GetXmlNode(doc));
@@ -85,14 +126,7 @@ namespace PastPaperHelper.Sources
                     subjNode.AppendChild(yearNode);
                 }
             }
-            doc.Save(Environment.CurrentDirectory + "\\data\\subscription.xml");
+            return doc;
         }
-    }
-
-    public static class PaperSources
-    {
-        public static PaperSource GCE_Guide { get; } = new PaperSourceGCEGuide();
-        public static PaperSource PapaCambridge { get; } //= new PaperSourcePapaCambridge();
-        public static PaperSource CIE_Notes { get; } //= new PaperSourceCIENotes();
     }
 }

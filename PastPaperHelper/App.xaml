@@ -1,18 +1,18 @@
-﻿<Application x:Class="PastPaperHelper.App"
+﻿<prism:PrismApplication x:Class="PastPaperHelper.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:PastPaperHelper"
+	         xmlns:prism="http://prismlibrary.com/"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:windows="http://schemas.microsoft.com/netfx/2007/xaml/presentation"
-             Startup="Application_Startup">
+             xmlns:local="clr-namespace:PastPaperHelper"
+             Startup="PrismApplication_Startup">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Indigo.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.LightGreen.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <windows:Visibility x:Key="IsLoading">
                 1
@@ -250,5 +250,6 @@
             </Style>
 
         </ResourceDictionary>
+
     </Application.Resources>
-</Application>
+</prism:PrismApplication>

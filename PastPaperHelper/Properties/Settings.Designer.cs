@@ -12,7 +12,7 @@ namespace PastPaperHelper.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.2.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -37,30 +37,6 @@ namespace PastPaperHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AutoUpdateFiles {
-            get {
-                return ((bool)(this["AutoUpdateFiles"]));
-            }
-            set {
-                this["AutoUpdateFiles"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AutoUpdateProgram {
-            get {
-                return ((bool)(this["AutoUpdateProgram"]));
-            }
-            set {
-                this["AutoUpdateProgram"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool FirstRun {
             get {
@@ -73,7 +49,7 @@ namespace PastPaperHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("GCE Guide")]
+        [global::System.Configuration.DefaultSettingValueAttribute("gce_guide")]
         public string PaperSource {
             get {
                 return ((string)(this["PaperSource"]));
@@ -87,24 +63,36 @@ namespace PastPaperHelper.Properties {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
             "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
-        public global::System.Collections.Specialized.StringCollection SubjectsSubcripted {
+        public global::System.Collections.Specialized.StringCollection SubjectsSubcription {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["SubjectsSubcripted"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["SubjectsSubcription"]));
             }
             set {
-                this["SubjectsSubcripted"] = value;
+                this["SubjectsSubcription"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("7")]
-        public int UpdateFrequency {
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int UpdatePolicy {
             get {
-                return ((int)(this["UpdateFrequency"]));
+                return ((int)(this["UpdatePolicy"]));
             }
             set {
-                this["UpdateFrequency"] = value;
+                this["UpdatePolicy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoUpdateFileList {
+            get {
+                return ((bool)(this["AutoUpdateFileList"]));
+            }
+            set {
+                this["AutoUpdateFileList"] = value;
             }
         }
     }
