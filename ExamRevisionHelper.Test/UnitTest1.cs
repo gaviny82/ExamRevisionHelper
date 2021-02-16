@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PastPaperHelper.Core.Tools;
-using PastPaperHelper.Models;
-using PastPaperHelper.Sources;
+using ExamRevisionHelper.Core.Tools;
+using ExamRevisionHelper.Models;
+using ExamRevisionHelper.Sources;
 using System;
 using System.Collections.Generic;
 using System.Xml;
