@@ -316,7 +316,6 @@
                     Height="64"
                     IsIndeterminate="True"
                     Style="{StaticResource MaterialDesignCircularProgressBar}"
-                    Visibility="{Binding IsLoading}"
                     Value="0" />
                 <TextBlock
                     Margin="0,8,0,0"
