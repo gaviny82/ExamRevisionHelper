@@ -7,7 +7,7 @@ using HtmlAgilityPack;
 
 namespace ExamRevisionHelper.Sources
 {
-    class PaperSourcePapaCambridge : PaperSource
+    public class PaperSourcePapaCambridge : PaperSource
     {
         public PaperSourcePapaCambridge()
         {

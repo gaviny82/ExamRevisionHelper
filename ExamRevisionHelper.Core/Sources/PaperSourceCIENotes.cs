@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace ExamRevisionHelper.Sources
 {
-    class PaperSourceCIENotes : PaperSource
+    public class PaperSourceCIENotes : PaperSource
     {
         public PaperSourceCIENotes()
         {
