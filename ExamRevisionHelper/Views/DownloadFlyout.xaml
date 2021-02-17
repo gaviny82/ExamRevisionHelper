@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="ExamRevisionHelper.Views.DownloadFlyout"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ExamRevisionHelper.Views"
+             xmlns:models="clr-namespace:ExamRevisionHelper.Models"
+             xmlns:vm="clr-namespace:ExamRevisionHelper.ViewModels"
+             xmlns:md="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:ExamRevisionHelper.Converters"
+             mc:Ignorable="d" Margin="8,0" d:DesignWidth="500">
+    <UserControl.Resources>
+        <converters:DownloadStateToPackIconConverter x:Key="DownloadStateToPackIconConverter"/>
+        <converters:DownloadStateToVisibilityConverter x:Key="DownloadStateToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <TextBlock VerticalAlignment="Top" Text="{Binding Message}" FontSize="14"/>
+        <ProgressBar VerticalAlignment="Top" Height="8" Value="{Binding TaskCompleted}" Maximum="{Binding TotalTasks}" Margin="0,20,0,0" IsIndeterminate="{Binding IsIndeterminate}" ToolTip="{Binding Value, RelativeSource={RelativeSource Mode=Self}}"/>
+        <ListBox Margin="0,33,0,105" ItemsSource="{x:Static vm:DownloadFlyoutViewModel.Tasks}" VirtualizingPanel.IsVirtualizing="True">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:DownloadTask}">
+                    <Grid>
+                        <TextBlock Text="{Binding FileName}" HorizontalAlignment="Left" Margin="24,0,0,0"/>
+                        <md:PackIcon Kind="{Binding State, Converter={StaticResource DownloadStateToPackIconConverter}}" Visibility="{Binding State, Converter={StaticResource DownloadStateToVisibilityConverter}}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBox AcceptsReturn="True" VerticalAlignment="Bottom" Height="100" IsReadOnly="True" Text="{Binding Log}" FontSize="12" BorderThickness="0,1,0,0" BorderBrush="DarkGray"/>
+    </Grid>
+</UserControl>

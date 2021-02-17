@@ -1,0 +1,25 @@
+﻿<ContentDialog
+    x:Class="ExamRevisionHelper.Dialogs.SubjectDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ExamRevisionHelper.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:ExamRevisionHelper.Models"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    Title="Add Subjects"
+    CloseButtonText="Done"
+    DefaultButton="Close"
+    Loaded="ContentDialog_Loaded"
+    Unloaded="ContentDialog_Unloaded"
+    CloseButtonClick="ContentDialog_CloseButtonClick"
+    mc:Ignorable="d">
+
+    <muxc:TreeView
+        x:Name="subjectSelector"
+        MaxWidth="498"
+        CanDrag="False"
+        CanDragItems="False"
+        CanReorderItems="False"
+        SelectionMode="Multiple" />
+</ContentDialog>

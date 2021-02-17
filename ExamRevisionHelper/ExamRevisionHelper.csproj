@@ -1,0 +1,132 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Copyright>Copyright © 2021</Copyright>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>ExamRevisionHelper_Key.pfx</AssemblyOriginatorKeyFile>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Version>2.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.30" />
+    <PackageReference Include="LiveCharts.Wpf.NetCore3" Version="0.9.7" />
+    <PackageReference Include="MaterialDesignExtensions" Version="3.2.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
+    <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
+    <PackageReference Include="Prism.Wpf" Version="8.0.0.1909" />
+    <PackageReference Include="Spire.PDF" Version="6.7.2" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Views\CountdownView.xaml.cs">
+      <DependentUpon>CountdownView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DownloadFlyout.xaml.cs">
+      <DependentUpon>DownloadFlyout.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DownloadView.xaml.cs">
+      <DependentUpon>DownloadView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\FilesView.xaml.cs">
+      <DependentUpon>FilesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\FirstRunWindow.xaml.cs">
+      <DependentUpon>FirstRunWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LocalStorageView.xaml.cs">
+      <DependentUpon>LocalStorageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MarkPaperView.xaml.cs">
+      <DependentUpon>MarkPaperView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PracticeView.xaml.cs">
+      <DependentUpon>PracticeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ReferenceView.xaml.cs">
+      <DependentUpon>ReferenceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SearchView.xaml.cs">
+      <DependentUpon>SearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SubjectDialog.xaml.cs">
+      <DependentUpon>SubjectDialog.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\CountdownView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DownloadFlyout.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DownloadView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FilesView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FirstRunWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\LocalStorageView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MarkPaperView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PracticeView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ReferenceView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SearchView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SubjectDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>
