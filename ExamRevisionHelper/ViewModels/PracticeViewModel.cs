@@ -1,17 +1,17 @@
-﻿using LiveCharts;
-using LiveCharts.Defaults;
-using LiveCharts.Wpf;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using Prism.Mvvm;
-using Prism.Regions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using LiveCharts;
+using LiveCharts.Defaults;
+using LiveCharts.Wpf;
+using Prism.Mvvm;
+using Prism.Regions;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -21,7 +21,7 @@ namespace ExamRevisionHelper.ViewModels
         public static Dictionary<Subject, IEnumerable<PracticeExamData>> MockExams = new Dictionary<Subject, IEnumerable<PracticeExamData>>();
 
         private static readonly string _mockExamDataPath = @$"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\PastPaperHelper\PastPaperHelper\mock_exams.xml";
-        
+
         static PracticeViewModel()
         {
             if (!File.Exists(_mockExamDataPath)) return;
@@ -32,14 +32,14 @@ namespace ExamRevisionHelper.ViewModels
                 var flag = PastPaperHelperCore.TryFindSubject(node.Attribute("SyllabusCode").Value, out Subject subj);
                 if (!flag) continue;
                 MockExams.Add(subj, from item in node.Elements("Exam")
-                                      select new PracticeExamData
-                                      {
-                                          QuestionPaper = item.Attribute("QuestionPaper").Value,
-                                          Date = DateTime.Parse(item.Attribute("Date").Value),
-                                          TotalMarks = int.Parse(item.Attribute("TotalMarks").Value),
-                                          Mark = int.Parse(item.Attribute("Mark").Value),
-                                          Mistakes = (from q in item.Attribute("Mistakes").Value.Split(',') select int.Parse(q)).ToArray(),
-                                      }
+                                    select new PracticeExamData
+                                    {
+                                        QuestionPaper = item.Attribute("QuestionPaper").Value,
+                                        Date = DateTime.Parse(item.Attribute("Date").Value),
+                                        TotalMarks = int.Parse(item.Attribute("TotalMarks").Value),
+                                        Mark = int.Parse(item.Attribute("Mark").Value),
+                                        Mistakes = (from q in item.Attribute("Mistakes").Value.Split(',') select int.Parse(q)).ToArray(),
+                                    }
                     );
             }
         }
@@ -50,14 +50,15 @@ namespace ExamRevisionHelper.ViewModels
                 from subj in MockExams
                 select new XElement("Subject",
                     new XAttribute("SyllabusCode", subj.Key.SyllabusCode),
-                
-                        from item in subj.Value select new XElement("Exam",
-                            new XAttribute("QuestionPaper", item.QuestionPaper),
-                            new XAttribute("Date", item.Date),
-                            new XAttribute("TotalMarks", item.TotalMarks),
-                            new XAttribute("Mark", item.Mark),
-                            new XAttribute("Mistakes", string.Join(",", item.Mistakes))
-                ))));
+
+                        from item in subj.Value
+                        select new XElement("Exam",
+    new XAttribute("QuestionPaper", item.QuestionPaper),
+    new XAttribute("Date", item.Date),
+    new XAttribute("TotalMarks", item.TotalMarks),
+    new XAttribute("Mark", item.Mark),
+    new XAttribute("Mistakes", string.Join(",", item.Mistakes))
+))));
             doc.Save(_mockExamDataPath);
         }
 

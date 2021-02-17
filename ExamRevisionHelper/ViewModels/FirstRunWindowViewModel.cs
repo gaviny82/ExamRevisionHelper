@@ -1,10 +1,4 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Sources;
-using Ookii.Dialogs.Wpf;
-using Prism.Commands;
-using Prism.Mvvm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -15,6 +9,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.Core.Sources;
+using Ookii.Dialogs.Wpf;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -56,14 +56,14 @@ namespace ExamRevisionHelper.ViewModels
             //Add error handler
             PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
             {
-                if(args.Exception is WebException)
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                    IsRetryEnabled = true;
-                    IsRevertAllowed = true;
-                    IsProceedAllowed = false;
-                });
+                if (args.Exception is WebException)
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                        IsRetryEnabled = true;
+                        IsRevertAllowed = true;
+                        IsProceedAllowed = false;
+                    });
             };
         }
 

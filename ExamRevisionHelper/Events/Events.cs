@@ -1,4 +1,4 @@
-﻿using ExamRevisionHelper.Core.Tools;
+﻿using ExamRevisionHelper.Core;
 using Prism.Events;
 
 namespace ExamRevisionHelper.Events

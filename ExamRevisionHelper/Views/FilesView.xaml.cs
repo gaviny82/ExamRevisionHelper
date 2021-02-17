@@ -1,8 +1,8 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using ExamRevisionHelper.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.ViewModels;
 
 namespace ExamRevisionHelper.Views
 {
@@ -29,7 +29,7 @@ namespace ExamRevisionHelper.Views
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (subjectSelector.SelectedIndex == -1) 
+                    if (subjectSelector.SelectedIndex == -1)
                         subjectSelector.SelectedIndex = 0;
                 });
             };

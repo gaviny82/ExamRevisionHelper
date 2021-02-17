@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExamRevisionHelper.Models
+namespace ExamRevisionHelper.Core.Models
 {
     public class ExamYear : IComparable<ExamYear>
     {

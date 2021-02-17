@@ -1,11 +1,11 @@
-﻿using ExamRevisionHelper.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
+using ExamRevisionHelper.Core.Models;
 
-namespace ExamRevisionHelper.Core.Tools
+namespace ExamRevisionHelper.Core
 {
     public enum ErrorType { SubjectListUpdateFailed, SubjectRepoUpdateFailed, SubjectNotSupported, Other }
     public enum NotificationType { Initializing, SubjectListUpdated, SubjectUpdated, Finished }
@@ -62,10 +62,10 @@ namespace ExamRevisionHelper.Core.Tools
 
         public static async void UpdateAll(ICollection<string> subscribedSubjects)
         {
-            UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs 
-            { 
-                NotificationType = NotificationType.Initializing, 
-                Message = $"Loading from {PastPaperHelperCore.Source.DisplayName}..." 
+            UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
+            {
+                NotificationType = NotificationType.Initializing,
+                Message = $"Loading from {PastPaperHelperCore.Source.DisplayName}..."
             });
 
             //Download subject list from web server
@@ -80,7 +80,7 @@ namespace ExamRevisionHelper.Core.Tools
                 {
                     ErrorMessage = $"Failed to download subject list from {PastPaperHelperCore.Source.DisplayName}, please check your Internet connection.",
                     ErrorType = ErrorType.SubjectListUpdateFailed,
-                    Exception= e
+                    Exception = e
                 });
                 return;
             }

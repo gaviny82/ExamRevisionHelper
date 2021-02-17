@@ -1,13 +1,12 @@
-﻿using HtmlAgilityPack;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using ExamRevisionHelper.Core.Models;
+using HtmlAgilityPack;
 
-namespace ExamRevisionHelper.Sources
+namespace ExamRevisionHelper.Core.Sources
 {
     public class PaperSourceGCEGuide : PaperSource
     {

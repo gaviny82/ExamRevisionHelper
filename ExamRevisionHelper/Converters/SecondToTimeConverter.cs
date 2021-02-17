@@ -8,7 +8,7 @@ namespace ExamRevisionHelper.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            int hour= ((int)value / 60 / 60);
+            int hour = ((int)value / 60 / 60);
             return string.Format("{0:D2}", hour);
         }
 

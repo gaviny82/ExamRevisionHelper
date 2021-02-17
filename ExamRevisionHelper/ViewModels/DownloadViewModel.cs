@@ -1,12 +1,12 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using Prism.Commands;
-using Prism.Mvvm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace ExamRevisionHelper.ViewModels
 {

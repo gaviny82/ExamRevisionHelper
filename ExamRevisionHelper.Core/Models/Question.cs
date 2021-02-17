@@ -1,4 +1,4 @@
-﻿namespace ExamRevisionHelper.Models
+﻿namespace ExamRevisionHelper.Core.Models
 {
     public class Question
     {

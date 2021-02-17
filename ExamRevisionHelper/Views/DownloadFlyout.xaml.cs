@@ -1,5 +1,5 @@
-﻿using ExamRevisionHelper.ViewModels;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using ExamRevisionHelper.ViewModels;
 
 namespace ExamRevisionHelper.Views
 {

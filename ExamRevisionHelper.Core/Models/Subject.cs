@@ -1,4 +1,4 @@
-﻿namespace ExamRevisionHelper.Models
+﻿namespace ExamRevisionHelper.Core.Models
 {
     public enum Curriculums { IGCSE, ALevel }
 
@@ -10,7 +10,7 @@
 
         public override bool Equals(object obj)
         {
-            if(obj is Subject subj)
+            if (obj is Subject subj)
             {
                 return subj.SyllabusCode == SyllabusCode;
             }

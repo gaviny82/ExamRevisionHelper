@@ -1,13 +1,13 @@
-﻿using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Sources;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.Core.Sources;
 
-namespace ExamRevisionHelper.Core.Tools
+namespace ExamRevisionHelper.Core
 {
     public enum UpdateFrequency { Disable, Always, Daily, Weekly, Montly, Auto }
     public enum InitializationResult { SuccessNoUpdate, SuccessUpdateNeeded, Error }

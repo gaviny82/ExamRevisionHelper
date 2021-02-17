@@ -1,11 +1,11 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using Prism.Commands;
-using Prism.Mvvm;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace ExamRevisionHelper.ViewModels
 {

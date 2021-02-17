@@ -1,13 +1,13 @@
-﻿using MaterialDesignThemes.Wpf;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.ViewModels;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.ViewModels;
+using MaterialDesignThemes.Wpf;
 
 namespace ExamRevisionHelper.Views
 {
@@ -53,7 +53,7 @@ namespace ExamRevisionHelper.Views
                     Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                     if (args.ErrorType == ErrorType.SubjectNotSupported)
                     {
-                        if(args.Exception is SubjectUnsupportedException exception)
+                        if (args.Exception is SubjectUnsupportedException exception)
                         {
                             string[] unsupportedList = exception.UnsupportedSubjects;
                             foreach (string item in unsupportedList)
@@ -94,18 +94,18 @@ namespace ExamRevisionHelper.Views
             {
                 mainSnackbar.MessageQueue.Enqueue(
                     content: $"Update needed. (Last updated: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()})",
-                    actionContent: "UPDATE", 
+                    actionContent: "UPDATE",
                     actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
-                    durationOverride:TimeSpan.FromSeconds(5));
+                    durationOverride: TimeSpan.FromSeconds(5));
             }
             else if (initResult == InitializationResult.Error)
             {
                 mainSnackbar.MessageQueue.Enqueue(
                     content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.DisplayName}",
                     actionContent: "RELOAD",
-                    actionHandler: (param)=> { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
+                    actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromDays(1));

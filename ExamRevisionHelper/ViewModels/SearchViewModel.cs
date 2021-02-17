@@ -1,11 +1,4 @@
-﻿using MaterialDesignThemes.Wpf;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using Prism.Commands;
-using Prism.Mvvm;
-using Spire.Pdf;
-using Spire.Pdf.General.Find;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -14,6 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using MaterialDesignThemes.Wpf;
+using Prism.Commands;
+using Prism.Mvvm;
+using Spire.Pdf;
+using Spire.Pdf.General.Find;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -34,7 +34,7 @@ namespace ExamRevisionHelper.ViewModels
             get { return _searchStatus; }
             set { SetProperty(ref _searchStatus, value); }
         }
-        
+
 
         public IEnumerable<Question> Questions
         {
@@ -45,7 +45,7 @@ namespace ExamRevisionHelper.ViewModels
         public string Keyword
         {
             get { return _keyword; }
-                set { SetProperty(ref _keyword, value); }
+            set { SetProperty(ref _keyword, value); }
         }
 
         private bool _ignoreCases;
@@ -98,7 +98,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteSearchActivationCommand(object parameter)
         {
-            if (SearchStatus==SearchStatus.Standby) Search(parameter);
+            if (SearchStatus == SearchStatus.Standby) Search(parameter);
             else Cancel(parameter);
         }
 
@@ -139,8 +139,8 @@ namespace ExamRevisionHelper.ViewModels
             var workerBlock = new ActionBlock<string>(file => SearchFile(file, Keyword, searchParam),
                  new ExecutionDataflowBlockOptions
                  {
-                    CancellationToken = cts.Token,
-                    MaxDegreeOfParallelism = 4
+                     CancellationToken = cts.Token,
+                     MaxDegreeOfParallelism = 4
                  });
 
             foreach (var item in fileslst)
@@ -294,7 +294,7 @@ namespace ExamRevisionHelper.ViewModels
                     //throw;
                     continue;
                 }
-                
+
             }
             SearchStatus = SearchStatus.Standby;
             Info = "Done, " + questions.Count + " result" + (questions.Count > 1 ? "s" : "") + " found in " + FileNum + " files.";
@@ -327,5 +327,5 @@ namespace ExamRevisionHelper.ViewModels
 
     public enum SearchStatus { Standby, Searching }
 }
-       
+
 

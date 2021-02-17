@@ -1,13 +1,13 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Timers;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Spire.Pdf;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Timers;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -21,9 +21,9 @@ namespace ExamRevisionHelper.ViewModels
         {
             timer.Elapsed += (sender, e) =>
             {
-                if (Countdown > 0) 
+                if (Countdown > 0)
                     Countdown--;
-                else if (Countdown == 0) 
+                else if (Countdown == 0)
                     timer.Stop();
 
             };
@@ -124,7 +124,7 @@ namespace ExamRevisionHelper.ViewModels
 
                         string match = matches[0]?.Value;
                         string[] timeData = matches[0]?.Value.Replace(" hours", "").Replace(" hour", "").Replace(" minutes", "").Split(' ');
-                        
+
                         int minutes;
                         if (timeData.Length == 2)
                             minutes = int.Parse(timeData[0]) * 60 + int.Parse(timeData[1]);

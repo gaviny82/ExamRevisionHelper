@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace ExamRevisionHelper.Models
+namespace ExamRevisionHelper.Core.Models
 {
     public class Component
     {

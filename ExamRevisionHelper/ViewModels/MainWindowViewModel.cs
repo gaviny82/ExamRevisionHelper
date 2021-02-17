@@ -1,9 +1,9 @@
-﻿using ExamRevisionHelper.Models;
+﻿using System.Collections.ObjectModel;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using System.Collections.ObjectModel;
-using ExamRevisionHelper.Core.Tools;
 
 namespace ExamRevisionHelper.ViewModels
 {

@@ -8,7 +8,6 @@
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:ExamRevisionHelper.Models"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:vm="clr-namespace:ExamRevisionHelper.ViewModels"
     d:DesignHeight="450"
@@ -38,7 +37,9 @@
             Text="{Binding TotalNumberOfPapers, Converter={StaticResource NumberToPracticeViewMessageConverter}}" />
         <lvc:PieChart
             x:Name="pie"
-            Grid.Row="1" HorizontalAlignment="Center" Width="350"
+            Grid.Row="1"
+            Width="350"
+            HorizontalAlignment="Center"
             InnerRadius="50"
             LegendLocation="Right"
             Series="{Binding PieSeriesCollection}">

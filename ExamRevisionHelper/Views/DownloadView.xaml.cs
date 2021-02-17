@@ -1,7 +1,7 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.ViewModels;
 
 namespace ExamRevisionHelper.Views
 {

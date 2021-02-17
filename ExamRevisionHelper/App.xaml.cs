@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Views;
 using Prism.Ioc;
 using Prism.Unity;
-using System.IO;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Views;
-using System.Diagnostics;
 
 namespace ExamRevisionHelper
 {

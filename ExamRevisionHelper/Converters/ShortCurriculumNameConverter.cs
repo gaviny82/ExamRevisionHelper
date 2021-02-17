@@ -1,7 +1,7 @@
-﻿using ExamRevisionHelper.Models;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using ExamRevisionHelper.Core.Models;
 
 namespace ExamRevisionHelper.Converters
 {

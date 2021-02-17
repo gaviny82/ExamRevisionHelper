@@ -1,10 +1,10 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
+﻿using System.Collections;
+using System.Linq;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using Ookii.Dialogs.Wpf;
 using Prism.Commands;
 using Prism.Mvvm;
-using System.Collections;
-using System.Linq;
-using Ookii.Dialogs.Wpf;
 
 namespace ExamRevisionHelper.ViewModels
 {

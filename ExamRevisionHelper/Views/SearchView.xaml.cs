@@ -1,11 +1,11 @@
-﻿using MaterialDesignThemes.Wpf;
-using ExamRevisionHelper.Models;
-using ExamRevisionHelper.ViewModels;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.ViewModels;
+using MaterialDesignThemes.Wpf;
 
 namespace ExamRevisionHelper.Views
 {

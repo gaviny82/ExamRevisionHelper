@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 

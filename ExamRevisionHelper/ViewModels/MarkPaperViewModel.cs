@@ -1,17 +1,17 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Regions;
-using Spire.Pdf;
-using Spire.Pdf.General.Find;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using Prism.Commands;
+using Prism.Mvvm;
+using Prism.Regions;
+using Spire.Pdf;
+using Spire.Pdf.General.Find;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -60,7 +60,8 @@ namespace ExamRevisionHelper.ViewModels
                         var filename = item.Url?.Split('/').Last();
                         Process.Start(PastPaperHelperCore.LocalFiles[filename]);
 
-                        Task.Run(() => {
+                        Task.Run(() =>
+                        {
                             try
                             {
                                 PdfDocument doc = new PdfDocument(PastPaperHelperCore.LocalFiles[filename]);
@@ -98,8 +99,8 @@ namespace ExamRevisionHelper.ViewModels
                 TotalMarks = MaxMarks,
                 Mark = _yourMark == -1 ? 0 : _yourMark,
                 QuestionPaper = questionPaper.Url.Split('/').Last(),
-                Mistakes = (from item in Questions 
-                            where !item.IsCorrect 
+                Mistakes = (from item in Questions
+                            where !item.IsCorrect
                             select item.QuestionNumber)
                             .ToArray(),
             };

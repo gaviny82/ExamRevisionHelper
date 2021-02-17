@@ -1,10 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Sources;
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.Core.Sources;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PastPaperHelper.Test
 {

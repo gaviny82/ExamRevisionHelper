@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
-using ExamRevisionHelper.Models;
+using ExamRevisionHelper.Core.Models;
 using HtmlAgilityPack;
 
-namespace ExamRevisionHelper.Sources
+namespace ExamRevisionHelper.Core.Sources
 {
     public abstract class PaperSource
     {
