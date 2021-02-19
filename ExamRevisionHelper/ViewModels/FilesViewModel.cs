@@ -25,12 +25,13 @@ namespace ExamRevisionHelper.ViewModels
 
         private async void InitFileListCache()
         {
-            if (!Directory.Exists($"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper"))
+            var fileListCachePath = App.CurrentInstance.LocalFileStorage.FullName + "\\.pastpaperhelper";
+            if (!Directory.Exists(fileListCachePath))
             {
-                Directory.CreateDirectory($"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper");
-                File.SetAttributes($"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper", FileAttributes.Hidden);
+                Directory.CreateDirectory(fileListCachePath);
+                File.SetAttributes(fileListCachePath, FileAttributes.Hidden);
             }
-            string cacheFile = $"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper\\files.dat";
+            string cacheFile = $"{fileListCachePath}\\files.dat";
 
             Task load = Task.Run(() =>
             {
@@ -52,11 +53,11 @@ namespace ExamRevisionHelper.ViewModels
             CompareLocalFilesToSource = Task.Run(() =>
             {
                 //Load current files list
-                var lst = Directory.EnumerateFiles(PastPaperHelperCore.LocalFilesPath, "*.pdf", SearchOption.AllDirectories);
-                foreach (var path in lst)
+                var lst = App.CurrentInstance.LocalFileStorage.EnumerateFiles("*.pdf", SearchOption.AllDirectories);
+                foreach (var file in lst)
                 {
-                    string fileName = path.Split('\\').Last();
-                    if (!newMap.ContainsKey(fileName)) newMap.Add(fileName, path);
+                    string fileName = file.Name;
+                    if (!newMap.ContainsKey(fileName)) newMap.Add(fileName, file.FullName);
                 }
             });
 

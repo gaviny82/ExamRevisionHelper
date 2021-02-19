@@ -17,7 +17,7 @@ namespace ExamRevisionHelper.ViewModels
         {
             IGSubjects.Clear();
             ALSubjects.Clear();
-            foreach (Subject item in PastPaperHelperCore.SubjectsLoaded)
+            foreach (Subject item in App.CurrentInstance.SubjectsAvailable)
             {
                 if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(item);
                 else ALSubjects.Add(item);

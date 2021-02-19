@@ -14,7 +14,7 @@ namespace ExamRevisionHelper.ViewModels
         public static void RefreshSubscribedSubjects()
         {
             SubscribedSubjects.Clear();
-            foreach (Subject item in PastPaperHelperCore.SubscribedSubjects)
+            foreach (Subject item in App.CurrentInstance.SubjectsSubscribed)
             {
                 SubscribedSubjects.Add(item);
             }

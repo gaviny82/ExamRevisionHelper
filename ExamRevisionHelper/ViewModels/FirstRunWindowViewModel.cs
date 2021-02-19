@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
+using AsyncAwaitBestPractices;
 using ExamRevisionHelper.Core;
 using ExamRevisionHelper.Core.Models;
 using ExamRevisionHelper.Core.Sources;
@@ -44,7 +45,7 @@ namespace ExamRevisionHelper.ViewModels
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                         IGSubjects.Clear();
                         ALSubjects.Clear();
-                        foreach (var item in PastPaperHelperCore.SubjectsLoaded)
+                        foreach (var item in App.CurrentInstance.SubjectsAvailable)
                         {
                             if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(new SubjectSelection(item, false));
                             else IGSubjects.Add(new SubjectSelection(item, false));
@@ -159,11 +160,11 @@ namespace ExamRevisionHelper.ViewModels
             if (!Directory.Exists(Path)) Directory.CreateDirectory(Path);
 
             Properties.Settings.Default.Path = Path;
-            string source = PastPaperHelperCore.Source.Name;
+            string source = App.CurrentSource.Name;
             Properties.Settings.Default.PaperSource = source;
 
             Properties.Settings.Default.SubjectsSubcription.Clear();
-            foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
+            foreach (Subject subj in App.CurrentInstance.SubjectsSubscribed)
             {
                 Properties.Settings.Default.SubjectsSubcription.Add(subj.SyllabusCode);
             }
@@ -173,7 +174,7 @@ namespace ExamRevisionHelper.ViewModels
                 string userDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
                 if (!Directory.Exists(userDataFolderPath)) Directory.CreateDirectory(userDataFolderPath);
 
-                XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml();
+                XmlDocument doc = App.CurrentSource.SaveDataToXml(App.CurrentInstance.SubscriptionRepo);
                 doc.Save($"{userDataFolderPath}\\{source}.xml");
             });
             Properties.Settings.Default.FirstRun = false;
@@ -192,7 +193,7 @@ namespace ExamRevisionHelper.ViewModels
         {
             IGSubjects.Clear();
             ALSubjects.Clear();
-            PastPaperHelperCore.Source = source switch
+            App.CurrentInstance.CurrentSource = source switch//TODO: init PastPaperHelperCore here
             {
                 "gce_guide" => new PaperSourceGCEGuide(),
                 "papacambridge" => new PaperSourcePapaCambridge(),
@@ -219,8 +220,7 @@ namespace ExamRevisionHelper.ViewModels
             UpdateCount = 0;
             UpdateTitle = "Almost done";
             IsRetryEnabled2 = false;
-            PastPaperHelperCore.Source.Subscription.Clear();
-            PastPaperHelperCore.SubscribedSubjects.Clear();
+            App.CurrentInstance.SubscriptionRepo.Clear();
 
             UpdateMessage = $"Initializing local files...";
 
@@ -251,7 +251,7 @@ namespace ExamRevisionHelper.ViewModels
 
                 foreach (Subject subj in lst)
                 {
-                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.DisplayName}...";
+                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {App.CurrentSource.DisplayName}...";
                     await PastPaperHelperUpdateService.SubscribeAsync(subj);
                     UpdateCount += 1;
                 }
@@ -281,7 +281,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteRetryCommand()
         {
-            _ = PastPaperHelperUpdateService.UpdateSubjectList();
+            PastPaperHelperUpdateService.UpdateSubjectList().SafeFireAndForget();
         }
         #endregion
     }

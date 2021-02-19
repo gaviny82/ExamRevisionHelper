@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.IO;
 using System.Linq;
 using ExamRevisionHelper.Core;
 using ExamRevisionHelper.Core.Models;
@@ -106,7 +107,7 @@ namespace ExamRevisionHelper.ViewModels
                 Path = path;
                 Properties.Settings.Default.Path = path;
                 Properties.Settings.Default.Save();
-                PastPaperHelperCore.LocalFilesPath = path;
+                App.CurrentInstance.LocalFileStorage = new DirectoryInfo(path);
             }
         }
         #endregion
@@ -117,7 +118,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteUpdateAllCommand()
         {
-            var lst = (from subj in PastPaperHelperCore.SubscribedSubjects select subj.SyllabusCode).ToList();
+            var lst = (from subj in App.CurrentInstance.SubjectsSubscribed select subj.SyllabusCode).ToList();
             PastPaperHelperUpdateService.UpdateAll(lst);
         }
     }

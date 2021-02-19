@@ -35,6 +35,8 @@ namespace ExamRevisionHelper.Core
 
     public static class PastPaperHelperUpdateService
     {
+        public static PastPaperHelperCore Instance;
+
         public delegate void UpdateServiceNotifiedEventHandler(UpdateServiceNotifiedEventArgs args);
 
         public static event UpdateServiceNotifiedEventHandler UpdateServiceNotifiedEvent;
@@ -62,23 +64,25 @@ namespace ExamRevisionHelper.Core
 
         public static async void UpdateAll(ICollection<string> subscribedSubjects)
         {
+            var source = Instance.CurrentSource;
+
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
                 NotificationType = NotificationType.Initializing,
-                Message = $"Loading from {PastPaperHelperCore.Source.DisplayName}..."
+                Message = $"Loading from {source.DisplayName}..."
             });
 
             //Download subject list from web server
             try
             {
-                await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
-                PastPaperHelperCore.SubjectsLoaded = PastPaperHelperCore.Source.SubjectUrlMap.Keys.ToArray();
+                await source.UpdateSubjectUrlMapAsync();
+                //PastPaperHelperCore.SubjectsLoaded = source.SubjectUrlMap.Keys.ToArray();
             }
             catch (Exception e)
             {
                 UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
                 {
-                    ErrorMessage = $"Failed to download subject list from {PastPaperHelperCore.Source.DisplayName}, please check your Internet connection.",
+                    ErrorMessage = $"Failed to download subject list from {source.DisplayName}, please check your Internet connection.",
                     ErrorType = ErrorType.SubjectListUpdateFailed,
                     Exception = e
                 });
@@ -87,38 +91,38 @@ namespace ExamRevisionHelper.Core
 
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
-                Message = $"Subject list updated from {PastPaperHelperCore.Source.DisplayName}.",
+                Message = $"Subject list updated from {source.DisplayName}.",
                 NotificationType = NotificationType.SubjectListUpdated
             });
 
             //Download papers from web server
-            try
+            Subject[] subjList = Instance.SubjectsAvailable;
+            List<string> failedList = new();
+            foreach (var item in subscribedSubjects)
             {
-                PastPaperHelperCore.LoadSubscribedSubjects(subscribedSubjects);
+                var found = PastPaperHelperCore.TryFindSubject(item, out _, subjList);
+                if (!found) failedList.Add(item);
             }
-            catch (SubjectUnsupportedException e)
+            if (failedList.Count != 0) UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
             {
-                UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
-                {
-                    ErrorMessage = e.Message,
-                    ErrorType = ErrorType.SubjectNotSupported,
-                    Exception = e
-                });
-            }
+                ErrorMessage = $"Syllabus code: {string.Join(',', failedList)} is not supported.",
+                ErrorType = ErrorType.SubjectNotSupported,
+                Exception = new SubjectUnsupportedException($"Syllabus code: {string.Join(',', failedList)} is not supported.") { UnsupportedSubjects = failedList.ToArray() }
+            });
 
-            List<Subject> failed = new List<Subject>();
-            foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
+            List<Subject> failed = new();
+            foreach (Subject subj in Instance.SubjectsSubscribed)
             {
                 try
                 {
-                    await PastPaperHelperCore.Source.AddOrUpdateSubject(subj);
+                    await source.AddOrUpdateSubject(subj);
                 }
                 catch (Exception e)
                 {
                     failed.Add(subj);
                     UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
                     {
-                        ErrorMessage = $"Failed to update {subj.Name} from {PastPaperHelperCore.Source.DisplayName}.",
+                        ErrorMessage = $"Failed to update {subj.Name} from {source.DisplayName}.",
                         ErrorType = ErrorType.SubjectRepoUpdateFailed,
                         Exception = e
                     });
@@ -127,47 +131,42 @@ namespace ExamRevisionHelper.Core
 
                 UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
                 {
-                    Message = $"{subj.Name} updated from {PastPaperHelperCore.Source.DisplayName}.",
+                    Message = $"{subj.Name} updated from {source.DisplayName}.",
                     NotificationType = NotificationType.SubjectUpdated
                 });
             }
 
+            //Update (partially) failed
             if (failed.Count != 0) return;
-            try
-            {
-                //Update finished
-                XmlDocument dataDocument = PastPaperHelperCore.Source.SaveDataToXml();
-                dataDocument.Save(PastPaperHelperCore.UserDataPath);
+            //Update successful
+            XmlDocument dataDocument = source.SaveDataToXml(Instance.SubscriptionRepo);
+            Instance.UserData = dataDocument;
 
-                UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
-                {
-                    Message = $"All subjects updated from {PastPaperHelperCore.Source.DisplayName} successfully.",
-                    NotificationType = NotificationType.Finished
-                });
-            }
-            catch (Exception e)
+            UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
-                throw new Exception($"Failed to save data to {PastPaperHelperCore.UserDataPath}", e);
-            }
+                Message = $"All subjects updated from {source.DisplayName} successfully.",
+                NotificationType = NotificationType.Finished
+            });
         }
 
         public static async Task UpdateSubjectList()
         {
+            var source = Instance.CurrentSource;
+
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
                 NotificationType = NotificationType.Initializing,
-                Message = $"Loading subject list from {PastPaperHelperCore.Source.DisplayName}..."
+                Message = $"Loading subject list from {source.DisplayName}..."
             });
             try
             {
-                await PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync();
-                PastPaperHelperCore.SubjectsLoaded = PastPaperHelperCore.Source.SubjectUrlMap.Keys.ToArray();
+                await source.UpdateSubjectUrlMapAsync();
             }
             catch (Exception e)
             {
                 UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
                 {
-                    ErrorMessage = $"Failed to fetch data from {PastPaperHelperCore.Source.DisplayName}, please check your Internet connection.",
+                    ErrorMessage = $"Failed to fetch data from {source.DisplayName}, please check your Internet connection.",
                     ErrorType = ErrorType.SubjectListUpdateFailed,
                     Exception = e
                 });
@@ -175,7 +174,7 @@ namespace ExamRevisionHelper.Core
             }
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
-                Message = $"Subject list updated from {PastPaperHelperCore.Source.DisplayName} successfully.",
+                Message = $"Subject list updated from {source.DisplayName} successfully.",
                 NotificationType = NotificationType.Finished
             });
         }
@@ -184,10 +183,8 @@ namespace ExamRevisionHelper.Core
         {
             try
             {
-                if (PastPaperHelperCore.SubscribedSubjects.Contains(subj)) return false;
-
-                await PastPaperHelperCore.Source?.AddOrUpdateSubject(subj);
-                PastPaperHelperCore.SubscribedSubjects.Add(subj);
+                if (Instance.SubscriptionRepo.ContainsKey(subj)) return false;
+                await Instance.CurrentSource?.AddOrUpdateSubject(subj);
             }
             catch (Exception)
             {
@@ -200,9 +197,8 @@ namespace ExamRevisionHelper.Core
 
         public static void Unsubscribe(Subject subject)
         {
-            PastPaperHelperCore.SubscribedSubjects.Remove(subject);
-            var dict = PastPaperHelperCore.Source.Subscription;
-            if (dict.ContainsKey(subject)) dict.Remove(subject);
+            Instance.SubscriptionRepo.Remove(subject);
+            //TODO: Update XML cache, and make this async
             SubjectUnsubscribedEvent?.Invoke(subject);
         }
     }

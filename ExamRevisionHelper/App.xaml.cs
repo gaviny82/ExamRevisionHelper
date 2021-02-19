@@ -2,20 +2,26 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Xml;
 using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Sources;
 using ExamRevisionHelper.Views;
 using Prism.Ioc;
 using Prism.Unity;
 
 namespace ExamRevisionHelper
 {
+    public enum InitializationResult { SuccessNoUpdate, SuccessUpdateNeeded, Error }
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : PrismApplication
     {
-        public InitializationResult InitResult { get; private set; }
-        public string UserDataFolderPath { get; private set; }
+        public static PaperSource CurrentSource => (Current as App).CoreInstance.CurrentSource;
+        public static PastPaperHelperCore CurrentInstance => (Current as App).CoreInstance;
+
+        public InitializationResult InitResult { get; private set; } = InitializationResult.SuccessNoUpdate;
+        public PastPaperHelperCore CoreInstance { get; private set; }
 
         protected override Window CreateShell()
         {
@@ -40,30 +46,47 @@ namespace ExamRevisionHelper
 
         private void PrismApplication_Startup(object sender, StartupEventArgs e)
         {
-            UserDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
-            if (!Directory.Exists(UserDataFolderPath)) Directory.CreateDirectory(UserDataFolderPath);
-
             //Test: First run experience
-            //ExamRevisionHelper.Properties.Settings.Default.FirstRun = true;
-            //ExamRevisionHelper.Properties.Settings.Default.Save();
-            //if (ExamRevisionHelper.Properties.Settings.Default.FirstRun) return;
+            //setting.FirstRun = true;
+            //setting.Save();
+            //if (setting.FirstRun) return;
 
-            UpdateFrequency updatePolicy = (UpdateFrequency)ExamRevisionHelper.Properties.Settings.Default.UpdatePolicy;
-            string dataFile = $"{UserDataFolderPath}\\{ExamRevisionHelper.Properties.Settings.Default.PaperSource}.xml";
-            if (!File.Exists(dataFile)) dataFile = null;
-            var subs = ExamRevisionHelper.Properties.Settings.Default.SubjectsSubcription;
-            //TEST: Invalid syllabus code.
+            var setting = ExamRevisionHelper.Properties.Settings.Default;
+
+            var configDirPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
+            var storageDirectory = Directory.CreateDirectory(setting.Path);
+            UpdateFrequency updatePolicy =  (UpdateFrequency)setting.UpdatePolicy;
+
+            XmlDocument doc = new();
+            string dataCachePath = $"{configDirPath}\\{setting.PaperSource}.xml";
+            if (File.Exists(dataCachePath)) doc.Load(dataCachePath);
+
+            var subs = setting.SubjectsSubcription;
+            //Test: Invalid syllabus code.
             //subs[0] = "012345";
             string[] subsArr = new string[subs.Count];
             subs.CopyTo(subsArr, 0);
 
             PastPaperHelperUpdateService.SubjectUnsubscribedEvent += (subj) =>
             {
-                var coll = ExamRevisionHelper.Properties.Settings.Default.SubjectsSubcription;
+                var coll = setting.SubjectsSubcription;
                 if (coll.Contains(subj.SyllabusCode)) coll.Remove(subj.SyllabusCode);
-                ExamRevisionHelper.Properties.Settings.Default.Save();
+                setting.Save();
             };
-            InitResult = PastPaperHelperCore.Initialize(dataFile, ExamRevisionHelper.Properties.Settings.Default.Path, ExamRevisionHelper.Properties.Settings.Default.PaperSource, updatePolicy, subsArr);
+
+            try
+            {
+                CoreInstance = new PastPaperHelperCore(doc, storageDirectory, updatePolicy, subsArr);
+                //TODO: Check update policy
+            }
+            catch (Exception)
+            {
+                //Error 1: Source not implemented
+                //Error 2: Failed to load cached data, try reloading with the current source.
+                //Error 3: Subscription list contains unsupported subjects for the current source.
+                //             TODO: Try reloading. If error still occurred in the reload process, remove this failed subject automatically and notify the user.
+                InitResult = InitializationResult.Error;
+            }
         }
 
         public static void StartProcess(string path) => Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
