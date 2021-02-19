@@ -29,7 +29,7 @@ namespace ExamRevisionHelper.ViewModels
             XDocument doc = XDocument.Load(_mockExamDataPath);
             foreach (var node in doc.XPathSelectElements("/MockExams/Subject"))
             {
-                var flag = PastPaperHelperCore.TryFindSubject(node.Attribute("SyllabusCode").Value, out Subject subj);
+                var flag = PastPaperHelperCore.TryFindSubject(node.Attribute("SyllabusCode").Value, out Subject subj, App.CurrentInstance.SubjectsAvailable);
                 if (!flag) continue;
                 MockExams.Add(subj, from item in node.Elements("Exam")
                                     select new PracticeExamData

@@ -93,7 +93,7 @@ namespace ExamRevisionHelper.Views
             if (initResult == InitializationResult.SuccessUpdateNeeded)
             {
                 mainSnackbar.MessageQueue.Enqueue(
-                    content: $"Update needed. (Last updated: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()})",
+                    content: $"Update needed. (Last updated: {(Application.Current as App).CoreInstance.CurrentSource.LastUpdated.ToShortDateString()})",
                     actionContent: "UPDATE",
                     actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
@@ -103,7 +103,7 @@ namespace ExamRevisionHelper.Views
             else if (initResult == InitializationResult.Error)
             {
                 mainSnackbar.MessageQueue.Enqueue(
-                    content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.DisplayName}",
+                    content: $"An error has occurred. Try reloading from {(Application.Current as App).CoreInstance.CurrentSource.DisplayName}",
                     actionContent: "RELOAD",
                     actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
                     promote: true,

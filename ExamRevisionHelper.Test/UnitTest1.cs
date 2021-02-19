@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using ExamRevisionHelper.Core;
 using ExamRevisionHelper.Core.Models;
@@ -11,9 +12,13 @@ namespace PastPaperHelper.Test
     [TestClass]
     public class UnitTest1
     {
+        PastPaperHelperCore Instance;
+        PaperSource Source => Instance.CurrentSource;
+
         public UnitTest1()
         {
-            PastPaperHelperCore.Source = new PaperSourceGCEGuide();
+            var storage = new DirectoryInfo(Environment.CurrentDirectory);
+            Instance = new(null, storage, UpdateFrequency.Always, new string[] { "0455", "9231" });
         }
 
         [TestMethod]
@@ -27,19 +32,19 @@ namespace PastPaperHelper.Test
         public void FetchSubjectListTest()
         {
             //Download test
-            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
-            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
+            Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(Source.SubjectUrlMap);
 
             //Write to XML
-            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml();
+            XmlDocument doc = Source.SaveDataToXml(Instance.SubscriptionRepo);
             doc.Save(Environment.CurrentDirectory + "\\subjects_test.xml");
         }
 
         [TestMethod]
         public void DownloadPapersTest()
         {
-            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
-            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
+            Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(Source.SubjectUrlMap);
 
             //Sample subject
             var subj = new Subject
@@ -49,7 +54,7 @@ namespace PastPaperHelper.Test
                 SyllabusCode = "0455"
             };
             //Download all papers of the sample subject
-            var result = PastPaperHelperCore.Source.GetPapers(subj).GetAwaiter().GetResult();
+            var result = Source.GetPapers(subj).GetAwaiter().GetResult();
             Assert.IsNotNull(result);
 
             //Create a test repo
@@ -58,7 +63,7 @@ namespace PastPaperHelper.Test
                 { subj, result }
             };
             //Write to XML
-            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml(repo);
+            XmlDocument doc = Source.SaveDataToXml(repo);
             doc.Save(Environment.CurrentDirectory + "\\subscription_test.xml");
         }
     }

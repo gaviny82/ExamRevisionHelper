@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
+using AsyncAwaitBestPractices;
 using ExamRevisionHelper.Core;
 using ExamRevisionHelper.Core.Models;
 using ExamRevisionHelper.Core.Sources;
@@ -251,7 +252,7 @@ namespace ExamRevisionHelper.ViewModels
 
                 foreach (Subject subj in lst)
                 {
-                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.DisplayName}...";
+                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {App.CurrentSource.DisplayName}...";
                     await PastPaperHelperUpdateService.SubscribeAsync(subj);
                     UpdateCount += 1;
                 }
@@ -281,7 +282,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteRetryCommand()
         {
-            _ = PastPaperHelperUpdateService.UpdateSubjectList();
+            PastPaperHelperUpdateService.UpdateSubjectList().SafeFireAndForget();
         }
         #endregion
     }

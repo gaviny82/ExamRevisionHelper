@@ -10,6 +10,7 @@ namespace ExamRevisionHelper.Core.Sources
 {
     public class PaperSourceGCEGuide : PaperSource
     {
+        public new const string Identifier = "gce_guide";
         public PaperSourceGCEGuide()
         {
             Name = "gce_guide";
@@ -17,11 +18,10 @@ namespace ExamRevisionHelper.Core.Sources
             UrlBase = "https://papers.gceguide.com/";
         }
 
-        public PaperSourceGCEGuide(XmlDocument data) : base(data)
+        //TODO: add param out bool IsFileChanged when the cache file is optimised for current subscribed subjects.
+        public override Dictionary<Subject, PaperRepository> LoadUserData(XmlDocument data)
         {
-            Name = "gce_guide";
-            DisplayName = "GCE Guide";
-            UrlBase = "https://papers.gceguide.com/";
+            base.LoadUserData(data);
 
             XmlNode subjListNode = data.SelectSingleNode("/Data/SubjectList");
             if (subjListNode == null) throw new Exception("Failed to load subject list.");
@@ -39,10 +39,12 @@ namespace ExamRevisionHelper.Core.Sources
             }
 
             //Load cached repositories of subscribed subjects
+            Dictionary<Subject, PaperRepository> subscription = new();
+
             XmlNode subsNode = data.SelectSingleNode("/Data/Subscription");
             if (subsNode == null) throw new Exception("Failed to load subscription.");
-
             XmlNodeList subjNodes = subsNode.SelectNodes("/Data/Subscription/Subject");
+
             foreach (XmlNode subjectNode in subjNodes)
             {
                 PastPaperHelperCore.TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subj, SubjectUrlMap.Keys);
@@ -78,9 +80,18 @@ namespace ExamRevisionHelper.Core.Sources
                 }
 
                 repo.Sort(new Comparison<ExamYear>((a, b) => { return -a.CompareTo(b); }));//TODO: Allow user preference
-                Subscription.Add(repo.Subject, repo);
+                subscription.Add(repo.Subject, repo);
             }
+            return subscription;
+        }
 
+        public PaperSourceGCEGuide(XmlDocument data) : base(data)
+        {
+            Name = "gce_guide";
+            DisplayName = "GCE Guide";
+            UrlBase = "https://papers.gceguide.com/";
+
+            LoadUserData(data);
         }
 
         //TODO: scan all papers, then sort

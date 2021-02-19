@@ -31,8 +31,8 @@ namespace ExamRevisionHelper.ViewModels
             DownloadFlyoutViewModel.LogCommand.Execute($"Initializing download tasks for {subj.SyllabusCode} {subj.Name}");
             DownloadFlyoutViewModel.IsIndeterminate = false;
 
-            PaperRepository repo = PastPaperHelperCore.Source.Subscription[subj];
-            string path = PastPaperHelperCore.LocalFilesPath;
+            PaperRepository repo = App.CurrentInstance.SubscriptionRepo[subj];
+            string path = App.CurrentInstance.LocalFileStorage.FullName;
             path += $"\\{repo.Subject.SyllabusCode} {(repo.Subject.Curriculum == Curriculums.ALevel ? "AL" : "GCSE")} {repo.Subject.Name}";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
