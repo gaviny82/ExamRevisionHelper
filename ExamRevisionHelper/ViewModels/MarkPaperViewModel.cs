@@ -58,13 +58,13 @@ namespace ExamRevisionHelper.ViewModels
                     if (item.Type == ResourceType.MarkScheme)
                     {
                         var filename = item.Url?.Split('/').Last();
-                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
 
                         Task.Run(() =>
                         {
                             try
                             {
-                                PdfDocument doc = new PdfDocument(PastPaperHelperCore.LocalFiles[filename]);
+                                PdfDocument doc = new PdfDocument(ExamRevisionHelperCore.LocalFiles[filename]);
                                 PdfPageBase page = doc.Pages[0];
                                 var match = page.FindText("Maximum Mark.?:.?\\d+", TextFindParameter.Regex).Finds.First();
                                 string maxMarks = match?.MatchText.Split(':').Last().Trim();
@@ -146,7 +146,7 @@ namespace ExamRevisionHelper.ViewModels
             if (qp == null) return 0;
 
             using PdfDocument doc = new PdfDocument();
-            doc.LoadFromFile(PastPaperHelperCore.LocalFiles[qp.Url.Split('/').Last()]);
+            doc.LoadFromFile(ExamRevisionHelperCore.LocalFiles[qp.Url.Split('/').Last()]);
 
             int pageIndex = doc.Pages.Count - 1;
             List<string> questionList = new List<string>();

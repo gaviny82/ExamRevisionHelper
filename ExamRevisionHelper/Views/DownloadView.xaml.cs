@@ -15,7 +15,7 @@ namespace ExamRevisionHelper.Views
             InitializeComponent();
             (DataContext as DownloadViewModel).DownloadFlyoutViewModel = downloadPanel.DataContext as DownloadFlyoutViewModel;
 
-            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            ExamRevisionHelperUpdater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -26,7 +26,7 @@ namespace ExamRevisionHelper.Views
                 });
             };
 
-            PastPaperHelperUpdateService.SubjectSubscribedEvent += (args) =>
+            ExamRevisionHelperUpdater.SubjectSubscribedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {

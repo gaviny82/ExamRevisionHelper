@@ -33,38 +33,42 @@ namespace ExamRevisionHelper.Core
 
 #pragma warning restore CA2237 // Mark ISerializable types with serializable
 
-    public static class PastPaperHelperUpdateService
+    public class ExamRevisionHelperUpdater
     {
-        public static PastPaperHelperCore Instance;
+        public ExamRevisionHelperUpdater(ExamRevisionHelperCore coreInstance)
+        {
+            _coreInstance = coreInstance;
+        }
+        ExamRevisionHelperCore _coreInstance;
 
         public delegate void UpdateServiceNotifiedEventHandler(UpdateServiceNotifiedEventArgs args);
 
-        public static event UpdateServiceNotifiedEventHandler UpdateServiceNotifiedEvent;
+        public event UpdateServiceNotifiedEventHandler UpdateServiceNotifiedEvent;
 
 
         public delegate void UpdateServiceErrorEventHandler(UpdateServiceErrorEventArgs args);
 
-        public static event UpdateServiceErrorEventHandler UpdateServiceErrorEvent;
+        public event UpdateServiceErrorEventHandler UpdateServiceErrorEvent;
 
 
         public delegate void SubjectUnsubscribedEventHandler(Subject subj);
 
-        public static event SubjectUnsubscribedEventHandler SubjectUnsubscribedEvent;
+        public event SubjectUnsubscribedEventHandler SubjectUnsubscribedEvent;
 
 
         public delegate void SubjectSubscribedEventHandler(Subject subj);
 
-        public static event SubjectSubscribedEventHandler SubjectSubscribedEvent;
+        public event SubjectSubscribedEventHandler SubjectSubscribedEvent;
 
 
         public delegate void SubjectSubscribeFailedEventHandler(Subject subj);
 
-        public static event SubjectSubscribeFailedEventHandler SubjectSubscribeFailedEvent;
+        public event SubjectSubscribeFailedEventHandler SubjectSubscribeFailedEvent;
 
 
-        public static async void UpdateAll(ICollection<string> subscribedSubjects)
+        public async void UpdateAll(ICollection<string> subscribedSubjects)
         {
-            var source = Instance.CurrentSource;
+            var source = _coreInstance.CurrentSource;
 
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
@@ -96,11 +100,11 @@ namespace ExamRevisionHelper.Core
             });
 
             //Download papers from web server
-            Subject[] subjList = Instance.SubjectsAvailable;
+            Subject[] subjList = _coreInstance.SubjectsAvailable;
             List<string> failedList = new();
             foreach (var item in subscribedSubjects)
             {
-                var found = PastPaperHelperCore.TryFindSubject(item, out _, subjList);
+                var found = ExamRevisionHelperCore.TryFindSubject(item, out _, subjList);
                 if (!found) failedList.Add(item);
             }
             if (failedList.Count != 0) UpdateServiceErrorEvent?.Invoke(new UpdateServiceErrorEventArgs
@@ -111,7 +115,7 @@ namespace ExamRevisionHelper.Core
             });
 
             List<Subject> failed = new();
-            foreach (Subject subj in Instance.SubjectsSubscribed)
+            foreach (Subject subj in _coreInstance.SubjectsSubscribed)
             {
                 try
                 {
@@ -139,8 +143,8 @@ namespace ExamRevisionHelper.Core
             //Update (partially) failed
             if (failed.Count != 0) return;
             //Update successful
-            XmlDocument dataDocument = source.SaveDataToXml(Instance.SubscriptionRepo);
-            Instance.UserData = dataDocument;
+            XmlDocument dataDocument = source.SaveDataToXml(_coreInstance.SubscriptionRepo);
+            _coreInstance.UserData = dataDocument;
 
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
@@ -149,9 +153,9 @@ namespace ExamRevisionHelper.Core
             });
         }
 
-        public static async Task UpdateSubjectList()
+        public async Task UpdateSubjectList()
         {
-            var source = Instance.CurrentSource;
+            var source = _coreInstance.CurrentSource;
 
             UpdateServiceNotifiedEvent?.Invoke(new UpdateServiceNotifiedEventArgs
             {
@@ -179,12 +183,12 @@ namespace ExamRevisionHelper.Core
             });
         }
 
-        public async static Task<bool> SubscribeAsync(Subject subj)
+        public async Task<bool> SubscribeAsync(Subject subj)
         {
             try
             {
-                if (Instance.SubscriptionRepo.ContainsKey(subj)) return false;
-                await Instance.CurrentSource?.AddOrUpdateSubject(subj);
+                if (_coreInstance.SubscriptionRepo.ContainsKey(subj)) return false;
+                await _coreInstance.CurrentSource?.AddOrUpdateSubject(subj);
             }
             catch (Exception)
             {
@@ -195,9 +199,9 @@ namespace ExamRevisionHelper.Core
             return true;
         }
 
-        public static void Unsubscribe(Subject subject)
+        public void Unsubscribe(Subject subject)
         {
-            Instance.SubscriptionRepo.Remove(subject);
+            _coreInstance.SubscriptionRepo.Remove(subject);
             //TODO: Update XML cache, and make this async
             SubjectUnsubscribedEvent?.Invoke(subject);
         }

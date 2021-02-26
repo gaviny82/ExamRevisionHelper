@@ -114,11 +114,11 @@ namespace ExamRevisionHelper.ViewModels
                     var filename = item.Url?.Split('/').Last();
                     if (item.Type == ResourceType.QuestionPaper)
                     {
-                        if (PastPaperHelperCore.LocalFiles.ContainsKey(filename))
-                            Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        if (ExamRevisionHelperCore.LocalFiles.ContainsKey(filename))
+                            Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                         else
                             return;
-                        using PdfDocument doc = new PdfDocument(PastPaperHelperCore.LocalFiles[filename]);
+                        using PdfDocument doc = new PdfDocument(ExamRevisionHelperCore.LocalFiles[filename]);
                         string txt = doc.Pages[0]?.ExtractText();
                         MatchCollection matches = Regex.Matches(txt, @"([0-9]+\s)(?:hour(s)?|minutes)((\s[0-9]+\s)(?:hour(s)?|minutes))*");
 
@@ -136,11 +136,11 @@ namespace ExamRevisionHelper.ViewModels
                     }
                     else if (item.Type == ResourceType.Insert)
                     {
-                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                     }
                     else if (item.Type == ResourceType.ListeningAudio)
                     {
-                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                     }
                 }
             }

@@ -12,7 +12,7 @@ namespace PastPaperHelper.Test
     [TestClass]
     public class UnitTest1
     {
-        PastPaperHelperCore Instance;
+        ExamRevisionHelperCore Instance;
         PaperSource Source => Instance.CurrentSource;
 
         public UnitTest1()

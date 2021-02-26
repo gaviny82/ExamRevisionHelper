@@ -73,7 +73,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteRemoveSubjectCommand(Subject subj)
         {
-            PastPaperHelperUpdateService.Unsubscribe(subj);
+            ExamRevisionHelperUpdater.Unsubscribe(subj);
             MainWindowViewModel.RefreshSubscribedSubjects();
         }
         #endregion
@@ -119,7 +119,7 @@ namespace ExamRevisionHelper.ViewModels
         void ExecuteUpdateAllCommand()
         {
             var lst = (from subj in App.CurrentInstance.SubjectsSubscribed select subj.SyllabusCode).ToList();
-            PastPaperHelperUpdateService.UpdateAll(lst);
+            ExamRevisionHelperUpdater.UpdateAll(lst);
         }
     }
 }

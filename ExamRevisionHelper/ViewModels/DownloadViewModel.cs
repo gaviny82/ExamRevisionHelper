@@ -67,7 +67,7 @@ namespace ExamRevisionHelper.ViewModels
             Action<PastPaperResource> tryAddToTasks = (item) =>
             {
                 string file = item.Url.Split('/').Last();
-                if (!PastPaperHelperCore.LocalFiles.Keys.Contains(file))
+                if (!ExamRevisionHelperCore.LocalFiles.Keys.Contains(file))
                 {
                     tasks.Add(new DownloadTask
                     {

@@ -14,7 +14,7 @@ namespace ExamRevisionHelper.Views
         public FilesView()
         {
             InitializeComponent();
-            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            ExamRevisionHelperUpdater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -25,7 +25,7 @@ namespace ExamRevisionHelper.Views
                 });
             };
 
-            PastPaperHelperUpdateService.SubjectSubscribedEvent += (args) =>
+            ExamRevisionHelperUpdater.SubjectSubscribedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {

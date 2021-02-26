@@ -117,7 +117,7 @@ namespace ExamRevisionHelper.ViewModels
             SearchStatus = SearchStatus.Searching;
 
             //TODO: Check if localfiles list is loaded
-            var fileslst = from item in PastPaperHelperCore.LocalFiles
+            var fileslst = from item in ExamRevisionHelperCore.LocalFiles
                            where item.Key.StartsWith(SelectedSubject.SyllabusCode) && item.Key.Contains("qp")
                            select item.Value;
             string[] filesarr = fileslst.ToArray();

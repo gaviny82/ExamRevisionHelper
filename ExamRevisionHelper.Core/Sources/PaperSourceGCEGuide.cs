@@ -47,7 +47,7 @@ namespace ExamRevisionHelper.Core.Sources
 
             foreach (XmlNode subjectNode in subjNodes)
             {
-                PastPaperHelperCore.TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subj, SubjectUrlMap.Keys);
+                ExamRevisionHelperCore.TryFindSubject(subjectNode.Attributes["SyllabusCode"].Value, out Subject subj, SubjectUrlMap.Keys);
                 //if (!PastPaperHelperCore.SubscribedSubjects.Contains(subj)) continue;
                 //TODO: Ignore data of subjects which are not subscribed
 

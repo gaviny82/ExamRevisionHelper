@@ -56,9 +56,9 @@ namespace ExamRevisionHelper.ViewModels
 
             while (subjectPending.TryDequeue(out Subject subj))
             {
-                await PastPaperHelperUpdateService.SubscribeAsync(subj);
+                await ExamRevisionHelperUpdater.SubscribeAsync(subj);
             }
-            await PastPaperHelperCore.SaveDataAsync();
+            await ExamRevisionHelperCore.SaveDataAsync();
             isLoading = false;
             Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
         }

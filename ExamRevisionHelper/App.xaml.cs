@@ -18,10 +18,10 @@ namespace ExamRevisionHelper
     public partial class App : PrismApplication
     {
         public static PaperSource CurrentSource => (Current as App).CoreInstance.CurrentSource;
-        public static PastPaperHelperCore CurrentInstance => (Current as App).CoreInstance;
+        public static ExamRevisionHelperCore CurrentInstance => (Current as App).CoreInstance;
 
         public InitializationResult InitResult { get; private set; } = InitializationResult.SuccessNoUpdate;
-        public PastPaperHelperCore CoreInstance { get; private set; }
+        public ExamRevisionHelperCore CoreInstance { get; private set; }
 
         protected override Window CreateShell()
         {
@@ -67,7 +67,7 @@ namespace ExamRevisionHelper
             string[] subsArr = new string[subs.Count];
             subs.CopyTo(subsArr, 0);
 
-            PastPaperHelperUpdateService.SubjectUnsubscribedEvent += (subj) =>
+            ExamRevisionHelperUpdater.SubjectUnsubscribedEvent += (subj) =>
             {
                 var coll = setting.SubjectsSubcription;
                 if (coll.Contains(subj.SyllabusCode)) coll.Remove(subj.SyllabusCode);
@@ -76,7 +76,7 @@ namespace ExamRevisionHelper
 
             try
             {
-                CoreInstance = new PastPaperHelperCore(doc, storageDirectory, updatePolicy, subsArr);
+                CoreInstance = new ExamRevisionHelperCore(doc, storageDirectory, updatePolicy, subsArr);
                 //TODO: Check update policy
             }
             catch (Exception)

@@ -11,7 +11,7 @@ using ExamRevisionHelper.Core.Sources;
 namespace ExamRevisionHelper.Core
 {
     public enum UpdateFrequency { Disable, Always, Daily, Weekly, Montly, Auto }
-    public sealed class PastPaperHelperCore
+    public sealed class ExamRevisionHelperCore
     {
         #region Experiment
         public XmlDocument UserData { get; set; }//TODO: invoke UserDataChanged event; the listener should write the doc to file.
@@ -20,6 +20,7 @@ namespace ExamRevisionHelper.Core
         public Subject[] SubjectsAvailable { get => CurrentSource.SubjectUrlMap.Keys.ToArray(); }
         public Subject[] SubjectsSubscribed { get => SubscriptionRepo.Keys.ToArray(); }
         public Dictionary<Subject, PaperRepository> SubscriptionRepo { get; init; }
+        public ExamRevisionHelperUpdater Updater { get; init; }
 
         /// <summary>
         /// Initialize source management system and load user data.
@@ -30,11 +31,9 @@ namespace ExamRevisionHelper.Core
         /// <param name="subscription">A list of strings for syllabus codes of subscribed subjects</param>
         /// <exception cref="SubjectUnsupportedException">when a subject from <paramref name="subscription"/> cannot be found in the repo.</exception>
         /// <exception cref="NotImplementedException">when a <code>PaperSource</code> is not implemented</exception>
-        public PastPaperHelperCore([NotNull] XmlDocument userData, [NotNull] DirectoryInfo localFileStorage, [NotNull] UpdateFrequency updatePolicy, [NotNull] IEnumerable<string> subscription)
+        public ExamRevisionHelperCore([NotNull] XmlDocument userData, [NotNull] DirectoryInfo localFileStorage, [NotNull] UpdateFrequency updatePolicy, [NotNull] IEnumerable<string> subscription)
         {
-            //TODO: Make updater a non-static class
-            PastPaperHelperUpdateService.Instance = this;
-
+            Updater = new ExamRevisionHelperUpdater(this);
             UserData = userData;
             LocalFileStorage = localFileStorage;
 
@@ -72,7 +71,7 @@ namespace ExamRevisionHelper.Core
             for (int itor = 0; itor < subscriptionList.Count; )
             {
                 var item = subscriptionList[0];
-                if (PastPaperHelperCore.TryFindSubject(item, out Subject subj, SubjectsAvailable))
+                if (ExamRevisionHelperCore.TryFindSubject(item, out Subject subj, SubjectsAvailable))
                 {
                     subjectsInRepo.Remove(subj);
                     subscriptionList.RemoveAt(0);
