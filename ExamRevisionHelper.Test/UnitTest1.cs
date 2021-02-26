@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Xml;
 using ExamRevisionHelper.Core;
 using ExamRevisionHelper.Core.Models;
@@ -18,7 +19,10 @@ namespace PastPaperHelper.Test
         public UnitTest1()
         {
             var storage = new DirectoryInfo(Environment.CurrentDirectory);
-            Instance = new(null, storage, UpdateFrequency.Always, new string[] { "0455", "9231" });
+            var xmlFileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ExamRevisionHelper.Test.gce_guide.xml");
+            XmlDocument doc = new XmlDocument();
+            doc.Load(xmlFileStream);
+            Instance = new(doc, storage, UpdateFrequency.Always, new string[] { "0455", "9231" });
         }
 
         [TestMethod]

@@ -27,7 +27,7 @@ namespace ExamRevisionHelper.ViewModels
         public FirstRunWindowViewModel()
         {
             //Add notification handler
-            ExamRevisionHelperUpdater.UpdateServiceNotifiedEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -55,7 +55,7 @@ namespace ExamRevisionHelper.ViewModels
             };
 
             //Add error handler
-            ExamRevisionHelperUpdater.UpdateServiceErrorEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceErrorEvent += (args) =>
             {
                 if (args.Exception is WebException)
                     Application.Current.Dispatcher.Invoke(() =>
@@ -200,7 +200,7 @@ namespace ExamRevisionHelper.ViewModels
                 "cie_notes" => new PaperSourceCIENotes(),
                 _ => new PaperSourceGCEGuide(),
             };
-            await ExamRevisionHelperUpdater.UpdateSubjectList();
+            await App.CurrentInstance.Updater.UpdateSubjectList();
         }
         #endregion
 
@@ -252,7 +252,7 @@ namespace ExamRevisionHelper.ViewModels
                 foreach (Subject subj in lst)
                 {
                     UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {App.CurrentSource.DisplayName}...";
-                    await ExamRevisionHelperUpdater.SubscribeAsync(subj);
+                    await App.CurrentInstance.Updater.SubscribeAsync(subj);
                     UpdateCount += 1;
                 }
                 await t;
@@ -281,7 +281,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteRetryCommand()
         {
-            ExamRevisionHelperUpdater.UpdateSubjectList().SafeFireAndForget();
+            App.CurrentInstance.Updater.UpdateSubjectList().SafeFireAndForget();
         }
         #endregion
     }

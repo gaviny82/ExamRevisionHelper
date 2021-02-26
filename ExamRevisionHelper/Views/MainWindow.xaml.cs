@@ -29,7 +29,7 @@ namespace ExamRevisionHelper.Views
             string[] subscribedSubjects = new string[subsColl.Count];
             subsColl.CopyTo(subscribedSubjects, 0);
 
-            ExamRevisionHelperUpdater.UpdateServiceNotifiedEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -46,7 +46,7 @@ namespace ExamRevisionHelper.Views
                     mainSnackbar.MessageQueue.Enqueue(args.Message);
                 });
             };
-            ExamRevisionHelperUpdater.UpdateServiceErrorEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceErrorEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -64,11 +64,11 @@ namespace ExamRevisionHelper.Views
                             mainSnackbar.MessageQueue.Enqueue($"{args.ErrorMessage}, automatically removed from subscription. Go to Settings page to check details.", "SETTINGS", () => { HamburgerMenu.SelectedIndex = HamburgerMenu.Items.Count - 1; }, true);
                         }
                     }
-                    else mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "RETRY", () => { ExamRevisionHelperUpdater.UpdateAll(subscribedSubjects); });
+                    else mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "RETRY", () => { App.CurrentInstance.Updater.UpdateAll(subscribedSubjects); });
                 });
             };
 
-            ExamRevisionHelperUpdater.SubjectSubscribedEvent += (subj) =>
+            App.CurrentInstance.Updater.SubjectSubscribedEvent += (subj) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -95,7 +95,7 @@ namespace ExamRevisionHelper.Views
                 mainSnackbar.MessageQueue.Enqueue(
                     content: $"Update needed. (Last updated: {(Application.Current as App).CoreInstance.CurrentSource.LastUpdated.ToShortDateString()})",
                     actionContent: "UPDATE",
-                    actionHandler: (param) => { ExamRevisionHelperUpdater.UpdateAll(subscribedSubjects); }, null,
+                    actionHandler: (param) => { App.CurrentInstance.Updater.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromSeconds(5));
@@ -105,7 +105,7 @@ namespace ExamRevisionHelper.Views
                 mainSnackbar.MessageQueue.Enqueue(
                     content: $"An error has occurred. Try reloading from {(Application.Current as App).CoreInstance.CurrentSource.DisplayName}",
                     actionContent: "RELOAD",
-                    actionHandler: (param) => { ExamRevisionHelperUpdater.UpdateAll(subscribedSubjects); }, null,
+                    actionHandler: (param) => { App.CurrentInstance.Updater.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromDays(1));

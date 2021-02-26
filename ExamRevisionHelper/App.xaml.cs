@@ -67,7 +67,7 @@ namespace ExamRevisionHelper
             string[] subsArr = new string[subs.Count];
             subs.CopyTo(subsArr, 0);
 
-            ExamRevisionHelperUpdater.SubjectUnsubscribedEvent += (subj) =>
+            CurrentInstance.Updater.SubjectUnsubscribedEvent += (subj) =>
             {
                 var coll = setting.SubjectsSubcription;
                 if (coll.Contains(subj.SyllabusCode)) coll.Remove(subj.SyllabusCode);

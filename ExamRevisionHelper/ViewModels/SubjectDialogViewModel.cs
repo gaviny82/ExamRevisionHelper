@@ -56,7 +56,7 @@ namespace ExamRevisionHelper.ViewModels
 
             while (subjectPending.TryDequeue(out Subject subj))
             {
-                await ExamRevisionHelperUpdater.SubscribeAsync(subj);
+                await App.CurrentInstance.Updater.SubscribeAsync(subj);
             }
             await ExamRevisionHelperCore.SaveDataAsync();
             isLoading = false;
