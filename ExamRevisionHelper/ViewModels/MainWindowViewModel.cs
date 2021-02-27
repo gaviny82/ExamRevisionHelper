@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using ExamRevisionHelper.Core;
 using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;

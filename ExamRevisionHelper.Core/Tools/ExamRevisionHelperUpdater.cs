@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using ExamRevisionHelper.Core.Models;
@@ -22,7 +21,6 @@ namespace ExamRevisionHelper.Core
         public string ErrorMessage { get; set; }
     }
 
-#pragma warning disable CA2237 // Mark ISerializable types with serializable
     public class SubjectUnsupportedException : Exception
     {
         public string[] UnsupportedSubjects { get; set; }
@@ -31,15 +29,14 @@ namespace ExamRevisionHelper.Core
         public SubjectUnsupportedException(string msg) : base(msg) { }
     }
 
-#pragma warning restore CA2237 // Mark ISerializable types with serializable
-
     public class ExamRevisionHelperUpdater
     {
         public ExamRevisionHelperUpdater(ExamRevisionHelperCore coreInstance)
         {
             _coreInstance = coreInstance;
         }
-        ExamRevisionHelperCore _coreInstance;
+
+        private readonly ExamRevisionHelperCore _coreInstance;
 
         public delegate void UpdateServiceNotifiedEventHandler(UpdateServiceNotifiedEventArgs args);
 
@@ -80,7 +77,6 @@ namespace ExamRevisionHelper.Core
             try
             {
                 await source.UpdateSubjectUrlMapAsync();
-                //PastPaperHelperCore.SubjectsLoaded = source.SubjectUrlMap.Keys.ToArray();
             }
             catch (Exception e)
             {
@@ -142,6 +138,7 @@ namespace ExamRevisionHelper.Core
 
             //Update (partially) failed
             if (failed.Count != 0) return;
+
             //Update successful
             XmlDocument dataDocument = source.SaveDataToXml(_coreInstance.SubscriptionRepo);
             _coreInstance.UserData = dataDocument;
