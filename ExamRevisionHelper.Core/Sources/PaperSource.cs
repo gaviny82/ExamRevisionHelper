@@ -72,13 +72,13 @@ namespace ExamRevisionHelper.Core.Sources
         }
 
         //TODO: Move to PastPaperHelperCore
-        public async virtual Task AddOrUpdateSubject(Subject subj)
-        {
+        public abstract Task AddOrUpdateSubject(Subject subj);
+        //{
             //if (!SubjectUrlMap.ContainsKey(subj)) throw new Exception($"Cannot find {subj.SyllabusCode} {subj.Name} in {nameof(SubjectUrlMap)}");
             //var repo = await GetPapers(subj);
             //if (Subscription.ContainsKey(subj)) Subscription[subj] = repo;
             //else Subscription.Add(subj, repo);
-        }
+        //}
 
         public abstract Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum);
 
