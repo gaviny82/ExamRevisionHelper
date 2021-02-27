@@ -13,7 +13,6 @@ namespace ExamRevisionHelper.Core
     public enum UpdateFrequency { Disable, Always, Daily, Weekly, Montly, Auto }
     public sealed class ExamRevisionHelperCore
     {
-        #region Experiment
         public XmlDocument UserData { get; set; }//TODO: invoke UserDataChanged event; the listener should write the doc to file.
         public DirectoryInfo LocalFileStorage { get; set; }//TODO: setter should be private
         public PaperSource CurrentSource { get; set; }//TODO: setter should be private
@@ -56,7 +55,7 @@ namespace ExamRevisionHelper.Core
             }
             catch (Exception e)
             {
-                if (CurrentSource is null) throw new NotImplementedException($"This paper source ({sourceIdentifier}) is currently not implemented.");
+                if (CurrentSource is null) throw new NotImplementedException($"Failed to load data from the source: {sourceIdentifier}.");
                 throw new Exception($"Failed to load cached data. Try reloading with an appropriate source.", e);
             }
             
@@ -87,121 +86,29 @@ namespace ExamRevisionHelper.Core
                 var errorMsg = $"The following subjects (in syllabus code) are not supported: {string.Join(',', subscriptionList)}";
                 throw new SubjectUnsupportedException(errorMsg) { UnsupportedSubjects = subscriptionList.ToArray() };
             }
-        }
 
-        #endregion
+            //TODO: diff to local profile when updated.
+            //        DateTime lastUpdate = Source.LastUpdated;
+            //        double days = (DateTime.Now - lastUpdate).Days;
+            //        switch (updatePolicy)
+            //        {
+            //            case UpdateFrequency.Disable:
+            //                return InitializationResult.SuccessNoUpdate;
+            //            case UpdateFrequency.Always:
+            //                return InitializationResult.SuccessUpdateNeeded;
+            //            case UpdateFrequency.Daily:
+            //                return days < 1 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
+            //            case UpdateFrequency.Weekly:
+            //                return days < 7 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
+            //            case UpdateFrequency.Montly:
+            //                return days < 30 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
+            //            case UpdateFrequency.Auto:
+            //                //TODO: auto update strategy
+            //                break;
+            //        }
+        }
 
         public static Dictionary<string, string> LocalFiles;
-
-        /// <summary>
-        /// This function should be called when the PastPaperHelper application starts.
-        /// Local user data is loaded, including subjects supported by the current data source, user's subscription and papers of the subscribed subjects, when an XML file path is provided.
-        /// </summary>
-        /// <param name="userDataFilePath">Path of a XML file that stores user data</param>
-        /// <param name="sourceName">Initialize a data source</param>
-        /// <param name="updatePolicy">[Not Implemented] Specifies update frequency (used in checking update)</param>
-        /// <param name="subscription">Syllabus codes of subjects subscribed by the user</param>
-        /// <returns>Returns true when the local data needs update OR error is detected when loading user_data.xml.
-        /// Returns null: error </returns>
-        //public static InitializationResult Initialize(string userDataFilePath, string localFilesPath, string sourceName, UpdateFrequency updatePolicy, string[] subscription)
-        //{
-        //    try
-        //    {
-        //        LocalFilesPath = localFilesPath;
-        //        if (!Directory.Exists(localFilesPath))
-        //        {
-        //            var a = Directory.CreateDirectory(localFilesPath);
-        //        }
-
-        //        UserDataPath = userDataFilePath;
-        //        XmlDocument userData = new XmlDocument();
-        //        userData.Load(userDataFilePath);
-
-        //        XmlNode dataNode = userData.SelectSingleNode("/Data");
-        //        Source = dataNode.Attributes["Source"].Value switch
-        //        {
-        //            "gce_guide" => new PaperSourceGCEGuide(userData),
-        //            "papacambridge" => new PaperSourcePapaCambridge(userData),
-        //            "cie_notes" => new PaperSourceCIENotes(userData),
-
-        //            _ => throw new NotImplementedException()
-        //        };
-        //        SubjectsLoaded = Source.SubjectUrlMap.Keys.ToArray();
-
-        //        if (subscription == null) return InitializationResult.SuccessNoUpdate;
-        //        LoadSubscribedSubjects(subscription);
-        //        foreach (var item in SubscribedSubjects)
-        //        {
-        //            if (!Source.Subscription.ContainsKey(item))
-        //                return InitializationResult.Error;
-        //        }
-        //        //TODO: prompt if repo of any subscribed subject is not found
-        //        //Note: if not supported, throw exception and try reloading. If error still occurred in the reload process, remove this failed subject automatically and notify the user.
-
-        //        return InitializationResult.SuccessNoUpdate;
-        //        //TODO: diff to local profile when updated.
-        //        DateTime lastUpdate = Source.LastUpdated;
-        //        double days = (DateTime.Now - lastUpdate).Days;
-        //        switch (updatePolicy)
-        //        {
-        //            case UpdateFrequency.Disable:
-        //                return InitializationResult.SuccessNoUpdate;
-        //            case UpdateFrequency.Always:
-        //                return InitializationResult.SuccessUpdateNeeded;
-        //            case UpdateFrequency.Daily:
-        //                return days < 1 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
-        //            case UpdateFrequency.Weekly:
-        //                return days < 7 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
-        //            case UpdateFrequency.Montly:
-        //                return days < 30 ? InitializationResult.SuccessNoUpdate : InitializationResult.SuccessUpdateNeeded;
-        //            case UpdateFrequency.Auto:
-        //                //TODO: auto update strategy
-        //                break;
-        //        }
-
-        //    }
-        //    catch (Exception)
-        //    {
-        //        Source = sourceName switch
-        //        {
-        //            "gce_guide" => new PaperSourceGCEGuide(),
-        //            "papacambridge" => new PaperSourcePapaCambridge(),
-        //            "cie_notes" => new PaperSourceCIENotes(),
-        //            _ => new PaperSourceGCEGuide(),
-        //        };
-        //        UserDataPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\PastPaperHelper\\PastPaperHelper\\{sourceName}.xml";
-        //        return InitializationResult.Error;
-        //    }
-        //}
-
-        public static async Task SaveDataAsync()
-        {
-            await Task.Run(() =>
-            {
-                //TODO: XmlDocument doc = Source.SaveDataToXml();
-                //doc.Save(UserDataPath);
-            });
-        }
-
-        //public static void LoadSubscribedSubjects(ICollection<string> subscription)
-        //{
-        //    List<string> failed = new List<string>();
-        //    SubscribedSubjects.Clear();
-        //    foreach (string item in subscription)
-        //    {
-        //        if (!TryFindSubject(item, out Subject subj) || !SubjectsLoaded.Contains(subj))
-        //        {
-        //            failed.Add(item);
-        //        }
-        //        else SubscribedSubjects.Add(subj);
-        //    }
-        //    if (failed.Count != 0)
-        //    {
-        //        string code = "";
-        //        failed.ForEach((str) => { code += str + ","; });
-        //        throw new SubjectUnsupportedException($"{code.Substring(0, code.Length - 1)} not supported") { UnsupportedSubjects = failed.ToArray() };
-        //    }
-        //}
 
         public static bool TryFindSubject(string syllabusCode, out Subject result, [NotNull] ICollection<Subject> range)
         {

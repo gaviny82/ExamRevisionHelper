@@ -17,6 +17,8 @@ namespace ExamRevisionHelper
     /// </summary>
     public partial class App : PrismApplication
     {
+        public static readonly string ConfigFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
+
         public static PaperSource CurrentSource { get; private set; }
         public static ExamRevisionHelperCore CurrentInstance { get; private set; }
 
@@ -54,12 +56,11 @@ namespace ExamRevisionHelper
 
             var setting = ExamRevisionHelper.Properties.Settings.Default;
 
-            var configDirPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
             var storageDirectory = Directory.CreateDirectory(setting.Path);
             UpdateFrequency updatePolicy =  (UpdateFrequency)setting.UpdatePolicy;
 
             XmlDocument doc = new();
-            string dataCachePath = $"{configDirPath}\\{setting.PaperSource}.xml";
+            string dataCachePath = $"{ConfigFolderPath}\\{setting.PaperSource}.xml";
             if (File.Exists(dataCachePath)) doc.Load(dataCachePath);
 
             var subs = setting.SubjectsSubcription;

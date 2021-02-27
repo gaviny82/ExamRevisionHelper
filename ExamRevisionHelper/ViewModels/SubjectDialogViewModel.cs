@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml;
 using ExamRevisionHelper.Core;
 using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
@@ -58,7 +59,11 @@ namespace ExamRevisionHelper.ViewModels
             {
                 await App.CurrentInstance.Updater.SubscribeAsync(subj);
             }
-            await ExamRevisionHelperCore.SaveDataAsync();
+            await Task.Run(()=> 
+            {
+                XmlDocument doc = App.CurrentInstance.UserData;
+                doc.Save($"{App.ConfigFolderPath}\\{App.CurrentSource.Name}.xml");
+            });
             isLoading = false;
             Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
         }
