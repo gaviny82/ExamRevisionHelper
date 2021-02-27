@@ -1,19 +1,28 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Sources;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using System.Xml;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.Core.Sources;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PastPaperHelper.Test
 {
     [TestClass]
     public class UnitTest1
     {
+        ExamRevisionHelperCore Instance;
+        PaperSource Source => Instance.CurrentSource;
+
         public UnitTest1()
         {
-            PastPaperHelperCore.Source = new PaperSourceGCEGuide();
+            var storage = new DirectoryInfo(Environment.CurrentDirectory);
+            var xmlFileStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("ExamRevisionHelper.Test.gce_guide.xml");
+            XmlDocument doc = new XmlDocument();
+            doc.Load(xmlFileStream);
+            Instance = new(doc, storage, UpdateFrequency.Always, new string[] { "0455", "9231" });
         }
 
         [TestMethod]
@@ -27,19 +36,19 @@ namespace PastPaperHelper.Test
         public void FetchSubjectListTest()
         {
             //Download test
-            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
-            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
+            Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(Source.SubjectUrlMap);
 
             //Write to XML
-            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml();
+            XmlDocument doc = Source.SaveDataToXml(Instance.SubscriptionRepo);
             doc.Save(Environment.CurrentDirectory + "\\subjects_test.xml");
         }
 
         [TestMethod]
         public void DownloadPapersTest()
         {
-            PastPaperHelperCore.Source.UpdateSubjectUrlMapAsync().Wait();
-            Assert.IsNotNull(PastPaperHelperCore.Source.SubjectUrlMap);
+            Source.UpdateSubjectUrlMapAsync().Wait();
+            Assert.IsNotNull(Source.SubjectUrlMap);
 
             //Sample subject
             var subj = new Subject
@@ -49,7 +58,7 @@ namespace PastPaperHelper.Test
                 SyllabusCode = "0455"
             };
             //Download all papers of the sample subject
-            var result = PastPaperHelperCore.Source.GetPapers(subj).GetAwaiter().GetResult();
+            var result = Source.GetPapers(subj).GetAwaiter().GetResult();
             Assert.IsNotNull(result);
 
             //Create a test repo
@@ -58,7 +67,7 @@ namespace PastPaperHelper.Test
                 { subj, result }
             };
             //Write to XML
-            XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml(repo);
+            XmlDocument doc = Source.SaveDataToXml(repo);
             doc.Save(Environment.CurrentDirectory + "\\subscription_test.xml");
         }
     }

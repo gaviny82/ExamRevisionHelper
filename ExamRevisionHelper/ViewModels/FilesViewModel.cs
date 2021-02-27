@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 
@@ -25,12 +25,13 @@ namespace ExamRevisionHelper.ViewModels
 
         private async void InitFileListCache()
         {
-            if (!Directory.Exists($"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper"))
+            var fileListCachePath = App.CurrentInstance.LocalFileStorage.FullName + "\\.pastpaperhelper";
+            if (!Directory.Exists(fileListCachePath))
             {
-                Directory.CreateDirectory($"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper");
-                File.SetAttributes($"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper", FileAttributes.Hidden);
+                Directory.CreateDirectory(fileListCachePath);
+                File.SetAttributes(fileListCachePath, FileAttributes.Hidden);
             }
-            string cacheFile = $"{PastPaperHelperCore.LocalFilesPath}\\.pastpaperhelper\\files.dat";
+            string cacheFile = $"{fileListCachePath}\\files.dat";
 
             Task load = Task.Run(() =>
             {
@@ -39,12 +40,12 @@ namespace ExamRevisionHelper.ViewModels
                     using (FileStream fileStream = File.OpenRead(cacheFile))
                     {
                         BinaryFormatter binaryFormatter = new BinaryFormatter();
-                        PastPaperHelperCore.LocalFiles = (Dictionary<string, string>)binaryFormatter.Deserialize(fileStream);
+                        ExamRevisionHelperCore.LocalFiles = (Dictionary<string, string>)binaryFormatter.Deserialize(fileStream);
                     }
                 }
                 else
                 {
-                    PastPaperHelperCore.LocalFiles = new Dictionary<string, string>();
+                    ExamRevisionHelperCore.LocalFiles = new Dictionary<string, string>();
                 }
             });
 
@@ -52,11 +53,11 @@ namespace ExamRevisionHelper.ViewModels
             CompareLocalFilesToSource = Task.Run(() =>
             {
                 //Load current files list
-                var lst = Directory.EnumerateFiles(PastPaperHelperCore.LocalFilesPath, "*.pdf", SearchOption.AllDirectories);
-                foreach (var path in lst)
+                var lst = App.CurrentInstance.LocalFileStorage.EnumerateFiles("*.pdf", SearchOption.AllDirectories);
+                foreach (var file in lst)
                 {
-                    string fileName = path.Split('\\').Last();
-                    if (!newMap.ContainsKey(fileName)) newMap.Add(fileName, path);
+                    string fileName = file.Name;
+                    if (!newMap.ContainsKey(fileName)) newMap.Add(fileName, file.FullName);
                 }
             });
 
@@ -64,12 +65,12 @@ namespace ExamRevisionHelper.ViewModels
             await load;
             await CompareLocalFilesToSource;
             bool newEntry = false;
-            if (PastPaperHelperCore.LocalFiles == null) { newEntry = true; }
+            if (ExamRevisionHelperCore.LocalFiles == null) { newEntry = true; }
             else
             {
                 foreach (var item in newMap)
                 {
-                    if (!PastPaperHelperCore.LocalFiles.ContainsKey(item.Key) || PastPaperHelperCore.LocalFiles[item.Key] != item.Value)
+                    if (!ExamRevisionHelperCore.LocalFiles.ContainsKey(item.Key) || ExamRevisionHelperCore.LocalFiles[item.Key] != item.Value)
                     {
                         newEntry = true;
                         break;
@@ -77,7 +78,7 @@ namespace ExamRevisionHelper.ViewModels
                 }
                 if (!newEntry)
                 {
-                    foreach (var item in PastPaperHelperCore.LocalFiles)
+                    foreach (var item in ExamRevisionHelperCore.LocalFiles)
                     {
                         if (!newMap.ContainsKey(item.Key))
                         {
@@ -90,7 +91,7 @@ namespace ExamRevisionHelper.ViewModels
 
             if (newEntry)
             {
-                PastPaperHelperCore.LocalFiles = newMap;
+                ExamRevisionHelperCore.LocalFiles = newMap;
                 using (FileStream filestream = File.Create(cacheFile))
                 {
                     BinaryFormatter serializer = new BinaryFormatter();
@@ -127,9 +128,9 @@ namespace ExamRevisionHelper.ViewModels
         {
             var filename = resource.Url?.Split('/').Last();
 
-            if (PastPaperHelperCore.LocalFiles.ContainsKey(filename))
+            if (ExamRevisionHelperCore.LocalFiles.ContainsKey(filename))
             {
-                var file = PastPaperHelperCore.LocalFiles[filename];
+                var file = ExamRevisionHelperCore.LocalFiles[filename];
                 if (File.Exists(file)) App.StartProcess(file);
             }
             else
@@ -137,9 +138,9 @@ namespace ExamRevisionHelper.ViewModels
                 if (!CompareLocalFilesToSource.IsCompleted)
                 {
                     await CompareLocalFilesToSource;
-                    if (PastPaperHelperCore.LocalFiles.ContainsKey(filename))
+                    if (ExamRevisionHelperCore.LocalFiles.ContainsKey(filename))
                     {
-                        var file = PastPaperHelperCore.LocalFiles[filename];
+                        var file = ExamRevisionHelperCore.LocalFiles[filename];
                         if (File.Exists(file)) App.StartProcess(file);
                     }
                 }
@@ -163,15 +164,15 @@ namespace ExamRevisionHelper.ViewModels
                 var filename = item.Url?.Split('/').Last();
                 if (item.Type == ResourceType.QuestionPaper)
                 {
-                    Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                    Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                 }
                 else if (item.Type == ResourceType.Insert)
                 {
-                    Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                    Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                 }
                 else if (item.Type == ResourceType.ListeningAudio)
                 {
-                    Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                    Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                 }
             }
         }

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
-using ExamRevisionHelper.Models;
+using ExamRevisionHelper.Core.Models;
 using HtmlAgilityPack;
 
-namespace ExamRevisionHelper.Sources
+namespace ExamRevisionHelper.Core.Sources
 {
     public abstract class PaperSource
     {
+        public const string Identifier = "";
 
         protected static HtmlWeb web = new HtmlWeb();
         public string Name { get; protected set; }
@@ -16,8 +17,25 @@ namespace ExamRevisionHelper.Sources
 
         public string UrlBase { get; protected set; }
         public Dictionary<Subject, string> SubjectUrlMap { get; private set; } = new Dictionary<Subject, string>();
-        public Dictionary<Subject, PaperRepository> Subscription { get; private set; } = new Dictionary<Subject, PaperRepository>();
+        //public Dictionary<Subject, PaperRepository> Subscription { get; private set; } = new Dictionary<Subject, PaperRepository>();
         public DateTime LastUpdated { get; private set; }
+
+        /// <summary>
+        /// Load data from local XML cache file.
+        /// This includes the subject-url map and information of past papers for subscribed subjects.
+        /// </summary>
+        /// <param name="data">XML document object of the cache file.</param>
+        /// <returns>Repo containing past paper information for each subscribed subject.</returns>
+        public virtual Dictionary<Subject, PaperRepository> LoadUserData(XmlDocument data)
+        {
+            XmlNode dataNode = data.SelectSingleNode("/Data");
+            if (dataNode == null || dataNode.Attributes["LastUpdate"] == null) 
+                throw new Exception("Failed to load source data.");
+
+            LastUpdated = DateTime.Parse(dataNode.Attributes["LastUpdate"].Value);
+
+            return null;
+        }
 
         public PaperSource()
         {
@@ -53,19 +71,20 @@ namespace ExamRevisionHelper.Sources
             SubjectUrlMap = tmp;
         }
 
-        public async virtual Task AddOrUpdateSubject(Subject subj)
-        {
-            if (!SubjectUrlMap.ContainsKey(subj)) throw new Exception($"Cannot find {subj.SyllabusCode} {subj.Name} in {nameof(SubjectUrlMap)}");
-            var repo = await GetPapers(subj);
-            if (Subscription.ContainsKey(subj)) Subscription[subj] = repo;
-            else Subscription.Add(subj, repo);
-        }
+        //TODO: Move to PastPaperHelperCore
+        public abstract Task AddOrUpdateSubject(Subject subj);
+        //{
+            //if (!SubjectUrlMap.ContainsKey(subj)) throw new Exception($"Cannot find {subj.SyllabusCode} {subj.Name} in {nameof(SubjectUrlMap)}");
+            //var repo = await GetPapers(subj);
+            //if (Subscription.ContainsKey(subj)) Subscription[subj] = repo;
+            //else Subscription.Add(subj, repo);
+        //}
 
         public abstract Task<Dictionary<Subject, string>> GetSubjectUrlMapAsync(Curriculums curriculum);
 
         public abstract Task<PaperRepository> GetPapers(Subject subject);
 
-        public XmlDocument SaveDataToXml(Dictionary<Subject, PaperRepository> subscription = null)
+        public XmlDocument SaveDataToXml(Dictionary<Subject, PaperRepository> subscription)
         {
             XmlDocument doc = new XmlDocument();
             doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
@@ -102,7 +121,7 @@ namespace ExamRevisionHelper.Sources
             XmlElement subsNode = doc.CreateElement("Subscription");
             dataNode.AppendChild(subsNode);
 
-            if (subscription == null) subscription = Subscription;
+            if (subscription == null) return null;
             foreach (KeyValuePair<Subject, PaperRepository> item in subscription)
             {
                 Subject subject = item.Key;

@@ -1,9 +1,8 @@
-﻿using ExamRevisionHelper.Models;
+﻿using System.Collections.ObjectModel;
+using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
-using System.Collections.ObjectModel;
-using ExamRevisionHelper.Core.Tools;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -14,7 +13,7 @@ namespace ExamRevisionHelper.ViewModels
         public static void RefreshSubscribedSubjects()
         {
             SubscribedSubjects.Clear();
-            foreach (Subject item in PastPaperHelperCore.SubscribedSubjects)
+            foreach (Subject item in App.CurrentInstance.SubjectsSubscribed)
             {
                 SubscribedSubjects.Add(item);
             }

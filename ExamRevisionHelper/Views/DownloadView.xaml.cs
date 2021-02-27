@@ -1,7 +1,7 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.ViewModels;
 
 namespace ExamRevisionHelper.Views
 {
@@ -15,7 +15,7 @@ namespace ExamRevisionHelper.Views
             InitializeComponent();
             (DataContext as DownloadViewModel).DownloadFlyoutViewModel = downloadPanel.DataContext as DownloadFlyoutViewModel;
 
-            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -26,7 +26,7 @@ namespace ExamRevisionHelper.Views
                 });
             };
 
-            PastPaperHelperUpdateService.SubjectSubscribedEvent += (args) =>
+            App.CurrentInstance.Updater.SubjectSubscribedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {

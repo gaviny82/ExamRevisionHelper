@@ -1,8 +1,7 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using ExamRevisionHelper.Core.Models;
 
 namespace ExamRevisionHelper.Converters
 {
@@ -10,9 +9,9 @@ namespace ExamRevisionHelper.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Subject subject && PastPaperHelperCore.Source.Subscription.ContainsKey(subject))
+            if (value is Subject subject && App.CurrentInstance.SubscriptionRepo.ContainsKey(subject))
             {
-                return PastPaperHelperCore.Source.Subscription[subject];
+                return App.CurrentInstance.SubscriptionRepo[subject];
             }
             //else
             //{

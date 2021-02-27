@@ -1,8 +1,8 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.ViewModels;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.ViewModels;
 
 namespace ExamRevisionHelper.Views
 {
@@ -20,14 +20,14 @@ namespace ExamRevisionHelper.Views
         {
             Button btn = sender as Button;
             var vm = btn.DataContext as MistakeViewModel;
-            Process.Start(PastPaperHelperCore.LocalFiles[vm.QuestionPaper]);
+            Process.Start(ExamRevisionHelperCore.LocalFiles[vm.QuestionPaper]);
         }
 
         private void view_ms_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
             var vm = btn.DataContext as MistakeViewModel;
-            Process.Start(PastPaperHelperCore.LocalFiles[vm.QuestionPaper.Replace("qp", "ms")]);
+            Process.Start(ExamRevisionHelperCore.LocalFiles[vm.QuestionPaper.Replace("qp", "ms")]);
         }
     }
 }

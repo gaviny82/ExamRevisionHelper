@@ -1,6 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -9,6 +7,8 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -209,7 +209,7 @@ namespace ExamRevisionHelper.ViewModels
                     }
                     catch (Exception e)
                     {
-                        ExecuteLogCommand($"[ERROR] Failed to download {task.FileName}. {e.Message}"); 
+                        ExecuteLogCommand($"[ERROR] Failed to download {task.FileName}. {e.Message}");
                         task.State = DownloadTaskState.Error;//TODO: Check network status
                         Application.Current.Dispatcher.Invoke(() =>
                         {
@@ -306,7 +306,7 @@ namespace ExamRevisionHelper.ViewModels
 
         public DownloadFlyoutViewModel()
         {
-            
+
         }
     }
 }

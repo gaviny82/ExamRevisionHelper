@@ -1,13 +1,13 @@
-﻿using MaterialDesignThemes.Wpf;
-using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.ViewModels;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.ViewModels;
+using MaterialDesignThemes.Wpf;
 
 namespace ExamRevisionHelper.Views
 {
@@ -29,7 +29,7 @@ namespace ExamRevisionHelper.Views
             string[] subscribedSubjects = new string[subsColl.Count];
             subsColl.CopyTo(subscribedSubjects, 0);
 
-            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -46,14 +46,14 @@ namespace ExamRevisionHelper.Views
                     mainSnackbar.MessageQueue.Enqueue(args.Message);
                 });
             };
-            PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceErrorEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                     if (args.ErrorType == ErrorType.SubjectNotSupported)
                     {
-                        if(args.Exception is SubjectUnsupportedException exception)
+                        if (args.Exception is SubjectUnsupportedException exception)
                         {
                             string[] unsupportedList = exception.UnsupportedSubjects;
                             foreach (string item in unsupportedList)
@@ -64,11 +64,11 @@ namespace ExamRevisionHelper.Views
                             mainSnackbar.MessageQueue.Enqueue($"{args.ErrorMessage}, automatically removed from subscription. Go to Settings page to check details.", "SETTINGS", () => { HamburgerMenu.SelectedIndex = HamburgerMenu.Items.Count - 1; }, true);
                         }
                     }
-                    else mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "RETRY", () => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); });
+                    else mainSnackbar.MessageQueue.Enqueue(args.ErrorMessage, "RETRY", () => { App.CurrentInstance.Updater.UpdateAll(subscribedSubjects); });
                 });
             };
 
-            PastPaperHelperUpdateService.SubjectSubscribedEvent += (subj) =>
+            App.CurrentInstance.Updater.SubjectSubscribedEvent += (subj) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -93,19 +93,19 @@ namespace ExamRevisionHelper.Views
             if (initResult == InitializationResult.SuccessUpdateNeeded)
             {
                 mainSnackbar.MessageQueue.Enqueue(
-                    content: $"Update needed. (Last updated: {PastPaperHelperCore.Source.LastUpdated.ToShortDateString()})",
-                    actionContent: "UPDATE", 
-                    actionHandler: (param) => { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
+                    content: $"Update needed. (Last updated: {(Application.Current as App).CoreInstance.CurrentSource.LastUpdated.ToShortDateString()})",
+                    actionContent: "UPDATE",
+                    actionHandler: (param) => { App.CurrentInstance.Updater.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
-                    durationOverride:TimeSpan.FromSeconds(5));
+                    durationOverride: TimeSpan.FromSeconds(5));
             }
             else if (initResult == InitializationResult.Error)
             {
                 mainSnackbar.MessageQueue.Enqueue(
-                    content: $"An error has occurred. Try reloading from {PastPaperHelperCore.Source.DisplayName}",
+                    content: $"An error has occurred. Try reloading from {(Application.Current as App).CoreInstance.CurrentSource.DisplayName}",
                     actionContent: "RELOAD",
-                    actionHandler: (param)=> { PastPaperHelperUpdateService.UpdateAll(subscribedSubjects); }, null,
+                    actionHandler: (param) => { App.CurrentInstance.Updater.UpdateAll(subscribedSubjects); }, null,
                     promote: true,
                     neverConsiderToBeDuplicate: true,
                     durationOverride: TimeSpan.FromDays(1));

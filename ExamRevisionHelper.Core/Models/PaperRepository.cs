@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ExamRevisionHelper.Models
+namespace ExamRevisionHelper.Core.Models
 {
     public class PaperRepository : List<ExamYear>
     {

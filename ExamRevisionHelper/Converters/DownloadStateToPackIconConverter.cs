@@ -1,9 +1,9 @@
-﻿using MaterialDesignThemes.Wpf;
-using ExamRevisionHelper.ViewModels;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using ExamRevisionHelper.ViewModels;
+using MaterialDesignThemes.Wpf;
 
 namespace ExamRevisionHelper.Converters
 {

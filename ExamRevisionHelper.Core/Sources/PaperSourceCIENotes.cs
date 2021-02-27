@@ -1,12 +1,12 @@
-﻿using ExamRevisionHelper.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml;
+using ExamRevisionHelper.Core.Models;
 
-namespace ExamRevisionHelper.Sources
+namespace ExamRevisionHelper.Core.Sources
 {
-    class PaperSourceCIENotes : PaperSource
+    public class PaperSourceCIENotes : PaperSource
     {
         public PaperSourceCIENotes()
         {

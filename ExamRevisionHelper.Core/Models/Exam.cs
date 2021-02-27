@@ -1,7 +1,7 @@
-﻿using System.Xml;
-using System.Linq;
+﻿using System.Linq;
+using System.Xml;
 
-namespace ExamRevisionHelper.Models
+namespace ExamRevisionHelper.Core.Models
 {
     public enum ExamSeries { Spring, Summer, Winter, Specimen }
 
@@ -27,12 +27,12 @@ namespace ExamRevisionHelper.Models
         public Exam(XmlNode node, Subject subject)
         {
             Subject = subject;
-            switch(node.Attributes["Series"].Value)
+            switch (node.Attributes["Series"].Value)
             {
                 case "Spring": Series = ExamSeries.Spring; break;
                 case "Summer": Series = ExamSeries.Summer; break;
                 case "Winter": Series = ExamSeries.Winter; break;
-                default: Series= ExamSeries.Specimen; break;
+                default: Series = ExamSeries.Specimen; break;
             };
             Year = node.ParentNode.Attributes["Year"].Value;
 

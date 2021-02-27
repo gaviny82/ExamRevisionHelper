@@ -1,10 +1,11 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
+﻿using System.Collections;
+using System.IO;
+using System.Linq;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using Ookii.Dialogs.Wpf;
 using Prism.Commands;
 using Prism.Mvvm;
-using System.Collections;
-using System.Linq;
-using Ookii.Dialogs.Wpf;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -72,7 +73,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteRemoveSubjectCommand(Subject subj)
         {
-            PastPaperHelperUpdateService.Unsubscribe(subj);
+            App.CurrentInstance.Updater.Unsubscribe(subj);
             MainWindowViewModel.RefreshSubscribedSubjects();
         }
         #endregion
@@ -106,7 +107,7 @@ namespace ExamRevisionHelper.ViewModels
                 Path = path;
                 Properties.Settings.Default.Path = path;
                 Properties.Settings.Default.Save();
-                PastPaperHelperCore.LocalFilesPath = path;
+                App.CurrentInstance.LocalFileStorage = new DirectoryInfo(path);
             }
         }
         #endregion
@@ -117,8 +118,8 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteUpdateAllCommand()
         {
-            var lst = (from subj in PastPaperHelperCore.SubscribedSubjects select subj.SyllabusCode).ToList();
-            PastPaperHelperUpdateService.UpdateAll(lst);
+            var lst = (from subj in App.CurrentInstance.SubjectsSubscribed select subj.SyllabusCode).ToList();
+            App.CurrentInstance.Updater.UpdateAll(lst);
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using Prism.Commands;
-using Prism.Mvvm;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml;
+using ExamRevisionHelper.Core.Models;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -17,7 +17,7 @@ namespace ExamRevisionHelper.ViewModels
         {
             IGSubjects.Clear();
             ALSubjects.Clear();
-            foreach (Subject item in PastPaperHelperCore.SubjectsLoaded)
+            foreach (Subject item in App.CurrentInstance.SubjectsAvailable)
             {
                 if (item.Curriculum == Curriculums.IGCSE) IGSubjects.Add(item);
                 else ALSubjects.Add(item);
@@ -56,9 +56,13 @@ namespace ExamRevisionHelper.ViewModels
 
             while (subjectPending.TryDequeue(out Subject subj))
             {
-                await PastPaperHelperUpdateService.SubscribeAsync(subj);
+                await App.CurrentInstance.Updater.SubscribeAsync(subj);
             }
-            await PastPaperHelperCore.SaveDataAsync();
+            await Task.Run(()=> 
+            {
+                XmlDocument doc = App.CurrentInstance.UserData;
+                doc.Save($"{App.ConfigFolderPath}\\{App.CurrentSource.Name}.xml");
+            });
             isLoading = false;
             Application.Current.MainWindow.Resources["IsLoading"] = Visibility.Hidden;
         }

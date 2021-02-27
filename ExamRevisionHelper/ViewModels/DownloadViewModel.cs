@@ -1,12 +1,12 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using Prism.Commands;
-using Prism.Mvvm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -31,8 +31,8 @@ namespace ExamRevisionHelper.ViewModels
             DownloadFlyoutViewModel.LogCommand.Execute($"Initializing download tasks for {subj.SyllabusCode} {subj.Name}");
             DownloadFlyoutViewModel.IsIndeterminate = false;
 
-            PaperRepository repo = PastPaperHelperCore.Source.Subscription[subj];
-            string path = PastPaperHelperCore.LocalFilesPath;
+            PaperRepository repo = App.CurrentInstance.SubscriptionRepo[subj];
+            string path = App.CurrentInstance.LocalFileStorage.FullName;
             path += $"\\{repo.Subject.SyllabusCode} {(repo.Subject.Curriculum == Curriculums.ALevel ? "AL" : "GCSE")} {repo.Subject.Name}";
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
@@ -67,7 +67,7 @@ namespace ExamRevisionHelper.ViewModels
             Action<PastPaperResource> tryAddToTasks = (item) =>
             {
                 string file = item.Url.Split('/').Last();
-                if (!PastPaperHelperCore.LocalFiles.Keys.Contains(file))
+                if (!ExamRevisionHelperCore.LocalFiles.Keys.Contains(file))
                 {
                     tasks.Add(new DownloadTask
                     {

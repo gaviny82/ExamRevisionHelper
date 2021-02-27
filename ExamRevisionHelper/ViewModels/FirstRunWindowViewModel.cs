@@ -1,10 +1,4 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using ExamRevisionHelper.Sources;
-using Ookii.Dialogs.Wpf;
-using Prism.Commands;
-using Prism.Mvvm;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -15,6 +9,13 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Xml;
+using AsyncAwaitBestPractices;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.Core.Sources;
+using Ookii.Dialogs.Wpf;
+using Prism.Commands;
+using Prism.Mvvm;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -26,7 +27,7 @@ namespace ExamRevisionHelper.ViewModels
         public FirstRunWindowViewModel()
         {
             //Add notification handler
-            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -44,7 +45,7 @@ namespace ExamRevisionHelper.ViewModels
                         Application.Current.Resources["IsLoading"] = Visibility.Hidden;
                         IGSubjects.Clear();
                         ALSubjects.Clear();
-                        foreach (var item in PastPaperHelperCore.SubjectsLoaded)
+                        foreach (var item in App.CurrentInstance.SubjectsAvailable)
                         {
                             if (item.Curriculum == Curriculums.ALevel) ALSubjects.Add(new SubjectSelection(item, false));
                             else IGSubjects.Add(new SubjectSelection(item, false));
@@ -54,16 +55,16 @@ namespace ExamRevisionHelper.ViewModels
             };
 
             //Add error handler
-            PastPaperHelperUpdateService.UpdateServiceErrorEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceErrorEvent += (args) =>
             {
-                if(args.Exception is WebException)
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Application.Current.Resources["IsLoading"] = Visibility.Hidden;
-                    IsRetryEnabled = true;
-                    IsRevertAllowed = true;
-                    IsProceedAllowed = false;
-                });
+                if (args.Exception is WebException)
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Application.Current.Resources["IsLoading"] = Visibility.Hidden;
+                        IsRetryEnabled = true;
+                        IsRevertAllowed = true;
+                        IsProceedAllowed = false;
+                    });
             };
         }
 
@@ -159,11 +160,11 @@ namespace ExamRevisionHelper.ViewModels
             if (!Directory.Exists(Path)) Directory.CreateDirectory(Path);
 
             Properties.Settings.Default.Path = Path;
-            string source = PastPaperHelperCore.Source.Name;
+            string source = App.CurrentSource.Name;
             Properties.Settings.Default.PaperSource = source;
 
             Properties.Settings.Default.SubjectsSubcription.Clear();
-            foreach (Subject subj in PastPaperHelperCore.SubscribedSubjects)
+            foreach (Subject subj in App.CurrentInstance.SubjectsSubscribed)
             {
                 Properties.Settings.Default.SubjectsSubcription.Add(subj.SyllabusCode);
             }
@@ -173,7 +174,7 @@ namespace ExamRevisionHelper.ViewModels
                 string userDataFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
                 if (!Directory.Exists(userDataFolderPath)) Directory.CreateDirectory(userDataFolderPath);
 
-                XmlDocument doc = PastPaperHelperCore.Source.SaveDataToXml();
+                XmlDocument doc = App.CurrentSource.SaveDataToXml(App.CurrentInstance.SubscriptionRepo);
                 doc.Save($"{userDataFolderPath}\\{source}.xml");
             });
             Properties.Settings.Default.FirstRun = false;
@@ -192,14 +193,14 @@ namespace ExamRevisionHelper.ViewModels
         {
             IGSubjects.Clear();
             ALSubjects.Clear();
-            PastPaperHelperCore.Source = source switch
+            App.CurrentInstance.CurrentSource = source switch//TODO: init PastPaperHelperCore here
             {
                 "gce_guide" => new PaperSourceGCEGuide(),
                 "papacambridge" => new PaperSourcePapaCambridge(),
                 "cie_notes" => new PaperSourceCIENotes(),
                 _ => new PaperSourceGCEGuide(),
             };
-            await PastPaperHelperUpdateService.UpdateSubjectList();
+            await App.CurrentInstance.Updater.UpdateSubjectList();
         }
         #endregion
 
@@ -219,8 +220,7 @@ namespace ExamRevisionHelper.ViewModels
             UpdateCount = 0;
             UpdateTitle = "Almost done";
             IsRetryEnabled2 = false;
-            PastPaperHelperCore.Source.Subscription.Clear();
-            PastPaperHelperCore.SubscribedSubjects.Clear();
+            App.CurrentInstance.SubscriptionRepo.Clear();
 
             UpdateMessage = $"Initializing local files...";
 
@@ -251,8 +251,8 @@ namespace ExamRevisionHelper.ViewModels
 
                 foreach (Subject subj in lst)
                 {
-                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {PastPaperHelperCore.Source.DisplayName}...";
-                    await PastPaperHelperUpdateService.SubscribeAsync(subj);
+                    UpdateMessage = $"Updating {subj.SyllabusCode} {subj.Name} from {App.CurrentSource.DisplayName}...";
+                    await App.CurrentInstance.Updater.SubscribeAsync(subj);
                     UpdateCount += 1;
                 }
                 await t;
@@ -281,7 +281,7 @@ namespace ExamRevisionHelper.ViewModels
 
         void ExecuteRetryCommand()
         {
-            _ = PastPaperHelperUpdateService.UpdateSubjectList();
+            App.CurrentInstance.Updater.UpdateSubjectList().SafeFireAndForget();
         }
         #endregion
     }

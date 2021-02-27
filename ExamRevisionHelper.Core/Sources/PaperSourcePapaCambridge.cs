@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
-using ExamRevisionHelper.Models;
+using ExamRevisionHelper.Core.Models;
 using HtmlAgilityPack;
 
-namespace ExamRevisionHelper.Sources
+namespace ExamRevisionHelper.Core.Sources
 {
-    class PaperSourcePapaCambridge : PaperSource
+    public class PaperSourcePapaCambridge : PaperSource
     {
         public PaperSourcePapaCambridge()
         {
@@ -88,7 +88,7 @@ namespace ExamRevisionHelper.Sources
             }
             //TODO: read specimen papers and syllabus
 
-            foreach(var year in examList.GroupBy(exam => exam.Year))
+            foreach (var year in examList.GroupBy(exam => exam.Year))
             {
                 ExamYear yr = new ExamYear { Year = year.Key };
                 foreach (Exam item in year)

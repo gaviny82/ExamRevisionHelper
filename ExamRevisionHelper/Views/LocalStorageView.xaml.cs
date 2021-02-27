@@ -1,9 +1,9 @@
-﻿using Common.Wpf.Data;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Common.Wpf.Data;
 
 namespace ExamRevisionHelper.Views
 {

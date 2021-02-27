@@ -1,7 +1,7 @@
-﻿using ExamRevisionHelper.ViewModels;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using ExamRevisionHelper.ViewModels;
 
 namespace ExamRevisionHelper.Views
 {

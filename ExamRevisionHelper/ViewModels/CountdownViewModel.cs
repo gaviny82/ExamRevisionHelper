@@ -1,13 +1,13 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
+﻿using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Timers;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Spire.Pdf;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Timers;
 
 namespace ExamRevisionHelper.ViewModels
 {
@@ -21,9 +21,9 @@ namespace ExamRevisionHelper.ViewModels
         {
             timer.Elapsed += (sender, e) =>
             {
-                if (Countdown > 0) 
+                if (Countdown > 0)
                     Countdown--;
-                else if (Countdown == 0) 
+                else if (Countdown == 0)
                     timer.Stop();
 
             };
@@ -114,17 +114,17 @@ namespace ExamRevisionHelper.ViewModels
                     var filename = item.Url?.Split('/').Last();
                     if (item.Type == ResourceType.QuestionPaper)
                     {
-                        if (PastPaperHelperCore.LocalFiles.ContainsKey(filename))
-                            Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        if (ExamRevisionHelperCore.LocalFiles.ContainsKey(filename))
+                            Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                         else
                             return;
-                        using PdfDocument doc = new PdfDocument(PastPaperHelperCore.LocalFiles[filename]);
+                        using PdfDocument doc = new PdfDocument(ExamRevisionHelperCore.LocalFiles[filename]);
                         string txt = doc.Pages[0]?.ExtractText();
                         MatchCollection matches = Regex.Matches(txt, @"([0-9]+\s)(?:hour(s)?|minutes)((\s[0-9]+\s)(?:hour(s)?|minutes))*");
 
                         string match = matches[0]?.Value;
                         string[] timeData = matches[0]?.Value.Replace(" hours", "").Replace(" hour", "").Replace(" minutes", "").Split(' ');
-                        
+
                         int minutes;
                         if (timeData.Length == 2)
                             minutes = int.Parse(timeData[0]) * 60 + int.Parse(timeData[1]);
@@ -136,11 +136,11 @@ namespace ExamRevisionHelper.ViewModels
                     }
                     else if (item.Type == ResourceType.Insert)
                     {
-                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                     }
                     else if (item.Type == ResourceType.ListeningAudio)
                     {
-                        Process.Start(PastPaperHelperCore.LocalFiles[filename]);
+                        Process.Start(ExamRevisionHelperCore.LocalFiles[filename]);
                     }
                 }
             }

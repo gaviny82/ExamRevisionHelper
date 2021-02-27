@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace ExamRevisionHelper.Models
+namespace ExamRevisionHelper.Core.Models
 {
     public enum ResourceStates { Online, Downloading, Offline }
     public class PastPaperResource

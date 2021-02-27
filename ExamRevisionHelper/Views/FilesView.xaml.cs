@@ -1,8 +1,8 @@
-﻿using ExamRevisionHelper.Core.Tools;
-using ExamRevisionHelper.Models;
-using ExamRevisionHelper.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using ExamRevisionHelper.Core;
+using ExamRevisionHelper.Core.Models;
+using ExamRevisionHelper.ViewModels;
 
 namespace ExamRevisionHelper.Views
 {
@@ -14,7 +14,7 @@ namespace ExamRevisionHelper.Views
         public FilesView()
         {
             InitializeComponent();
-            PastPaperHelperUpdateService.UpdateServiceNotifiedEvent += (args) =>
+            App.CurrentInstance.Updater.UpdateServiceNotifiedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -25,11 +25,11 @@ namespace ExamRevisionHelper.Views
                 });
             };
 
-            PastPaperHelperUpdateService.SubjectSubscribedEvent += (args) =>
+            App.CurrentInstance.Updater.SubjectSubscribedEvent += (args) =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (subjectSelector.SelectedIndex == -1) 
+                    if (subjectSelector.SelectedIndex == -1)
                         subjectSelector.SelectedIndex = 0;
                 });
             };
