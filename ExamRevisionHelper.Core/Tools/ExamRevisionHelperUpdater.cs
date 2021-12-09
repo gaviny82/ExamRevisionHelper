@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Xml;
 using ExamRevisionHelper.Core.Models;
@@ -31,7 +32,7 @@ namespace ExamRevisionHelper.Core
 
     public class ExamRevisionHelperUpdater
     {
-        public ExamRevisionHelperUpdater(ExamRevisionHelperCore coreInstance)
+        public ExamRevisionHelperUpdater([NotNull]ExamRevisionHelperCore coreInstance)
         {
             _coreInstance = coreInstance;
         }
@@ -115,7 +116,7 @@ namespace ExamRevisionHelper.Core
             {
                 try
                 {
-                    await source.AddOrUpdateSubject(subj);
+                    await _coreInstance.AddOrUpdateSubject(subj);
                 }
                 catch (Exception e)
                 {
@@ -185,7 +186,7 @@ namespace ExamRevisionHelper.Core
             try
             {
                 if (_coreInstance.SubscriptionRepo.ContainsKey(subj)) return false;
-                await _coreInstance.CurrentSource?.AddOrUpdateSubject(subj);
+                await _coreInstance.AddOrUpdateSubject(subj);
             }
             catch (Exception)
             {

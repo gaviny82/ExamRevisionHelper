@@ -19,8 +19,8 @@ namespace ExamRevisionHelper
     {
         public static readonly string ConfigFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\PastPaperHelper\\PastPaperHelper";
 
-        public static PaperSource CurrentSource { get; private set; }
-        public static ExamRevisionHelperCore CurrentInstance { get; private set; }
+        public static PaperSource CurrentSource => CurrentInstance.CurrentSource;
+        public static ExamRevisionHelperCore CurrentInstance => (App.Current as App).CoreInstance;
 
         public InitializationResult InitResult { get; private set; } = InitializationResult.SuccessNoUpdate;
         public ExamRevisionHelperCore CoreInstance { get; private set; }
@@ -52,10 +52,11 @@ namespace ExamRevisionHelper
             //Test: First run experience
             //setting.FirstRun = true;
             //setting.Save();
-            //if (setting.FirstRun) return;
-
+            
             var setting = ExamRevisionHelper.Properties.Settings.Default;
-
+            CoreInstance = new(null, null, UpdateFrequency.Auto, null);
+            if (setting.FirstRun) return;
+            
             var storageDirectory = Directory.CreateDirectory(setting.Path);
             UpdateFrequency updatePolicy =  (UpdateFrequency)setting.UpdatePolicy;
 
@@ -72,8 +73,6 @@ namespace ExamRevisionHelper
             try
             {
                 CoreInstance = new ExamRevisionHelperCore(doc, storageDirectory, updatePolicy, subsArr);
-                CurrentSource = (Current as App).CoreInstance.CurrentSource;
-                CurrentInstance = (Current as App).CoreInstance;
                 //TODO: Check update policy
 
                 CurrentInstance.Updater.SubjectUnsubscribedEvent += (subj) =>

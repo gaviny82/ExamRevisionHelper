@@ -19,7 +19,7 @@
             <windows:Visibility x:Key="IsLoading">
                 1
             </windows:Visibility>
-            <sys:String x:Key="AppVersion">2.0-rc4</sys:String>
+            <sys:String x:Key="AppVersion">2.0</sys:String>
 
             <StackPanel x:Key="InvalidPath" Margin="16">
                 <TextBlock

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using ExamRevisionHelper.Core.Models;
 using ExamRevisionHelper.Core.Sources;
@@ -39,8 +40,8 @@ namespace ExamRevisionHelper.Core
             string sourceIdentifier = "";
             try
             {
-                XmlNode dataNode = userData.SelectSingleNode("/Data");
-                sourceIdentifier = dataNode.Attributes["Source"].Value;
+                XmlNode dataNode = userData?.SelectSingleNode("/Data");
+                sourceIdentifier = dataNode?.Attributes["Source"].Value;
 
                 CurrentSource = sourceIdentifier switch
                 {
@@ -48,8 +49,13 @@ namespace ExamRevisionHelper.Core
                    "papacambridge" => new PaperSourcePapaCambridge(),
                     "cie_notes" => new PaperSourceCIENotes(),
 
-                    _ => null
+                    _ => new PaperSourceGCEGuide()
                 };
+                if (userData == null)
+                {
+                    SubscriptionRepo = new();
+                    return;
+                }
                 SubscriptionRepo = CurrentSource.LoadUserData(userData);
             }
             catch (Exception e)
@@ -122,6 +128,14 @@ namespace ExamRevisionHelper.Core
             result = null;
             return false;
         }
-
+        
+        public async Task AddOrUpdateSubject(Subject subj)
+        {
+            if (!CurrentSource.SubjectUrlMap.ContainsKey(subj))
+                throw new Exception($"Cannot find {subj.SyllabusCode} {subj.Name} in {nameof(CurrentSource.SubjectUrlMap)}");
+            PaperRepository repo = await CurrentSource.GetPapers(subj);
+            if (SubscriptionRepo.ContainsKey(subj)) SubscriptionRepo[subj] = repo;
+            else SubscriptionRepo.Add(subj, repo);
+        }
     }
 }

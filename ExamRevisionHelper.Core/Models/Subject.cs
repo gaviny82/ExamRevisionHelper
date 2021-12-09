@@ -12,7 +12,7 @@
         {
             if (obj is Subject subj)
             {
-                return subj.SyllabusCode == SyllabusCode;
+                return subj.SyllabusCode == SyllabusCode && subj.Name == Name;
             }
             return base.Equals(obj);
         }
